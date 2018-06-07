@@ -3,8 +3,8 @@
 
 #define ASIO_STANDALONE
 #define ASIO_HAS_STD_CHRONO
-
 #include <asio.hpp>
+
 #include <string>
 
 class BillingSocket final
@@ -12,10 +12,16 @@ class BillingSocket final
   private:
     std::string m_ip;
     short m_port;
+    asio::io_service m_asioIoService;
+    asio::ip::tcp::acceptor* m_acceptor;
 
   public:
     BillingSocket();
     ~BillingSocket();
+
+  public:
+    void start();
+    void stop();
 
   public:
     const std::string& getString() const;

@@ -24,7 +24,7 @@ Billing::~Billing()
 void Billing::start()
 {
   std::cout << "Billing is starting..." << std::endl;
-
+  m_socket->start();
   std::cout << "Billing is started!" << std::endl;
 }
 

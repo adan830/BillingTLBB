@@ -1,10 +1,14 @@
 #include "billing/Config.hpp"
 
+#include <sstream>
 #include <iostream>
 #include <fstream>
 
 Config::Data::Data(const std::string& filename)
 {
+  this->ip = "0.0.0.0";
+  this->port = 12680;
+
   std::cout << "Parsing file " << filename.data() << std::endl;
 
   std::ifstream ifConfig(filename, std::ios::in);
@@ -16,8 +20,43 @@ Config::Data::Data(const std::string& filename)
   else
   {
     std::string line;
+    std::string configKey;
+    std::string configValue;
+    char tempChar;
     while(std::getline(ifConfig, line))
     {
+      if (line.empty())
+      {
+        continue;
+      }
+
+      std::stringstream(line) >> configKey >> tempChar >> configValue;
+
+      if (configKey.empty())
+      {
+        continue;
+      }
+
+      if (configValue.empty())
+      {
+        std::cout << configKey << " is empty!!!";
+        continue;
+      }
+
+      std::cout << "LineInfo: "
+      << configKey
+      << tempChar
+      << configValue
+      << std::endl;
+
+      if (configKey == "IP")
+      {
+        this->ip = configValue;
+      }
+      else if (configKey == "LISTEN_PORT")
+      {
+        this->port = std::stoi(configValue);
+      }
     }
     std::cout << "Parsed file " << filename.data() << std::endl;
   }
