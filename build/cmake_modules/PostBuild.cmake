@@ -17,3 +17,10 @@ if (${CMAKE_EXPORT_COMPILE_COMMANDS} STREQUAL ON)
   endif()
 endif()
 
+# Copy res
+add_custom_command(TARGET ${PROJECT_NAME}
+  POST_BUILD
+  COMMAND
+  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/deps/res/ $<TARGET_FILE_DIR:${PROJECT_NAME}>
+  )
+
