@@ -14,7 +14,8 @@ class BillingSocket final
     short m_port;
 
   public:
-    BillingSocket(const std::string& ip, const short port);
+    BillingSocket();
+    ~BillingSocket();
 
   public:
     const std::string& getString() const;

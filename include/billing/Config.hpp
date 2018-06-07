@@ -22,7 +22,7 @@ class Config final
     ~Config();
 
   public:
-    Config& getInstance();
+    static Config& getInstance();
     const Data* getData() const;
 };
 

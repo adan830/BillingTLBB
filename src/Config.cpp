@@ -5,13 +5,13 @@
 
 Config::Data::Data(const std::string& filename)
 {
-  std::cout << "Parsing " << filename.data() << std::endl;
+  std::cout << "Parsing file " << filename.data() << std::endl;
 
   std::ifstream ifConfig(filename, std::ios::in);
 
   if (!ifConfig.is_open())
   {
-    std::cout << "Parse " << filename.data() << " error" << std::endl;
+    std::cout << "Parse file " << filename.data() << " error" << std::endl;
   }
   else
   {
@@ -19,7 +19,7 @@ Config::Data::Data(const std::string& filename)
     while(std::getline(ifConfig, line))
     {
     }
-    std::cout << "Parsed " << filename.data() << std::endl;
+    std::cout << "Parsed file " << filename.data() << std::endl;
   }
 }
 

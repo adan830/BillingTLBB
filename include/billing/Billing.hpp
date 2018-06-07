@@ -13,11 +13,13 @@ class Billing final
     ~Billing();
 
   public:
-    // On first
+    /**
+     * Start Billing
+     */
     void start();
 
     /**
-     *
+     * Restart Billing
      */
     void restart();
 };
