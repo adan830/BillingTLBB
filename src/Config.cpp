@@ -1,7 +1,7 @@
 #include "billing/Config.hpp"
 
-#include <sstream>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 
 Config::Data::Data(const std::string& filename)
@@ -39,7 +39,7 @@ Config::Data::Data(const std::string& filename)
 
       if (configValue.empty())
       {
-        std::cout << configKey << " is empty!!!";
+        std::cout << "Key " << configKey << " is empty!!!";
         continue;
       }
 
@@ -57,8 +57,19 @@ Config::Data::Data(const std::string& filename)
       {
         this->port = std::stoi(configValue);
       }
+      else
+      {
+        std::cout
+        << "Config::Data Waring: "
+        << configKey
+        << " is not a valid key"
+        << std::endl;
+      }
     }
+
     std::cout << "Parsed file " << filename.data() << std::endl;
+
+    ifConfig.close();
   }
 }
 
@@ -70,7 +81,11 @@ Config::Config() :
 
 Config::~Config()
 {
+  std::cout << "Config is destructing..." << std::endl;
+
   delete m_data;
+
+  std::cout << "Config is destructed!" << std::endl;
 }
 
 Config& Config::getInstance()

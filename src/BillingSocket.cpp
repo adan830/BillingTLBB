@@ -19,6 +19,13 @@ BillingSocket::BillingSocket()
       )
     );
 
+  std::cout << "--- BillingSocket.Acceptor will be listened at "
+  << configData->ip
+  << ":"
+  << configData->port
+  << " ---"
+  << std::endl;
+
   std::cout << "BillingSocket is initialized!" << std::endl;
 }
 

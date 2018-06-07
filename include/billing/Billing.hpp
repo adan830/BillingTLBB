@@ -13,15 +13,9 @@ class Billing final
     ~Billing();
 
   public:
-    /**
-     * Start Billing
-     */
     void start();
-
-    /**
-     * Restart Billing
-     */
     void restart();
+    void stop();
 };
 
 
