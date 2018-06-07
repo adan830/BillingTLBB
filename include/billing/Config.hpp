@@ -1,3 +1,6 @@
+#ifndef __BILLING_CONFIG_HPP__
+#define __BILLING_CONFIG_HPP__
+
 #include <string>
 
 class Config final
@@ -22,4 +25,6 @@ class Config final
     Config& getInstance();
     const Data* getData() const;
 };
+
+#endif
 
