@@ -2,7 +2,8 @@ set(INC_DIRS ${INC_DIRS}
   # include
   include
 
-  # ASIO
+  # Third Party
   deps/asio/asio/include
+  deps/spdlog/include
   )
 
