@@ -17,6 +17,9 @@ namespace net
       Session(asio::ip::tcp::socket socket, const Packet& packet = Packet());
 
     public:
+      void start();
+
+    public:
       const asio::ip::tcp::socket* getSocket() const;
       asio::ip::tcp::socket* getSocket();
 

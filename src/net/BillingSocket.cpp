@@ -64,7 +64,7 @@ namespace net
 
         if (!ec)
         {
-          Session m_session(std::move(m_socket));
+          std::make_shared<Session>(std::move(m_socket))->start();
         }
 
         this->accept();
