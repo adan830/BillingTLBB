@@ -61,7 +61,7 @@ void Config::readData()
 
       if (configValue.empty())
       {
-        std::cout << "Key " << configKey << " is empty!!!";
+        std::cout << "Key " << configKey << " is empty!!!" << std::endl;
         continue;
       }
 
@@ -118,10 +118,13 @@ void Config::readData()
       }
       else
       {
-        std::cout << "Config::Data Waring: " << configKey
+        std::cout << "Config::readData Waring: " << configKey
         << " is not a valid key"
         << std::endl;
       }
+
+      configKey.clear();
+      configValue.clear();
     }
 
     std::cout << "Parsed file " << m_configFile.data() << std::endl;
