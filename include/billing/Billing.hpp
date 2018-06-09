@@ -1,12 +1,15 @@
 #ifndef __BILLING_BILLING_HPP__
 #define __BILLING_BILLING_HPP__
 
-class BillingSocket;
+namespace net
+{
+  class BillingSocket;
+}
 
 class Billing final
 {
   private:
-    BillingSocket* m_socket;
+    net::BillingSocket* m_socket;
 
   public:
     Billing();
@@ -17,7 +20,6 @@ class Billing final
     void restart();
     void stop();
 };
-
 
 #endif
 

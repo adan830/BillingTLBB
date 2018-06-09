@@ -8,9 +8,28 @@ class Config final
   public:
     struct Data
     {
-      Data(const std::string& filename);
+      // Listen IP
       std::string ip;
+
+      // Listen Port
       short port;
+
+      // Web Database Info
+      std::string webDatabaseIp;
+      short webDatabasePort;
+      std::string webDatabaseName;
+      std::string webDatabaseUsername;
+      std::string webDatabasePassword;
+
+      // Game Database Info
+      std::string gameDatabaseIp;
+      short gameDatabasePort;
+      std::string gameDatabaseName;
+      std::string gameDatabaseUserName;
+      std::string gameDatabasePassword;
+
+      // Constructor
+      Data();
     };
 
   private:
@@ -20,6 +39,9 @@ class Config final
   private:
     Config();
     ~Config();
+
+  public:
+    void readData();
 
   public:
     static Config& getInstance();

@@ -1,11 +1,11 @@
 #include "billing/Billing.hpp"
 
-#include "billing/BillingSocket.hpp"
+#include "billing/net/BillingSocket.hpp"
 
 #include <iostream>
 
 Billing::Billing() :
-  m_socket(new BillingSocket())
+  m_socket(new net::BillingSocket())
 {
   std::cout << "Billing is initializing..." << std::endl;
 

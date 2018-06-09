@@ -3,7 +3,8 @@ set(SRC_FILES ${SRC_FILES}
 
   src/Config.cpp
   src/Billing.cpp
-  src/BillingSocket.cpp
   src/Utils.cpp
+  src/net/BillingSocket.cpp
+  deps/app/src/net/Packet.cpp
   )
 
