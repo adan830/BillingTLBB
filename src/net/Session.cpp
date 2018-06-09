@@ -17,12 +17,14 @@ namespace net
     Packet m_packet;
     m_socket.async_read_some(
       asio::buffer(m_packet.getBuffer()),
-      [this, &m_packet](const std::error_code ec, const std::size_t length)
+      [this, &m_packet](const std::error_code ec, const std::size_t len)
       {
-        std::cout << "Received " << length << " byte(s) with Error Code: " << ec
-        << std::endl;
-
-        if (!ec)
+        std::cout << "Received " << len << " byte(s)" << std::endl;
+        if (ec)
+        {
+          std::cout << "Error Code: " << ec << std::endl;
+        }
+        else
         {
           std::cout << m_packet.getBuffer().data() << std::endl;
         }

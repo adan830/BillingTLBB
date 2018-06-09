@@ -60,9 +60,11 @@ namespace net
       m_socket,
       [this](const std::error_code ec)
       {
-        std::cout << "New connection error code: " << ec << std::endl;
-
-        if (!ec)
+        if (ec)
+        {
+          std::cout << "New connection error code: " << ec << std::endl;
+        }
+        else
         {
           std::make_shared<Session>(std::move(m_socket))->start();
         }
