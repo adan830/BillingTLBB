@@ -1,8 +1,6 @@
 #ifndef __BILLING_BILLING_SOCKET_HPP__
 #define __BILLING_BILLING_SOCKET_HPP__
 
-#define ASIO_STANDALONE
-#define ASIO_HAS_STD_CHRONO
 #include <asio.hpp>
 
 #include <string>
@@ -22,6 +20,9 @@ namespace net
     public:
       void start();
       void stop();
+
+    private:
+      void accept();
 
     public:
       const std::string& getString() const;

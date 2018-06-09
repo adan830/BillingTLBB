@@ -24,7 +24,7 @@ void Config::readData()
 {
   std::cout << "Parsing file " << m_configFile.data() << std::endl;
 
-  std::ifstream ifConfig(m_configFile, std::ios::in);
+  std::ifstream ifConfig(m_configFile, std::ifstream::in);
 
   if (!ifConfig.is_open())
   {

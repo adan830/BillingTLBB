@@ -15,6 +15,7 @@ include(SourceFiles)
 include(CompilerConfig)
 include(BuildConfig)
 include(LinkLibraries)
+include(Definitions)
 # }
 
 include_directories(${PROJECT_NAME} PRIVATE ${INC_DIRS})

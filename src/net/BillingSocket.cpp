@@ -38,14 +38,30 @@ namespace net
     std::cout << "BillingSocket is starting..." << std::endl;
 
     auto configData = Config::getInstance().getData();
-    std::cout << "--- BillingSocket.Acceptor will be listened at "
+    std::cout << "!!! BillingSocket.Acceptor will be listened at "
     << configData->ip << ":" << configData->port
-    << " ---"
+    << " !!!"
     << std::endl;
+
+    this->accept();
 
     m_asioIoService.run();
 
     std::cout << "BillingSocket is started!" << std::endl;
+  }
+
+  void BillingSocket::accept()
+  {
+    static asio::ip::tcp::socket m_socket(m_asioIoService);
+
+    m_acceptor->async_accept(
+      m_socket,
+      [this](const std::error_code ec){
+        std::cout << ec << std::endl;
+
+        this->accept();
+      }
+      );
   }
 
   void BillingSocket::stop()
