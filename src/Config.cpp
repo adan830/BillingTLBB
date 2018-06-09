@@ -4,15 +4,6 @@
 #include <sstream>
 #include <fstream>
 
-Config::Data::Data()
-{
-  this->ip = "0.0.0.0";
-  this->port = 12680;
-
-  this->gameDatabaseName = "tlbbdb";
-  this->webDatabaseName = "web";
-}
-
 Config::Config() :
   m_configFile("config.ini"),
   m_data(new Config::Data())
@@ -70,7 +61,7 @@ void Config::readData()
 
       if (configKey == "IP")
       {
-        m_data->ip = configValue;
+        m_data->ip = m_data->ip.empty() ? configValue : m_data->ip;
       }
       else if (configKey == "LISTEN_PORT")
       {

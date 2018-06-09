@@ -5,31 +5,28 @@
 
 class Config final
 {
-  public:
+  private:
     struct Data
     {
       // Listen IP
       std::string ip;
 
       // Listen Port
-      short port;
+      unsigned short port;
 
       // Web Database Info
       std::string webDatabaseIp;
-      short webDatabasePort;
+      unsigned short webDatabasePort;
       std::string webDatabaseName;
       std::string webDatabaseUsername;
       std::string webDatabasePassword;
 
       // Game Database Info
       std::string gameDatabaseIp;
-      short gameDatabasePort;
+      unsigned short gameDatabasePort;
       std::string gameDatabaseName;
       std::string gameDatabaseUserName;
       std::string gameDatabasePassword;
-
-      // Constructor
-      Data();
     };
 
   private:

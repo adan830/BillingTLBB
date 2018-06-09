@@ -21,13 +21,6 @@ namespace net
         )
       );
 
-    std::cout << "--- BillingSocket.Acceptor will be listened at "
-    << configData->ip
-    << ":"
-    << configData->port
-    << " ---"
-    << std::endl;
-
     std::cout << "BillingSocket is initialized!" << std::endl;
   }
 
@@ -44,6 +37,12 @@ namespace net
   {
     std::cout << "BillingSocket is starting..." << std::endl;
 
+    auto configData = Config::getInstance().getData();
+    std::cout << "--- BillingSocket.Acceptor will be listened at "
+    << configData->ip << ":" << configData->port
+    << " ---"
+    << std::endl;
+
     m_asioIoService.run();
 
     std::cout << "BillingSocket is started!" << std::endl;
@@ -57,6 +56,5 @@ namespace net
 
     std::cout << "BillingSocket is stopped!" << std::endl;
   }
-
 }
 

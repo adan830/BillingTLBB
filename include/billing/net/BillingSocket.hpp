@@ -12,8 +12,6 @@ namespace net
   class BillingSocket final
   {
     private:
-      std::string m_ip;
-      short m_port;
       asio::io_service m_asioIoService;
       asio::ip::tcp::acceptor* m_acceptor;
 
@@ -29,8 +27,8 @@ namespace net
       const std::string& getString() const;
       void setIp(const std::string& ip);
 
-      short getPort() const;
-      void setPort(const short port);
+      unsigned short getPort() const;
+      void setPort(const unsigned short port);
   };
 }
 
