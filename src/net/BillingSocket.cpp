@@ -1,6 +1,8 @@
 #include "billing/net/BillingSocket.hpp"
 
 #include "billing/Config.hpp"
+#include "billing/net/Session.hpp"
+#include "billing/net/Packet.hpp"
 
 #include <iostream>
 
@@ -56,8 +58,14 @@ namespace net
 
     m_acceptor->async_accept(
       m_socket,
-      [this](const std::error_code ec){
-        std::cout << ec << std::endl;
+      [this](const std::error_code ec)
+      {
+        std::cout << "New connection error code: " << ec << std::endl;
+
+        if (!ec)
+        {
+          Session m_session(std::move(m_socket));
+        }
 
         this->accept();
       }

@@ -3,18 +3,25 @@
 
 #include <asio.hpp>
 
+#include "billing/net/Packet.hpp"
+
 namespace net
 {
-  class Packet;
-
   class Session
   {
     private:
-      asio::ip::tcp::socket* m_socket;
-      const Packet& m_packet;
+      asio::ip::tcp::socket m_socket;
+      Packet m_packet;
 
     public:
-      Session(asio::ip::tcp::socket* socket, const Packet& packet);
+      Session(asio::ip::tcp::socket socket, const Packet& packet = Packet());
+
+    public:
+      const asio::ip::tcp::socket* getSocket() const;
+      asio::ip::tcp::socket* getSocket();
+
+      const Packet& getPacket() const;
+      Packet& getPacket();
   };
 }
 

@@ -7,6 +7,8 @@
 
 namespace net
 {
+  class Session;
+
   class BillingSocket final
   {
     private:

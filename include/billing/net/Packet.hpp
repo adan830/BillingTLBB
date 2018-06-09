@@ -21,6 +21,7 @@ namespace net
     public:
       void setBuffer(const Buffer& buffer);
       const Buffer& getBuffer() const;
+      Buffer& getBuffer();
   };
 }
 
