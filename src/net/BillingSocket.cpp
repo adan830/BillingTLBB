@@ -80,9 +80,7 @@ namespace net
         }
         else
         {
-          std::async(std::launch::async, [](){
-            std::make_shared<Session>(std::move(m_socket))->start();
-          });
+          std::make_shared<Session>(std::move(m_socket))->start();
         }
 
         this->accept();

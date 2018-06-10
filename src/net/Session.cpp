@@ -2,9 +2,9 @@
 
 #include "billing/net/Packet.hpp"
 
-#include <chrono>
 #include <iostream>
 #include <asio.hpp>
+#include <chrono>
 #include <thread>
 
 namespace net
@@ -14,10 +14,13 @@ namespace net
   {
   }
 
+  Session::~Session()
+  {
+  }
+
   void Session::start()
   {
-    auto timeOut = std::chrono::milliseconds(3000);
-    std::this_thread::sleep_for(timeOut);
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
     Packet m_packet;
     m_socket.async_read_some(
       asio::buffer(m_packet.getBuffer()),

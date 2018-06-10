@@ -12,6 +12,7 @@ namespace net
 
     public:
       Session(asio::ip::tcp::socket socket);
+      ~Session();
 
     public:
       void start();
