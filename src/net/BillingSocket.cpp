@@ -61,14 +61,7 @@ namespace net
 
     this->accept();
 
-    try
-    {
-      m_asioIoService.run();
-    }
-    catch (const std::exception& e)
-    {
-      std::cout << "Exception: " << e.what() << std::endl;
-    }
+    m_asioIoService.run();
   }
 
   void BillingSocket::accept()
