@@ -5,6 +5,7 @@
 #include "billing/net/Packet.hpp"
 
 #include <iostream>
+#include <future>
 
 namespace net
 {
@@ -15,13 +16,20 @@ namespace net
     auto configData = Config::getInstance().getData();
 
     // Construct asio socket
-    m_acceptor = new asio::ip::tcp::acceptor(
-      m_asioIoService,
-      asio::ip::tcp::endpoint(
-        asio::ip::address::from_string(configData->ip),
-        configData->port
-        )
-      );
+    try
+    {
+      m_acceptor = new asio::ip::tcp::acceptor(
+        m_asioIoService,
+        asio::ip::tcp::endpoint(
+          asio::ip::address::from_string(configData->ip),
+          configData->port
+          )
+        );
+    }
+    catch (const std::exception& e)
+    {
+      std::cout << "Exception: " << e.what() << std::endl;
+    }
 
     std::cout << "BillingSocket is initialized!" << std::endl;
   }
@@ -37,6 +45,12 @@ namespace net
 
   void BillingSocket::start()
   {
+    if (!m_acceptor)
+    {
+      std::cout << "-- Acceptor error --" << std::endl;
+      return;
+    }
+
     std::cout << "BillingSocket is starting..." << std::endl;
 
     auto configData = Config::getInstance().getData();
@@ -47,14 +61,21 @@ namespace net
 
     this->accept();
 
-    m_asioIoService.run();
-
-    std::cout << "BillingSocket is started!" << std::endl;
+    try
+    {
+      m_asioIoService.run();
+    }
+    catch (const std::exception& e)
+    {
+      std::cout << "Exception: " << e.what() << std::endl;
+    }
   }
 
   void BillingSocket::accept()
   {
     static asio::ip::tcp::socket m_socket(m_asioIoService);
+
+    std::cout << "Start new listening accept" << std::endl;
 
     m_acceptor->async_accept(
       m_socket,
@@ -66,7 +87,9 @@ namespace net
         }
         else
         {
-          std::make_shared<Session>(std::move(m_socket))->start();
+          std::async(std::launch::async, [](){
+            std::make_shared<Session>(std::move(m_socket))->start();
+          });
         }
 
         this->accept();
