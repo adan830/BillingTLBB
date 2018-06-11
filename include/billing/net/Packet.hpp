@@ -12,9 +12,11 @@ namespace net
 
     private:
       Buffer m_buffer;
+      std::size_t m_size;
 
     public:
       Packet();
+      Packet(const std::size_t size);
       Packet(const Buffer& buffer);
       ~Packet();
 
@@ -22,6 +24,9 @@ namespace net
       void setBuffer(const Buffer& buffer);
       const Buffer& getBuffer() const;
       Buffer& getBuffer();
+      std::size_t getSize() const;
+      void setSize(const std::size_t size);
+      const std::string& toString() const;
   };
 }
 

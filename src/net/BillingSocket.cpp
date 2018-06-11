@@ -37,6 +37,12 @@ namespace net
 
   void BillingSocket::start()
   {
+    if (!m_acceptor)
+    {
+      std::cerr << "Acceptor not found" << std::endl;
+      return;
+    }
+
     std::cout << "BillingSocket is starting..." << std::endl;
 
     auto configData = Config::getInstance().getData();

@@ -27,9 +27,10 @@ namespace net
     Packet m_packet;
     m_socket.async_read_some(
       asio::buffer(m_packet.getBuffer()),
-      [this, self, &m_packet](const std::error_code& ec, const std::size_t len)
+      [self, &m_packet](const std::error_code& ec, const std::size_t len)
       {
         std::cout << "Received " << len << " byte(s)" << std::endl;
+        m_packet.setSize(len);
         if (ec)
         {
           std::cerr << "Error Code: " << ec << std::endl;
@@ -47,18 +48,17 @@ namespace net
     // Keep session alive
     auto self = this->shared_from_this();
 
-    std::cout << "Handling packet data: " << std::endl
-    << std::string(std::begin(packet.getBuffer()), std::end(packet.getBuffer()))
-    << std::endl;
+    std::cout << packet.toString() << std::endl;
 
+    return;
     packet::BufferController bufferController(packet.getBuffer());
 
-    Packet::Buffer sendData(packet.getBuffer().data());
+    Packet::Buffer sendData(packet.getBuffer());
 
     asio::async_write(
       m_socket,
       asio::buffer(sendData),
-      [this, self](const std::error_code& ec, const std::size_t len)
+      [self](const std::error_code& ec, const std::size_t len)
       {
         std::cout << "Sent " << len << " byte(s)" << std::endl;
         if (ec)
