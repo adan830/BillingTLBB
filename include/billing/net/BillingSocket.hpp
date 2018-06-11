@@ -14,6 +14,7 @@ namespace net
     private:
       asio::io_service m_asioIoService;
       asio::ip::tcp::acceptor* m_acceptor;
+      asio::ip::tcp::socket m_socket;
 
     public:
       BillingSocket();

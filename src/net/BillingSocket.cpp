@@ -9,27 +9,19 @@
 
 namespace net
 {
-  BillingSocket::BillingSocket()
+  BillingSocket::BillingSocket() :
+    m_socket(m_asioIoService)
   {
     std::cout << "BillingSocket is initializing..." << std::endl;
 
     auto configData = Config::getInstance().getData();
-
-    // Construct asio socket
-    try
-    {
-      m_acceptor = new asio::ip::tcp::acceptor(
-        m_asioIoService,
-        asio::ip::tcp::endpoint(
-          asio::ip::address::from_string(configData->ip),
-          configData->port
-          )
-        );
-    }
-    catch (const std::exception& e)
-    {
-      std::cout << "Exception: " << e.what() << std::endl;
-    }
+    m_acceptor = new asio::ip::tcp::acceptor(
+      m_asioIoService,
+      asio::ip::tcp::endpoint(
+        asio::ip::address::from_string(configData->ip),
+        configData->port
+        )
+      );
 
     std::cout << "BillingSocket is initialized!" << std::endl;
   }
@@ -45,12 +37,6 @@ namespace net
 
   void BillingSocket::start()
   {
-    if (!m_acceptor)
-    {
-      std::cout << "-- Acceptor error --" << std::endl;
-      return;
-    }
-
     std::cout << "BillingSocket is starting..." << std::endl;
 
     auto configData = Config::getInstance().getData();
@@ -66,13 +52,9 @@ namespace net
 
   void BillingSocket::accept()
   {
-    static asio::ip::tcp::socket m_socket(m_asioIoService);
-
-    std::cout << "Start new listening accept" << std::endl;
-
     m_acceptor->async_accept(
       m_socket,
-      [this](const std::error_code ec)
+      [this](const std::error_code& ec)
       {
         if (ec)
         {

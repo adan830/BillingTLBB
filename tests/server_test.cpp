@@ -147,7 +147,7 @@ private:
   void do_write(std::size_t length)
   {
     auto self(shared_from_this());
-    std::cout << "Data: " << std::endl << std::string(data_.data() + length) << std::endl;
+    std::cout << "Data: " << std::endl << std::string(std::begin(data_), std::end(data_)) << std::endl;
     asio::async_write(socket_, asio::buffer(data_, length),
         make_custom_alloc_handler(allocator_,
           [this, self](std::error_code ec, std::size_t /*length*/)

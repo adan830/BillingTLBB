@@ -4,6 +4,5 @@ server_test:
 		-I../deps/asio/asio/include \
 		-DASIO_STANDALONE -DASIO_HAS_STD_CHRONO \
 		server_test.cpp \
-		-lpthread -ldl && \
-		./server_test.exe 12680
+		-lpthread -ldl
 
