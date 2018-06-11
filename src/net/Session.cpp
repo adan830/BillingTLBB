@@ -45,19 +45,22 @@ namespace net
 
   void Session::packetHandle(const Packet& packet)
   {
+    if ((packet.getSize() == 0) || packet.toString().empty())
+    {
+      std::cerr << "Message empty" << std::endl;
+      return;
+    }
+
     // Keep session alive
     auto self = this->shared_from_this();
 
     std::cout << packet.toString() << std::endl;
 
-    return;
     packet::BufferController bufferController(packet.getBuffer());
-
-    Packet::Buffer sendData(packet.getBuffer());
 
     asio::async_write(
       m_socket,
-      asio::buffer(sendData),
+      asio::buffer(bufferController.getResponseData()),
       [self](const std::error_code& ec, const std::size_t len)
       {
         std::cout << "Sent " << len << " byte(s)" << std::endl;

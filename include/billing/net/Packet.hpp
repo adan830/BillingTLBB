@@ -26,7 +26,7 @@ namespace net
       Buffer& getBuffer();
       std::size_t getSize() const;
       void setSize(const std::size_t size);
-      const std::string& toString() const;
+      std::string& toString() const;
   };
 }
 

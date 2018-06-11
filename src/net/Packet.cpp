@@ -46,10 +46,9 @@ namespace net
     return m_size;
   }
 
-  const std::string& Packet::toString() const
+  std::string& Packet::toString() const
   {
     static std::string m_string;
-
     return m_string.assign(m_buffer.cbegin(), m_buffer.cbegin() + m_size);
   }
 }
