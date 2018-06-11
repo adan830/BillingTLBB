@@ -20,9 +20,8 @@ namespace net
 
   void Session::start()
   {
-    // std::this_thread::sleep_for(std::chrono::milliseconds(3000));
     Packet m_packet;
-    m_socket.async_receive(
+    m_socket.async_read_some(
       asio::buffer(m_packet.getBuffer()),
       [this, &m_packet](const std::error_code& ec, const std::size_t len)
       {

@@ -1,4 +1,4 @@
-main: compile
+main: deps.update compile
 	cd bin && \
 		./Billing
 
@@ -10,4 +10,7 @@ compile:
 
 clean:
 	git clean -xdf bin
+
+deps.update:
+	git submodule update --init --recursive
 
