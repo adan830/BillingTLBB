@@ -6,6 +6,8 @@
 
 namespace net
 {
+  class Packet;
+
   class Session : public std::enable_shared_from_this<Session>
   {
     private:
@@ -17,6 +19,7 @@ namespace net
 
     public:
       void start();
+      void packetHandle(const Packet& packet);
 
     public:
       const asio::ip::tcp::socket& getSocket() const;

@@ -31,14 +31,21 @@ namespace net
         std::cout << "Received " << len << " byte(s)" << std::endl;
         if (ec)
         {
-          std::cout << "Error Code: " << ec << std::endl;
+          std::cerr << "Error Code: " << ec << std::endl;
         }
         else
         {
-          std::cout << m_packet.getBuffer().data() << std::endl;
+          self->packetHandle(m_packet);
         }
       }
       );
+  }
+
+  void Session::packetHandle(const Packet& packet)
+  {
+    std::cout << "Handling packet data: " << std::endl
+    << std::string(std::begin(packet.getBuffer()), std::end(packet.getBuffer()))
+    << std::endl;
   }
 }
 
