@@ -19,6 +19,8 @@ namespace net
 
     public:
       void start();
+
+    protected:
       void packetHandle(const Packet& packet);
 
     public:

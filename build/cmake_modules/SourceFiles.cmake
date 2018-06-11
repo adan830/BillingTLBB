@@ -7,5 +7,6 @@ set(SRC_FILES ${SRC_FILES}
   src/net/BillingSocket.cpp
   src/net/Packet.cpp
   src/net/Session.cpp
+  src/net/packet/BufferController.cpp
   )
 
