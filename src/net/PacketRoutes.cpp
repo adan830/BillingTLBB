@@ -10,17 +10,17 @@ namespace net
 {
   PacketRoutes::PacketRoutes()
   {
-    m_routers["AA550011A0"] = [this](const std::string&)->ResponseData
+    m_routers["0011A0"] = [this](const std::string&)->ResponseData
     {
       return this->onPingConnectionHandle();
     };
 
-    m_routers["AA550009A1"] = [this](const std::string&)->ResponseData
+    m_routers["0009A1"] = [this](const std::string&)->ResponseData
     {
       return this->onPingConnectionHandle();
     };
 
-    m_routers["AA550086A2"] = [this](const std::string& hexStr)->ResponseData
+    m_routers["0086A2"] = [this](const std::string& hexStr)->ResponseData
     {
       return this->onLoginRequestHandle(hexStr);
     };
@@ -61,8 +61,8 @@ namespace net
         break;
       }
 
-      auto pos = hexStr.find(router.first);
-      if (pos == 0)
+      auto pos = hexStr.find(router.first, m_checkSumFirstStr.size());
+      if (pos == m_checkSumFirstStr.size())
       {
         m_responseData = router.second(hexStr);
         break;
