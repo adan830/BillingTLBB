@@ -37,22 +37,25 @@ namespace net
         else
         {
           auto m_packet = std::make_shared<Packet>(m_buffer, len);
-          self->packetHandle(m_packet);
+          if (!self->packetHandle(m_packet))
+          {
+            self->start();
+          }
         }
       }
       );
   }
 
-  void Session::packetHandle(std::shared_ptr<Packet> packet)
+  bool Session::packetHandle(std::shared_ptr<Packet> packet)
   {
+    // Keep session alive
+    auto self = this->shared_from_this();
+
     if (packet->getSize() == 0)
     {
       std::cerr << "Message empty" << std::endl;
-      return;
+      return false;
     }
-
-    // Keep session alive
-    auto self = this->shared_from_this();
 
     std::cout << "Packet Data: " << std::endl;
     std::cout << packet->toString() << std::endl;
@@ -63,9 +66,8 @@ namespace net
 
     if (responseData.empty())
     {
-      self->start();
       std::cerr << "Notthing to send" << std::endl;
-      return;
+      return false;
     }
 
     m_socket.async_send(
@@ -83,6 +85,8 @@ namespace net
         }
       }
       );
+
+    return true;
   }
 
   const asio::ip::tcp::socket& Session::getSocket() const
