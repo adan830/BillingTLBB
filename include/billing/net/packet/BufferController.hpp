@@ -17,6 +17,10 @@ namespace net { namespace packet {
 
     public:
       const std::vector<char>& getResponseData() const;
+
+    protected:
+      void dataHandle();
+      void onOpenConnectionHandle();
   };
 } }
 

@@ -1,11 +1,12 @@
 #ifndef __BILLING_NET_PACKET_HPP__
 #define __BILLING_NET_PACKET_HPP__
 
+#include <memory>
 #include <array>
 
 namespace net
 {
-  class Packet
+  class Packet : public std::enable_shared_from_this<Packet>
   {
     public:
       using Buffer = std::array<char, 1024>;

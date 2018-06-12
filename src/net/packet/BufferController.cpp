@@ -2,10 +2,13 @@
 
 #include "billing/Utils.hpp"
 
+#include <iostream>
+
 namespace net { namespace packet {
   BufferController::BufferController(const Packet::Buffer& buffer) :
     m_data(buffer)
   {
+    this->dataHandle();
   }
 
   BufferController::~BufferController()
@@ -14,12 +17,20 @@ namespace net { namespace packet {
 
   const std::vector<char>& BufferController::getResponseData() const
   {
-    static std::vector<char> m;
-    m = Utils::hexToBytes(
-#include "../../../deps/res/packets/openConnection.bin"
-                         );
-    return m;
+    std::cout << "Responsing..." << std::endl;
     return m_responseData;
+  }
+
+  void BufferController::dataHandle()
+  {
+    this->onOpenConnectionHandle();
+  }
+
+  void BufferController::onOpenConnectionHandle()
+  {
+    m_responseData = Utils::hexToBytes(
+#include "../../../deps/res/packets/openConnection.bin"
+                                      );
   }
 } }
 

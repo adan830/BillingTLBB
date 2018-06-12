@@ -24,13 +24,15 @@ namespace net
     // Keep session alive
     auto self = this->shared_from_this();
 
-    Packet m_packet;
+    auto m_packet = std::make_shared<Packet>();
+    // auto m_packet = new Packet;
     m_socket.async_read_some(
-      asio::buffer(m_packet.getBuffer()),
-      [self, &m_packet](const std::error_code& ec, const std::size_t len)
+      asio::buffer(m_packet->getBuffer()),
+      [self, m_packet](const std::error_code& ec, const std::size_t len)
       {
         std::cout << "Received " << len << " byte(s)" << std::endl;
-        m_packet.setSize(len);
+        m_packet->setSize(len);
+        std::cout << "Packet size: " << m_packet->getSize() << std::endl;
         if (ec)
         {
           std::cerr << "Error Code: " << ec << std::endl;
@@ -43,9 +45,9 @@ namespace net
       );
   }
 
-  void Session::packetHandle(const Packet& packet)
+  void Session::packetHandle(std::shared_ptr<Packet> packet)
   {
-    if ((packet.getSize() == 0) || packet.toString().empty())
+    if ((packet->getSize() == 0))
     {
       std::cerr << "Message empty" << std::endl;
       return;
@@ -54,9 +56,10 @@ namespace net
     // Keep session alive
     auto self = this->shared_from_this();
 
-    std::cout << packet.toString() << std::endl;
+    std::cout << "Packet Data: " << std::endl;
+    std::cout << packet->toString() << std::endl;
 
-    packet::BufferController bufferController(packet.getBuffer());
+    packet::BufferController bufferController(packet->getBuffer());
 
     asio::async_write(
       m_socket,

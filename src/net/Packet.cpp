@@ -1,5 +1,7 @@
 #include "billing/net/Packet.hpp"
 
+#include <iostream>
+
 namespace net
 {
   Packet::Packet() :
@@ -38,7 +40,7 @@ namespace net
 
   void Packet::setSize(const std::size_t size)
   {
-    m_size = (m_size == 0) ? size : m_size;
+    m_size = size;
   }
 
   std::size_t Packet::getSize() const
