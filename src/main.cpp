@@ -5,7 +5,15 @@
 
 int main(int argc, char* argv[])
 {
-  std::shared_ptr<Billing>(new Billing())->start();
+  try
+  {
+    std::shared_ptr<Billing>(new Billing())->start();
+  }
+  catch (...)
+  {
+    std::cerr << "Exeption error" << std::endl;
+    return 1;
+  }
 
   std::cout << "Billing is stoped!" << std::endl;
 

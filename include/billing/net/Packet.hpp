@@ -12,8 +12,10 @@ namespace net
       using Buffer = std::array<char, 1024>;
 
     private:
-      std::shared_ptr<Buffer> m_buffer;
+      const std::shared_ptr<Buffer> m_buffer;
       std::size_t m_size;
+      std::string m_string;
+      std::string m_hexString;
 
     public:
       Packet() = delete;
@@ -24,8 +26,8 @@ namespace net
       const std::shared_ptr<Buffer> getBuffer() const;
       std::size_t getSize() const;
       void setSize(const std::size_t size);
-      std::string& toString() const;
-      std::string& toHexString() const;
+      const std::string& toString() const;
+      const std::string& toHexString() const;
   };
 }
 

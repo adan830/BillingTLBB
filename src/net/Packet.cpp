@@ -10,6 +10,13 @@ namespace net
     m_buffer(buffer),
     m_size(size)
   {
+    m_string.assign(
+      m_buffer->cbegin(), m_buffer->cbegin() + m_size
+      );
+
+    m_hexString.assign(Utils::strToHex(
+        m_string.data(), m_size
+        ));
   }
 
   Packet::~Packet()
@@ -21,19 +28,14 @@ namespace net
     return m_size;
   }
 
-  std::string& Packet::toString() const
+  const std::string& Packet::toString() const
   {
-    static std::string m_string;
-    return m_string.assign(m_buffer->cbegin(), m_buffer->cbegin() + m_size);
+    return m_string;
   }
 
-  std::string& Packet::toHexString() const
+  const std::string& Packet::toHexString() const
   {
-    static std::string m_hexString;
-
-    return m_hexString.assign(Utils::strToHex(
-      this->toString().data(), m_size
-      ));
+    return m_hexString;
   }
 }
 
