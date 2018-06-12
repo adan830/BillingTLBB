@@ -12,19 +12,19 @@ namespace net
     m_checkSumFirstStr("AA55"),
     m_checkSumLastStr("55AA")
   {
-    m_routers["0011A0"] = [this](const std::string&)->ResponseData
+    m_routers["A0"] = [this](const std::string&)->ResponseData
     {
       return this->onPingConnectionHandle();
     };
 
-    m_routers["0009A1"] = [this](const std::string&)->ResponseData
+    m_routers["A1"] = [this](const std::string&)->ResponseData
     {
       return this->onPingConnectionHandle();
     };
 
-    m_routers["0086A2"] = [this](const std::string& hexStr)->ResponseData
+    m_routers["A2"] = [this](const std::string& packetHexStr)->ResponseData
     {
-      return this->onLoginRequestHandle(hexStr);
+      return this->onLoginRequestHandle(packetHexStr);
     };
   }
 
@@ -61,7 +61,7 @@ namespace net
       }
 
       auto pos = hexStr.find(router.first, m_checkSumFirstStr.size());
-      if (pos == m_checkSumFirstStr.size())
+      if (pos == m_checkSumFirstStr.size() + 4)
       {
         m_responseData = router.second(hexStr);
         break;
@@ -79,7 +79,7 @@ namespace net
   }
 
   PacketRoutes::ResponseData
-  PacketRoutes::onLoginRequestHandle(const std::string& hexStr)
+  PacketRoutes::onLoginRequestHandle(const std::string& packetHexStr)
   {
     std::cout << __FUNCTION__ << std::endl;
 
@@ -87,6 +87,12 @@ namespace net
     responseHexStr.append(m_checkSumFirstStr);
 
     // Handle start
+
+    std::size_t accountNameSize = std::atoi(
+      Utils::hexToBytes(packetHexStr.substr(15,2)).data()
+      );
+    std::cout << "Account name size: " << accountNameSize << std::endl;
+    auto accountName = packetHexStr.substr(1,2);
 
     // Handle end
 

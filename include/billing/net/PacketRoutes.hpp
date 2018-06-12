@@ -29,11 +29,11 @@ namespace net
 
     public:
       static PacketRoutes& getInstance();
-      const ResponseData operator[](const std::string& hexStr);
+      const ResponseData operator[](const std::string& packetHexStr);
 
     protected:
       ResponseData onPingConnectionHandle();
-      ResponseData onLoginRequestHandle(const std::string& hexStr);
+      ResponseData onLoginRequestHandle(const std::string& packetHexStr);
   };
 }
 
