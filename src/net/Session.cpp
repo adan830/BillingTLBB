@@ -2,6 +2,7 @@
 
 #include "billing/net/Packet.hpp"
 #include "billing/net/packet/BufferController.hpp"
+#include "billing/Utils.hpp"
 
 #include <iostream>
 #include <asio.hpp>
@@ -58,6 +59,9 @@ namespace net
 
     std::cout << "Packet Data: " << std::endl;
     std::cout << packet->toString() << std::endl;
+    std::cout << Utils::strToHex(
+      packet->toString().data(), packet->getSize()
+      ) << std::endl;
 
     packet::BufferController bufferController(packet->getBuffer());
 
