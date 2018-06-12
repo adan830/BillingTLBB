@@ -31,12 +31,12 @@ namespace net
       /**
        * Open first hand shake
        */
-      ResponseData onFirstConnectionHandle();
+      ResponseData onOpenConnectionHandle();
 
       /**
        * After first hand shake
        */
-      ResponseData onOpenConnectionHandle();
+      ResponseData onPingConnectionHandle();
   };
 }
 

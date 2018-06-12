@@ -12,12 +12,12 @@ namespace net
   {
     m_routers["AA550011A0"] = [this]()->ResponseData
     {
-      return this->onFirstConnectionHandle();
+      return this->onOpenConnectionHandle();
     };
 
     m_routers["AA550009A1"] = [this]()->ResponseData
     {
-      return this->onOpenConnectionHandle();
+      return this->onPingConnectionHandle();
     };
   }
 
@@ -49,13 +49,13 @@ namespace net
     return m_responseData;
   }
 
-  PacketRoutes::ResponseData PacketRoutes::onFirstConnectionHandle()
+  PacketRoutes::ResponseData PacketRoutes::onOpenConnectionHandle()
   {
     std::cout << __FUNCTION__ << std::endl;
     return Utils::hexToBytes("AA550005A01198010055AA");
   }
 
-  PacketRoutes::ResponseData PacketRoutes::onOpenConnectionHandle()
+  PacketRoutes::ResponseData PacketRoutes::onPingConnectionHandle()
   {
     std::cout << __FUNCTION__ << std::endl;
     return Utils::hexToBytes("AA550005A1A8D8060055AA");
