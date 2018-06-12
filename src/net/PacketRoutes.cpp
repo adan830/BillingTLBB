@@ -10,19 +10,19 @@ namespace net
 {
   PacketRoutes::PacketRoutes()
   {
-    m_routers["AA550011A0"] = [this]()->ResponseData
-    {
-      return this->onOpenConnectionHandle();
-    };
-
-    m_routers["AA550009A1"] = [this]()->ResponseData
+    m_routers["AA550011A0"] = [this](const std::string&)->ResponseData
     {
       return this->onPingConnectionHandle();
     };
 
-    m_routers["AA550086A2"] = [this]()->ResponseData
+    m_routers["AA550009A1"] = [this](const std::string&)->ResponseData
     {
-      return this->onLoginRequestHandle();
+      return this->onPingConnectionHandle();
+    };
+
+    m_routers["AA550086A2"] = [this](const std::string& hexStr)->ResponseData
+    {
+      return this->onLoginRequestHandle(hexStr);
     };
   }
 
@@ -43,22 +43,17 @@ namespace net
 
     for (const auto& router : m_routers)
     {
+      // TODO: Check \r\n in some packet first
+
       auto pos = hexStr.find(router.first);
-      if (pos != std::string::npos)
+      if (pos == 0)
       {
-        m_responseData = router.second();
+        m_responseData = router.second(hexStr);
         break;
       }
     }
 
     return m_responseData;
-  }
-
-  PacketRoutes::ResponseData PacketRoutes::onOpenConnectionHandle()
-  {
-    std::cout << __FUNCTION__ << std::endl;
-
-    return Utils::hexToBytes("AA5555AA");
   }
 
   PacketRoutes::ResponseData PacketRoutes::onPingConnectionHandle()
@@ -68,11 +63,14 @@ namespace net
     return Utils::hexToBytes("AA5555AA");
   }
 
-  PacketRoutes::ResponseData PacketRoutes::onLoginRequestHandle()
+  PacketRoutes::ResponseData
+  PacketRoutes::onLoginRequestHandle(const std::string& hexStr)
   {
     std::cout << __FUNCTION__ << std::endl;
 
-    return ResponseData();
+    std::cout << hexStr << std::endl;
+
+    return Utils::hexToBytes("AA5555AA");
   }
 }
 

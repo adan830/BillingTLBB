@@ -12,7 +12,9 @@ namespace net
   {
     public:
       using ResponseData = std::vector<char>;
-      using Routers = std::unordered_map<std::string, std::function<ResponseData()>>;
+      using Routers = std::unordered_map<std::string,
+            std::function<ResponseData(const std::string&)>
+            >;
 
     private:
       Routers m_routers;
@@ -28,9 +30,8 @@ namespace net
       const ResponseData operator[](const std::string& hexStr);
 
     protected:
-      ResponseData onOpenConnectionHandle();
       ResponseData onPingConnectionHandle();
-      ResponseData onLoginRequestHandle();
+      ResponseData onLoginRequestHandle(const std::string& hexStr);
   };
 }
 

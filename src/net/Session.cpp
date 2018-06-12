@@ -56,6 +56,7 @@ namespace net
 
     std::cout << "Packet Data: " << std::endl;
     std::cout << packet->toString() << std::endl;
+    std::cout << "Packet Hex: " << std::endl;
     std::cout << packet->toHexString() << std::endl;
 
     auto responseData = PacketRoutes::getInstance()[packet->toHexString()];
