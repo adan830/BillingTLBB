@@ -25,7 +25,6 @@ namespace net
     auto self = this->shared_from_this();
 
     auto m_buffer = std::make_shared<Packet::Buffer>();
-    // auto m_packet = new Packet;
     m_socket.async_read_some(
       asio::buffer(*m_buffer),
       [self, m_buffer](const std::error_code& ec, const std::size_t len)
@@ -41,6 +40,7 @@ namespace net
           std::cout << "Packet size: " << m_packet->getSize() << std::endl;
           self->packetHandle(m_packet);
         }
+        self->start();
       }
       );
   }
