@@ -8,7 +8,9 @@
 
 namespace net
 {
-  PacketRoutes::PacketRoutes()
+  PacketRoutes::PacketRoutes() :
+    m_checkSumFirstStr("AA55"),
+    m_checkSumLastStr("55AA")
   {
     m_routers["0011A0"] = [this](const std::string&)->ResponseData
     {
@@ -40,9 +42,6 @@ namespace net
   PacketRoutes::operator[](const std::string& hexStr)
   {
     ResponseData m_responseData;
-
-    static const std::string m_checkSumFirstStr = "AA55";
-    static const std::string m_checkSumLastStr = "55AA";
 
     for (const auto& router : m_routers)
     {
@@ -84,9 +83,15 @@ namespace net
   {
     std::cout << __FUNCTION__ << std::endl;
 
-    std::cout << hexStr << std::endl;
+    std::string responseHexStr;
+    responseHexStr.append(m_checkSumFirstStr);
 
-    return Utils::hexToBytes("AA5555AA");
+    // Handle start
+
+    // Handle end
+
+    responseHexStr.append(m_checkSumLastStr);
+    return Utils::hexToBytes(responseHexStr);
   }
 }
 
