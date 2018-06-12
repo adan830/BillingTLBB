@@ -41,9 +41,25 @@ namespace net
   {
     ResponseData m_responseData;
 
+    static const std::string m_checkSumFirstStr = "AA55";
+    static const std::string m_checkSumLastStr = "55AA";
+
     for (const auto& router : m_routers)
     {
-      // TODO: Check \r\n in some packet first
+      // TODO: Middle of checksum may not same
+
+      if (hexStr.find(m_checkSumFirstStr) != 0)
+      {
+        break;
+      }
+      if (
+        hexStr.find(m_checkSumLastStr)
+        !=
+        (hexStr.size() - m_checkSumLastStr.size())
+        )
+      {
+        break;
+      }
 
       auto pos = hexStr.find(router.first);
       if (pos == 0)
