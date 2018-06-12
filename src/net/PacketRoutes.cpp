@@ -3,21 +3,43 @@
 #include "billing/Utils.hpp"
 
 #include <iostream>
+#include <utility>
 
-namespace net {
-  PacketRoutes::PacketRoutes(const std::string& data) :
-    m_data(data)
+namespace net
+{
+  PacketRoutes::PacketRoutes()
   {
-    this->dataHandle();
+    m_routers["AA55"] = [this]()->ResponseData
+    {
+      return this->onOpenConnectionHandle();
+    };
   }
 
   PacketRoutes::~PacketRoutes()
   {
   }
 
-  const std::vector<char>& PacketRoutes::getResponseData() const
+  PacketRoutes& PacketRoutes::getInstance()
   {
-    std::cout << "Responsing..." << std::endl;
+    static PacketRoutes s_instance;
+    return s_instance;
+  }
+
+  const PacketRoutes::ResponseData
+  PacketRoutes::operator[](const std::string& hexStr)
+  {
+    ResponseData m_responseData;
+
+    for (const auto& router : m_routers)
+    {
+      auto pos = hexStr.find(router.first);
+      if (pos == 0)
+      {
+        m_responseData = router.second();
+        break;
+      }
+    }
+
     return m_responseData;
   }
 
@@ -26,9 +48,9 @@ namespace net {
     this->onOpenConnectionHandle();
   }
 
-  void PacketRoutes::onOpenConnectionHandle()
+  PacketRoutes::ResponseData PacketRoutes::onOpenConnectionHandle()
   {
-    m_responseData = Utils::hexToBytes("AA550005A01198010055AA");
+    return Utils::hexToBytes("AA550005A01198010055AA");
   }
 }
 

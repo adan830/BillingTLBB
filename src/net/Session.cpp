@@ -60,20 +60,26 @@ namespace net
     std::cout << packet->toString() << std::endl;
     std::cout << packet->toHexString() << std::endl;
 
-    // packet::BufferController bufferController(packet->getBuffer());
+    auto responseData = PacketRoutes::getInstance()[packet->toHexString()];
 
-    // asio::async_write(
-    //   m_socket,
-    //   asio::buffer(bufferController.getResponseData()),
-    //   [self](const std::error_code& ec, const std::size_t len)
-    //   {
-    //     std::cout << "Sent " << len << " byte(s)" << std::endl;
-    //     if (ec)
-    //     {
-    //       std::cerr << "Error: " << ec << std::endl;
-    //     }
-    //   }
-    //   );
+    if (responseData.empty())
+    {
+      std::cerr << "Notthing to send" << std::endl;
+      return;
+    }
+
+    asio::async_write(
+      m_socket,
+      asio::buffer(responseData),
+      [self](const std::error_code& ec, const std::size_t len)
+      {
+        std::cout << "Sent " << len << " byte(s)" << std::endl;
+        if (ec)
+        {
+          std::cerr << "Error: " << ec << std::endl;
+        }
+      }
+      );
   }
 
   const asio::ip::tcp::socket& Session::getSocket() const

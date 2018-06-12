@@ -1,26 +1,35 @@
 #ifndef __BILLING_NET_PACKET_ROUTES_HPP__
 #define __BILLING_NET_PACKET_ROUTES_HPP__
 
+#include <unordered_map>
+#include <functional>
 #include <string>
 #include <vector>
 
-namespace net {
+namespace net
+{
   class PacketRoutes
   {
+    public:
+      using ResponseData = std::vector<char>;
+      using Routers = std::unordered_map<std::string, std::function<ResponseData()>>;
+
     private:
-      const std::string& m_data;
-      std::vector<char> m_responseData;
+      Routers m_routers;
+
+    private:
+      PacketRoutes();
 
     public:
-      PacketRoutes(const std::string& buffer);
       ~PacketRoutes();
 
     public:
-      const std::vector<char>& getResponseData() const;
+      static PacketRoutes& getInstance();
+      const ResponseData operator[](const std::string& hexStr);
 
     protected:
       void dataHandle();
-      void onOpenConnectionHandle();
+      ResponseData onOpenConnectionHandle();
   };
 }
 
