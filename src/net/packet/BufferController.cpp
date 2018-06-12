@@ -28,9 +28,7 @@ namespace net { namespace packet {
 
   void BufferController::onOpenConnectionHandle()
   {
-    m_responseData = Utils::hexToBytes(
-#include "../../../deps/res/packets/openConnection.bin"
-                                      );
+    m_responseData = Utils::hexToBytes("AA550005A01198010055AA");
   }
 } }
 
