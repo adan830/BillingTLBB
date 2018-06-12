@@ -9,7 +9,12 @@ namespace net
 {
   PacketRoutes::PacketRoutes()
   {
-    m_routers["AA55"] = [this]()->ResponseData
+    m_routers["AA550011A000"] = [this]()->ResponseData
+    {
+      return this->onFirstConnectionHandle();
+    };
+
+    m_routers["AA550011A031"] = [this]()->ResponseData
     {
       return this->onOpenConnectionHandle();
     };
@@ -43,9 +48,9 @@ namespace net
     return m_responseData;
   }
 
-  void PacketRoutes::dataHandle()
+  PacketRoutes::ResponseData PacketRoutes::onFirstConnectionHandle()
   {
-    this->onOpenConnectionHandle();
+    return Utils::hexToBytes("AA550005A01198010055AA");
   }
 
   PacketRoutes::ResponseData PacketRoutes::onOpenConnectionHandle()

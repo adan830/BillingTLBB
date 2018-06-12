@@ -28,7 +28,14 @@ namespace net
       const ResponseData operator[](const std::string& hexStr);
 
     protected:
-      void dataHandle();
+      /**
+       * Open first hand shake
+       */
+      ResponseData onFirstConnectionHandle();
+
+      /**
+       * After first hand shake
+       */
       ResponseData onOpenConnectionHandle();
   };
 }
