@@ -10,13 +10,9 @@ namespace net
     m_buffer(buffer),
     m_size(size)
   {
-    m_string.assign(
-      m_buffer->cbegin(), m_buffer->cbegin() + m_size
-      );
+    m_string.assign(m_buffer->cbegin(), m_buffer->cbegin() + m_size);
 
-    m_hexString.assign(Utils::strToHex(
-        m_string.data(), m_size
-        ));
+    m_hexString.assign(Utils::bytesToHex(m_string.data(), m_size));
   }
 
   Packet::~Packet()

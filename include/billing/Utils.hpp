@@ -8,7 +8,7 @@ namespace Utils
 {
   std::vector<char> hexToBytes(const std::string& hex);
 
-  std::string strToHex(const char* data, const std::size_t len);
+  std::string bytesToHex(const char* data, const std::size_t len);
 }
 
 #endif
