@@ -6,28 +6,26 @@
 
 namespace net
 {
-  class Packet : public std::enable_shared_from_this<Packet>
+  class Packet // : public std::enable_shared_from_this<Packet>
   {
     public:
       using Buffer = std::array<char, 1024>;
 
     private:
-      Buffer m_buffer;
+      std::shared_ptr<Buffer> m_buffer;
       std::size_t m_size;
 
     public:
-      Packet();
-      Packet(const std::size_t size);
-      Packet(const Buffer& buffer);
+      Packet() = delete;
+      Packet(const std::shared_ptr<Buffer> buffer, const std::size_t size);
       ~Packet();
 
     public:
-      void setBuffer(const Buffer& buffer);
-      const Buffer& getBuffer() const;
-      Buffer& getBuffer();
+      const std::shared_ptr<Buffer> getBuffer() const;
       std::size_t getSize() const;
       void setSize(const std::size_t size);
       std::string& toString() const;
+      std::string& toHexString() const;
   };
 }
 

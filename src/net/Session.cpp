@@ -2,7 +2,6 @@
 
 #include "billing/net/Packet.hpp"
 #include "billing/net/packet/BufferController.hpp"
-#include "billing/Utils.hpp"
 
 #include <iostream>
 #include <asio.hpp>
@@ -25,21 +24,21 @@ namespace net
     // Keep session alive
     auto self = this->shared_from_this();
 
-    auto m_packet = std::make_shared<Packet>();
+    auto m_buffer = std::make_shared<Packet::Buffer>();
     // auto m_packet = new Packet;
     m_socket.async_read_some(
-      asio::buffer(m_packet->getBuffer()),
-      [self, m_packet](const std::error_code& ec, const std::size_t len)
+      asio::buffer(*m_buffer),
+      [self, m_buffer](const std::error_code& ec, const std::size_t len)
       {
         std::cout << "Received " << len << " byte(s)" << std::endl;
-        m_packet->setSize(len);
-        std::cout << "Packet size: " << m_packet->getSize() << std::endl;
         if (ec)
         {
           std::cerr << "Error Code: " << ec << std::endl;
         }
         else
         {
+          auto m_packet = std::make_shared<Packet>(m_buffer, len);
+          std::cout << "Packet size: " << m_packet->getSize() << std::endl;
           self->packetHandle(m_packet);
         }
       }
@@ -59,24 +58,22 @@ namespace net
 
     std::cout << "Packet Data: " << std::endl;
     std::cout << packet->toString() << std::endl;
-    std::cout << Utils::strToHex(
-      packet->toString().data(), packet->getSize()
-      ) << std::endl;
+    std::cout << packet->toHexString() << std::endl;
 
-    packet::BufferController bufferController(packet->getBuffer());
+    // packet::BufferController bufferController(packet->getBuffer());
 
-    asio::async_write(
-      m_socket,
-      asio::buffer(bufferController.getResponseData()),
-      [self](const std::error_code& ec, const std::size_t len)
-      {
-        std::cout << "Sent " << len << " byte(s)" << std::endl;
-        if (ec)
-        {
-          std::cerr << "Error: " << ec << std::endl;
-        }
-      }
-      );
+    // asio::async_write(
+    //   m_socket,
+    //   asio::buffer(bufferController.getResponseData()),
+    //   [self](const std::error_code& ec, const std::size_t len)
+    //   {
+    //     std::cout << "Sent " << len << " byte(s)" << std::endl;
+    //     if (ec)
+    //     {
+    //       std::cerr << "Error: " << ec << std::endl;
+    //     }
+    //   }
+    //   );
   }
 }
 

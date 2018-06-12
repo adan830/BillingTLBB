@@ -1,47 +1,19 @@
 #include "billing/net/Packet.hpp"
 
+#include "billing/Utils.hpp"
+
 #include <iostream>
 
 namespace net
 {
-  Packet::Packet() :
-    m_size(0)
-  {
-  }
-
-  Packet::Packet(const std::size_t size) :
+  Packet::Packet(const std::shared_ptr<Buffer> buffer, const std::size_t size) :
+    m_buffer(buffer),
     m_size(size)
-  {
-  }
-
-  Packet::Packet(const Buffer& buffer) :
-    m_buffer(buffer)
   {
   }
 
   Packet::~Packet()
   {
-  }
-
-  void Packet::setBuffer(const Buffer& buffer)
-  {
-    m_buffer = buffer;
-  }
-
-  const Packet::Buffer& Packet::getBuffer() const
-  {
-    return m_buffer;
-  }
-
-  Packet::Buffer& Packet::getBuffer()
-  {
-    return m_buffer;
-  }
-
-  void Packet::setSize(const std::size_t size)
-  {
-    // Keep size un-editable
-    m_size = (m_size == 0) ? size : m_size;
   }
 
   std::size_t Packet::getSize() const
@@ -52,7 +24,16 @@ namespace net
   std::string& Packet::toString() const
   {
     static std::string m_string;
-    return m_string.assign(m_buffer.cbegin(), m_buffer.cbegin() + m_size);
+    return m_string.assign(m_buffer->cbegin(), m_buffer->cbegin() + m_size);
+  }
+
+  std::string& Packet::toHexString() const
+  {
+    static std::string m_hexString;
+
+    return m_hexString.assign(Utils::strToHex(
+      this->toString().data(), m_size
+      ));
   }
 }
 

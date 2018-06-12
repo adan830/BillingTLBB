@@ -10,7 +10,7 @@ namespace Utils
     {
       std::string byteString = hex.substr(i, 2);
       char byte = (char) strtol(byteString.c_str(), NULL, 16);
-      bytes.push_back(byte);
+      bytes.emplace_back(byte);
     }
 
     return bytes;
