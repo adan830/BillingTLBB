@@ -37,5 +37,10 @@ namespace net
   {
     return m_hexString;
   }
+
+  void Packet::setSession(const std::shared_ptr<Session> session)
+  {
+    m_session = session;
+  }
 }
 

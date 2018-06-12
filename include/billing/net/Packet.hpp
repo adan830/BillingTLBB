@@ -6,6 +6,8 @@
 
 namespace net
 {
+  class Session;
+
   class Packet // : public std::enable_shared_from_this<Packet>
   {
     public:
@@ -16,6 +18,7 @@ namespace net
       std::size_t m_size;
       std::string m_string;
       std::string m_hexString;
+      std::shared_ptr<Session> m_session;
 
     public:
       Packet() = delete;
@@ -28,6 +31,8 @@ namespace net
       void setSize(const std::size_t size);
       const std::string& toString() const;
       const std::string& toHexString() const;
+      void setSession(const std::shared_ptr<Session> session);
+      const std::shared_ptr<Session> getSession() const;
   };
 }
 

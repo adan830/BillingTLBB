@@ -1,7 +1,7 @@
 #include "billing/net/Session.hpp"
 
 #include "billing/net/Packet.hpp"
-#include "billing/net/packet/BufferController.hpp"
+#include "billing/net/PacketRoutes.hpp"
 
 #include <iostream>
 #include <asio.hpp>
@@ -47,7 +47,7 @@ namespace net
 
   void Session::packetHandle(std::shared_ptr<Packet> packet)
   {
-    if ((packet->getSize() == 0))
+    if (packet->getSize() == 0)
     {
       std::cerr << "Message empty" << std::endl;
       return;
@@ -74,6 +74,11 @@ namespace net
     //     }
     //   }
     //   );
+  }
+
+  const asio::ip::tcp::socket& Session::getSocket() const
+  {
+    return m_socket;
   }
 }
 
