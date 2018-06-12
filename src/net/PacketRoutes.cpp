@@ -4,17 +4,19 @@
 
 #include <iostream>
 #include <utility>
+#include <thread>
 
 namespace net
 {
   PacketRoutes::PacketRoutes()
   {
-    m_routers["AA550011A000"] = [this]()->ResponseData
+    m_routers["AA550011A0"] = [this]()->ResponseData
     {
+      // std::this_thread::sleep_for(std::chrono::milliseconds(10000));
       return this->onFirstConnectionHandle();
     };
 
-    m_routers["AA550011A031"] = [this]()->ResponseData
+    m_routers["AA550011A1"] = [this]()->ResponseData
     {
       return this->onOpenConnectionHandle();
     };
@@ -50,12 +52,17 @@ namespace net
 
   PacketRoutes::ResponseData PacketRoutes::onFirstConnectionHandle()
   {
+    std::cout << __FUNCTION__ << std::endl;
     return Utils::hexToBytes("AA550005A01198010055AA");
+    // return Utils::hexToBytes("AA550005A1A8D8060055AA");
   }
 
   PacketRoutes::ResponseData PacketRoutes::onOpenConnectionHandle()
   {
-    return Utils::hexToBytes("AA550005A01198010055AA");
+    std::cout << __FUNCTION__ << std::endl;
+    // return ResponseData();
+    return Utils::hexToBytes("AA550005A1A8D8060055AA");
+    // return Utils::hexToBytes("AA550005A01198010055AA");
   }
 }
 
