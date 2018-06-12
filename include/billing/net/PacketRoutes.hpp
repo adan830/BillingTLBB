@@ -28,15 +28,9 @@ namespace net
       const ResponseData operator[](const std::string& hexStr);
 
     protected:
-      /**
-       * Open first hand shake
-       */
       ResponseData onOpenConnectionHandle();
-
-      /**
-       * After first hand shake
-       */
       ResponseData onPingConnectionHandle();
+      ResponseData onLoginRequestHandle();
   };
 }
 
