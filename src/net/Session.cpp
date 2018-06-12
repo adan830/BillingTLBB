@@ -25,7 +25,7 @@ namespace net
     auto self = this->shared_from_this();
 
     auto m_buffer = std::make_shared<Packet::Buffer>();
-    m_socket.async_read_some(
+    m_socket.async_receive(
       asio::buffer(*m_buffer),
       [self, m_buffer](const std::error_code& ec, const std::size_t len)
       {
@@ -37,10 +37,8 @@ namespace net
         else
         {
           auto m_packet = std::make_shared<Packet>(m_buffer, len);
-          std::cout << "Packet size: " << m_packet->getSize() << std::endl;
           self->packetHandle(m_packet);
         }
-        self->start();
       }
       );
   }
@@ -64,12 +62,12 @@ namespace net
 
     if (responseData.empty())
     {
+      self->start();
       std::cerr << "Notthing to send" << std::endl;
       return;
     }
 
-    asio::async_write(
-      m_socket,
+    m_socket.async_send(
       asio::buffer(responseData),
       [self](const std::error_code& ec, const std::size_t len)
       {
@@ -77,6 +75,10 @@ namespace net
         if (ec)
         {
           std::cerr << "Error: " << ec << std::endl;
+        }
+        else
+        {
+          self->start();
         }
       }
       );
