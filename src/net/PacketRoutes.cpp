@@ -27,6 +27,12 @@ namespace net
     {
       return this->onLoginRequestHandle(packetHexStr);
     };
+
+    // StartUpKick
+    m_routers["A9"] = [this](const std::string&)->ResponseData
+    {
+      return this->onPingConnectionHandle();
+    };
   }
 
   PacketRoutes::~PacketRoutes()
