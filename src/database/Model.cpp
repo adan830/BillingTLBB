@@ -18,5 +18,10 @@ namespace database
   {
     return m_connector;
   }
+
+  const std::string& Model::getTableName() const
+  {
+    return m_tableName;
+  }
 }
 
