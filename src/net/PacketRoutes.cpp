@@ -75,7 +75,11 @@ namespace net
   {
     std::cout << __FUNCTION__ << std::endl;
 
-    return Utils::hexToBytes("AA5555AA");
+    std::string responseHexStr;
+    responseHexStr.append(m_checkSumFirstStr);
+
+    responseHexStr.append(m_checkSumLastStr);
+    return Utils::hexToBytes(responseHexStr);
   }
 
   PacketRoutes::ResponseData
