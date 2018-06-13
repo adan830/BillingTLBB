@@ -98,13 +98,13 @@ endif(WIN32)
 if (NOT MYSQL_INCLUDE_DIR)
   find_path(MYSQL_INCLUDE_DIR mysql.h
     PATHS
-    ${CMAKE_SOURCE_DIR}/deps/mysql-connector*/
-    ${CMAKE_SOURCE_DIR}/deps/mysql-connector*/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/mysql-connector*/
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/mysql-connector*/include
     )
 endif()
 if (NOT MYSQL_LIB_PATHS)
   set(MYSQL_LIB_PATHS
-    ${CMAKE_SOURCE_DIR}/deps/mysql-connector*/lib
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/mysql-connector*/lib
     )
   find_library(MYSQL_LIBRARIES NAMES mysqlclient
     PATHS
@@ -141,13 +141,12 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_LIBRARIES)
   if (NOT MYSQL_INCLUDE_DIR)
     find_path(MYSQL_INCLUDE_DIR mysql.h
       PATHS
-      ${CMAKE_SOURCE_DIR}/deps/mysql-connector*/
-      ${CMAKE_SOURCE_DIR}/deps/mysql-connector*/include
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/include
       )
   endif()
-  if (NOT MYSQL_LIB_PATHS)
+  if (NOT MYSQL_LIBRARIES)
     set(MYSQL_LIB_PATHS
-      ${CMAKE_SOURCE_DIR}/deps/mysql-connector*/lib
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/lib
       )
     find_library(MYSQL_LIBRARIES NAMES mysqlclient
       PATHS
