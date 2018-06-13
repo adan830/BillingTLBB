@@ -7,11 +7,15 @@ namespace database
 
   class Model
   {
+    private:
+      Connector* m_connector;
+
     public:
       Model();
+      ~Model();
 
-    public:
-
+    protected:
+      Connector* getConnector() const;
   };
 }
 

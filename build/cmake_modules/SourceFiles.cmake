@@ -10,5 +10,6 @@ set(SRC_FILES ${SRC_FILES}
   src/net/Session.cpp
   src/database/Connector.cpp
   src/database/Model.cpp
+  src/database/models/Account.cpp
   )
 

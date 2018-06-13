@@ -1,21 +1,23 @@
 #ifndef __BILLING_DATABASE_CONNECTOR_HPP__
 #define __BILLING_DATABASE_CONNECTOR_HPP__
 
+#include <mysql.h>
+#include <string>
+
 namespace database
 {
-  struct MYSQL;
-
   class Connector
   {
     private:
-      MYSQL* m_solveDriver;
+      MYSQL* m_connDriver;
 
     public:
       Connector();
       ~Connector();
 
     public:
-      static Connector& getInstance();
+      template<class T>
+      T execQuery(const std::string& query);
   };
 }
 
