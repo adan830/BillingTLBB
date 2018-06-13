@@ -1,6 +1,3 @@
-set(LIBS_LIBRARIES
-  )
-
 set(LIBS_REQUIRED ${LIBS_REQUIRED}
   dl
   pthread
