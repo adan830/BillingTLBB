@@ -99,11 +99,20 @@ namespace net
 
     // Handle start
 
-    std::size_t accountNameSize = std::atoi(
-      Utils::hexToBytes(packetHexStr.substr(15,2)).data()
+    std::size_t accountNameSize = std::stoul(
+      packetHexStr.substr(14, 2), nullptr, 16
       );
-    std::cout << "Account name size: " << accountNameSize << std::endl;
-    auto accountName = packetHexStr.substr(1,2);
+    std::cout << "Account name size: " << accountNameSize
+    << " - Hex: " << packetHexStr.substr(16, accountNameSize * 2)
+    << std::endl;
+    auto accountNameBytes = Utils::hexToBytes(
+        packetHexStr.substr(16, accountNameSize * 2)
+        );
+    auto accountName = std::string(
+      accountNameBytes.cbegin(),
+      accountNameBytes.cend()
+      );
+    std::cout << "Account name: " << accountName << std::endl;
 
     // Handle end
 

@@ -1,16 +1,16 @@
 #include "billing/Utils.hpp"
 
+#include <iostream>
+
 namespace Utils
 {
   std::vector<char> hexToBytes(const std::string& hex)
   {
     std::vector<char> bytes;
 
-    for (unsigned int i = 0; i < hex.length(); i += 2)
+    for (std::size_t i = 0; i < hex.size(); i += 2)
     {
-      std::string byteString = hex.substr(i, 2);
-      char byte = std::strtol(byteString.data(), nullptr, 16);
-      bytes.emplace_back(byte);
+      bytes.emplace_back(std::strtol(hex.substr(i, 2).data(), nullptr, 16));
     }
 
     return bytes;
