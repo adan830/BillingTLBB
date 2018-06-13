@@ -102,14 +102,16 @@ namespace net
     // MacAddress end
 
     // AccountName start
+    std::size_t accountNameOffset = 14;
     std::size_t accountNameSize = std::stoul(
-      packetHexStr.substr(14, 2), nullptr, 16
+      packetHexStr.substr(accountNameOffset, 2), nullptr, 16
       );
     std::cout << "Account name size: " << accountNameSize
-    << " - Hex: " << packetHexStr.substr(16, accountNameSize * 2)
+    << " - Hex: "
+    << packetHexStr.substr(accountNameOffset + 2 , accountNameSize * 2)
     << std::endl;
     auto accountNameBytes = Utils::hexToBytes(
-      packetHexStr.substr(16, accountNameSize * 2)
+      packetHexStr.substr(accountNameOffset + 2, accountNameSize * 2)
       );
     auto accountName = std::string(
       accountNameBytes.cbegin(),
@@ -119,15 +121,15 @@ namespace net
     // AccountName end
 
     // Password start
-    std::size_t passwordOfset = 16 + accountNameSize * 2;
+    std::size_t passwordOffset = accountNameOffset + 2 + accountNameSize * 2;
     std::size_t passwordSize = std::stoul(
-      packetHexStr.substr(passwordOfset, 2), nullptr, 16
+      packetHexStr.substr(passwordOffset, 2), nullptr, 16
       );
     std::cout << "Password size: " << passwordSize
-    << " - Hex: " << packetHexStr.substr(passwordOfset, 2)
+    << " - Hex: " << packetHexStr.substr(passwordOffset, 2)
     << std::endl;
     auto passwordBytes = Utils::hexToBytes(
-      packetHexStr.substr(passwordOfset + 2, passwordSize * 2)
+      packetHexStr.substr(passwordOffset + 2, passwordSize * 2)
       );
     auto password = std::string(
       passwordBytes.cbegin(),
