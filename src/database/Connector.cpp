@@ -4,20 +4,19 @@
 
 namespace database
 {
-  Connector::Connector()
+  Connector::Connector() :
+    m_connDriver(mysql_init(nullptr))
   {
-    m_connDriver = mysql_init(nullptr);
   }
 
   Connector::~Connector()
   {
+    std::cout << "Database Connector is destructing..." << std::endl;
+
     mysql_close(m_connDriver);
+
+    std::cout << "Database Connector is destructed!" << std::endl;
   }
 
-  template<>
-  void Connector::execQuery(const std::string& query)
-  {
-    std::cout << query << std::endl;
-  }
 }
 

@@ -5,7 +5,7 @@
 namespace database
 {
   Model::Model() :
-    m_connector(new Connector)
+    m_connector()
   {
   }
 

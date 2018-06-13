@@ -1,10 +1,15 @@
 #include "billing/database/models/Account.hpp"
 
+#include "billing/database/Connector.hpp"
+
 namespace database { namespace models {
   Account::Account(const int id) :
     database::Model()
   {
     this->init();
+
+    auto conn = this->getConnector();
+    // auto a = conn->execQuery<std::string>("");
   }
 
   Account::Account(const std::string& name) :
