@@ -3,4 +3,4 @@
 	url = https://github.com/chriskohlhoff/asio.git
 [submodule "deps/ee"]
 	path = deps/ee
-	url = https://gitlab.com/TLBB.Dev/TLBB.Billing-EE.git
+	url = https://gitlab.com/DevTLBB/TLBB.Billing-EE.git
