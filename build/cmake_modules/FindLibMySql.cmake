@@ -155,14 +155,15 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_LIBRARIES)
   endif()
   if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_LIBRARIES)
     message(FATAL_ERROR "Lib MySql Client not found")
-  else()
-    set(INC_DIRS ${INC_DIRS}
-      ${MYSQL_INCLUDE_DIR}
-      )
-    set(LIBS_REQUIRED ${LIBS_REQUIRED}
-      mysqlclient
-      )
   endif()
+endif()
+if (MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
+  set(INC_DIRS ${INC_DIRS}
+    ${MYSQL_INCLUDE_DIR}
+    )
+  set(LIBS_REQUIRED ${LIBS_REQUIRED}
+    mysqlclient
+    )
 endif()
 # End customize
 

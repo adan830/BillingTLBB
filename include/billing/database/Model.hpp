@@ -3,8 +3,13 @@
 
 namespace database
 {
+  class Connector;
+
   class Model
   {
+    public:
+      Model();
+
     public:
 
   };

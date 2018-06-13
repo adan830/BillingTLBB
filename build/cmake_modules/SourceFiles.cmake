@@ -8,5 +8,7 @@ set(SRC_FILES ${SRC_FILES}
   src/net/Packet.cpp
   src/net/PacketRoutes.cpp
   src/net/Session.cpp
+  src/database/Connector.cpp
+  src/database/Model.cpp
   )
 
