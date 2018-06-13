@@ -97,8 +97,11 @@ namespace net
     std::string responseHexStr;
     responseHexStr.append(m_checkSumFirstStr);
 
-    // Handle start
+    // MacAddress start
 
+    // MacAddress end
+
+    // AccountName start
     std::size_t accountNameSize = std::stoul(
       packetHexStr.substr(14, 2), nullptr, 16
       );
@@ -106,15 +109,32 @@ namespace net
     << " - Hex: " << packetHexStr.substr(16, accountNameSize * 2)
     << std::endl;
     auto accountNameBytes = Utils::hexToBytes(
-        packetHexStr.substr(16, accountNameSize * 2)
-        );
+      packetHexStr.substr(16, accountNameSize * 2)
+      );
     auto accountName = std::string(
       accountNameBytes.cbegin(),
       accountNameBytes.cend()
       );
     std::cout << "Account name: " << accountName << std::endl;
+    // AccountName end
 
-    // Handle end
+    // Password start
+    std::size_t passwordOfset = 16 + accountNameSize * 2;
+    std::size_t passwordSize = std::stoul(
+      packetHexStr.substr(passwordOfset, 2), nullptr, 16
+      );
+    std::cout << "Password size: " << passwordSize
+    << " - Hex: " << packetHexStr.substr(passwordOfset, 2)
+    << std::endl;
+    auto passwordBytes = Utils::hexToBytes(
+      packetHexStr.substr(passwordOfset + 2, passwordSize * 2)
+      );
+    auto password = std::string(
+      passwordBytes.cbegin(),
+      passwordBytes.cend()
+      );
+    std::cout << "Password: " << password << std::endl;
+    // Password end
 
     responseHexStr.append(m_checkSumLastStr);
     return Utils::hexToBytes(responseHexStr);
