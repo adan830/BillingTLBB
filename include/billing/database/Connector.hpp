@@ -16,13 +16,13 @@ namespace database
       ~Connector();
 
     public:
-      // template<class T>
-      // T execQuery(const std::string& query);
+      template<class T, class U = void>
+      T execQuery(const std::string& query);
       //
-      // template<>
-      // std::string Connector::execQuery(const std::string& query)
-      // {
-      // }
+      template<class T>
+      T Connector::execQuery<typename std::enable_if<std::is_same<T, std::string>>::type>(const std::string& query)
+      {
+      }
   };
 }
 
