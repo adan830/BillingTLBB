@@ -1,6 +1,7 @@
 /bin
 .editorconfig
 compile_commands.json
+/deps/mysql*
 
 # Prerequisites
 *.d
