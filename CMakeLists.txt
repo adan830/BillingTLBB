@@ -16,6 +16,7 @@ include(CompilerConfig)
 include(BuildConfig)
 include(LinkLibraries)
 include(Definitions)
+include(FindLibMySql)
 # }
 
 include_directories(${PROJECT_NAME} PRIVATE ${INC_DIRS})
