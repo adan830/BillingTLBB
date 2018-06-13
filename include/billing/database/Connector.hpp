@@ -3,11 +3,12 @@
 
 namespace database
 {
-  struct mysql;
+  struct MYSQL;
+
   class Connector
   {
     private:
-      m_solveDriver;
+      MYSQL* m_solveDriver;
 
     public:
       Connector();

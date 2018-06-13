@@ -118,7 +118,8 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_LIBRARIES)
   if(WIN32)
   else()
     set(MYSQL_DOWNLOAD_LINK
-      https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-6.1.11-linux-glibc2.12-i686.tar.gz
+      https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar.gz
+      # https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-6.1.11-linux-glibc2.12-i686.tar.gz
       )
     set(LIBMYSQL_DOWNLOAD_SAVE_FILE
       /tmp/libmysqlclient.tar.gz
@@ -162,7 +163,7 @@ if (MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
     ${MYSQL_INCLUDE_DIR}
     )
   set(LIBS_REQUIRED ${LIBS_REQUIRED}
-    mysqlclient
+    ${MYSQL_LIBRARIES}
     )
 endif()
 # End customize
