@@ -1,11 +1,17 @@
-main: deps.update compile
+main: deps.update debug
 	cd bin && \
 		./Billing
 
-compile:
+debug:
 	mkdir -p bin
 	cd build && \
-		cmake .. && \
+		cmake -DCMAKE_BUILD_TYPE=Debug .. && \
+		make -j$(shell nproc)
+
+release:
+	mkdir -p bin
+	cd build && \
+		cmake -DCMAKE_BUILD_TYPE=Release .. && \
 		make -j$(shell nproc)
 
 clean:

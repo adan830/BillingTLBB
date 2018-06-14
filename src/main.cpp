@@ -1,5 +1,7 @@
 #include "billing/Billing.hpp"
 
+#include "billing/Log.hpp"
+
 #include <iostream>
 #include <memory>
 
