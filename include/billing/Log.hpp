@@ -13,12 +13,16 @@ class Log
     Log();
 
   public:
+    ~Log();
+
+  public:
     Log& getInstance();
-    void write(const std::string& log);
-#if defined(BILLING_DEBUG)
-    void debug(const std::string& log);
-#endif
+    void info(const std::string& log);
+    void warning(const std::string& log);
+    void error(const std::string& log);
 };
+
+#define LOG Log::getInstance()
 
 #endif
 
