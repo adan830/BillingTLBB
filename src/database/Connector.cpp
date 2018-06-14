@@ -1,6 +1,6 @@
 #include "billing/database/Connector.hpp"
 
-#include <iostream>
+#include "billing/Log.hpp"
 
 namespace database
 {
@@ -11,11 +11,11 @@ namespace database
 
   Connector::~Connector()
   {
-    std::cout << "Database Connector is destructing..." << std::endl;
+    LOG->info("Database Connector is destructing...");
 
     mysql_close(m_connDriver);
 
-    std::cout << "Database Connector is destructed!" << std::endl;
+    LOG->info("Database Connector is destructed");
   }
 
 }

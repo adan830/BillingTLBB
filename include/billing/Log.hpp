@@ -38,7 +38,7 @@ class Log
     void error(const char* fmt, const Arg1& arg1, const Args& ...args);
 };
 
-#include "log/TemplateImplement.hpp"
+#include "../../src/LogImplement.cpp"
 
 #define LOG Log::getInstance()
 

@@ -1,10 +1,10 @@
 #include "billing/net/BillingSocket.hpp"
 
+#include "billing/Log.hpp"
 #include "billing/Config.hpp"
-#include "billing/net/Session.hpp"
 #include "billing/net/Packet.hpp"
+#include "billing/net/Session.hpp"
 
-#include <iostream>
 #include <future>
 
 namespace net
@@ -12,7 +12,7 @@ namespace net
   BillingSocket::BillingSocket() :
     m_socket(m_asioIoService)
   {
-    std::cout << "BillingSocket is initializing..." << std::endl;
+    LOG->info("BillingSocket is initializing...");
 
     auto configData = Config::getInstance().getData();
     m_acceptor = new asio::ip::tcp::acceptor(
@@ -23,33 +23,35 @@ namespace net
         )
       );
 
-    std::cout << "BillingSocket is initialized!" << std::endl;
+    LOG->info("BillingSocket is initialized");
   }
 
   BillingSocket::~BillingSocket()
   {
-    std::cout << "BillingSocket is destructing..." << std::endl;
+    LOG->info("BillingSocket is destructing...");
 
     delete m_acceptor;
 
-    std::cout << "BillingSocket is destructed!" << std::endl;
+    LOG->info("BillingSocket is destructed!");
   }
 
   void BillingSocket::start()
   {
     if (!m_acceptor)
     {
-      std::cerr << "Acceptor not found" << std::endl;
+      LOG->info("Acceptor not found");
       return;
     }
 
-    std::cout << "BillingSocket is starting..." << std::endl;
+    LOG->info("BillingSocket is starting...");
 
     auto configData = Config::getInstance().getData();
-    std::cout << "!!! BillingSocket.Acceptor will be listened at "
-    << configData->ip << ":" << configData->port
-    << " !!!"
-    << std::endl;
+
+    LOG->info(
+      "BillingSocket will be listened at {}:{}",
+      configData->ip,
+      configData->port
+      );
 
     this->accept();
 
@@ -64,7 +66,7 @@ namespace net
       {
         if (ec)
         {
-          std::cout << "New connection error code: " << ec << std::endl;
+          LOG->error("New connection error code: {}", ec.message());
         }
         else
         {
@@ -78,11 +80,11 @@ namespace net
 
   void BillingSocket::stop()
   {
-    std::cout << "BillingSocket is stopping..." << std::endl;
+    LOG->info("BillingSocket is stopping...");
 
     m_asioIoService.stop();
 
-    std::cout << "BillingSocket is stopped!" << std::endl;
+    LOG->info("BillingSocket is stopped!");
   }
 }
 

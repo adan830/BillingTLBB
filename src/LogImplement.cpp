@@ -1,4 +1,4 @@
-#include "../Log.hpp"
+#include "billing/Log.hpp"
 #include <spdlog/spdlog.h>
 
   template<typename T>
@@ -10,7 +10,7 @@ void Log::info(const T& log)
 }
 
   template<typename Arg1, typename... Args>
-void info(const char* fmt, const Arg1& arg1, const Args& ...args)
+void Log::info(const char* fmt, const Arg1& arg1, const Args& ...args)
 {
   spdlog::get("everythings")->info(fmt, arg1, args...);
 
@@ -28,7 +28,7 @@ void Log::warning(const T& log)
 }
 
   template<typename Arg1, typename... Args>
-void warning(const char* fmt, const Arg1& arg1, const Args& ...args)
+void Log::warning(const char* fmt, const Arg1& arg1, const Args& ...args)
 {
   spdlog::get("everythings")->warn(fmt, arg1, args...);
 
@@ -48,7 +48,7 @@ void Log::error(const T& log)
 }
 
   template<typename Arg1, typename... Args>
-void error(const char* fmt, const Arg1& arg1, const Args& ...args)
+void Log::error(const char* fmt, const Arg1& arg1, const Args& ...args)
 {
   spdlog::get("everythings")->error(fmt, arg1, args...);
 

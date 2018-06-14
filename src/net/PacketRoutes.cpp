@@ -1,9 +1,9 @@
 #include "billing/net/PacketRoutes.hpp"
 
-#include "billing/database/models/Account.hpp"
+#include "billing/Log.hpp"
 #include "billing/Utils.hpp"
+#include "billing/database/models/Account.hpp"
 
-#include <iostream>
 #include <utility>
 #include <thread>
 
@@ -80,7 +80,7 @@ namespace net
 
   PacketRoutes::ResponseData PacketRoutes::onPingConnectionHandle()
   {
-    std::cout << __FUNCTION__ << std::endl;
+    LOG->warning(__FUNCTION__);
 
     std::string responseHexStr;
     responseHexStr.append(m_checkSumFirstStr);
@@ -92,7 +92,7 @@ namespace net
   PacketRoutes::ResponseData
   PacketRoutes::onLoginRequestHandle(const std::string& packetHexStr)
   {
-    std::cout << __FUNCTION__ << std::endl;
+    LOG->warning(__FUNCTION__);
 
     std::string responseHexStr;
     responseHexStr.append(m_checkSumFirstStr);
@@ -106,10 +106,11 @@ namespace net
     std::size_t accountNameSize = std::stoul(
       packetHexStr.substr(accountNameOffset, 2), nullptr, 16
       );
-    std::cout << "Account name size: " << accountNameSize
-    << " - Hex: "
-    << packetHexStr.substr(accountNameOffset + 2 , accountNameSize * 2)
-    << std::endl;
+    LOG->warning(
+      "Account name size: {} - Hex: {}",
+      accountNameSize,
+      packetHexStr.substr(accountNameOffset + 2 , accountNameSize * 2)
+      );
     auto accountNameBytes = Utils::hexToBytes(
       packetHexStr.substr(accountNameOffset + 2, accountNameSize * 2)
       );
@@ -117,7 +118,7 @@ namespace net
       accountNameBytes.cbegin(),
       accountNameBytes.cend()
       );
-    std::cout << "Account name: " << accountName << std::endl;
+    LOG->warning("Account name: {}", accountName);
     // AccountName end
 
     // Password start
@@ -125,9 +126,11 @@ namespace net
     std::size_t passwordSize = std::stoul(
       packetHexStr.substr(passwordOffset, 2), nullptr, 16
       );
-    std::cout << "Password size: " << passwordSize
-    << " - Hex: " << packetHexStr.substr(passwordOffset, 2)
-    << std::endl;
+    LOG->warning(
+      "Password size: {} - Hex: {}",
+      passwordSize,
+      packetHexStr.substr(passwordOffset + 2 , passwordSize * 2)
+      );
     auto passwordBytes = Utils::hexToBytes(
       packetHexStr.substr(passwordOffset + 2, passwordSize * 2)
       );
@@ -135,8 +138,10 @@ namespace net
       passwordBytes.cbegin(),
       passwordBytes.cend()
       );
-    std::cout << "Password: " << password << std::endl;
+    LOG->warning("Password: {}", password);
     // Password end
+
+    LOG->info("Account {} is loggin", accountName);
 
     responseHexStr.append(m_checkSumLastStr);
     return Utils::hexToBytes(responseHexStr);
