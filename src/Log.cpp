@@ -33,12 +33,17 @@ Log::Log() :
 
 Log::~Log()
 {
+  std::cout << "Log is destructing..." << std::endl;
+
   spdlog::drop_all();
+
+  std::cout << "Log is destructed" << std::endl;
 }
 
-std::unique_ptr<Log> Log::getInstance()
+std::shared_ptr<Log> Log::getInstance()
 {
-  static auto m_instance = std::make_shared<Log>();
+  static std::shared_ptr<Log> m_instance(new Log());
+
   return m_instance;
 }
 

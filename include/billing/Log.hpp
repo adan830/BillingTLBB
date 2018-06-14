@@ -9,7 +9,6 @@ class Log
   private:
     std::string m_folderName;
     std::string m_fileName;
-    static Log* s_instance;
 
   private:
     Log();
@@ -18,7 +17,7 @@ class Log
     ~Log();
 
   public:
-    static std::unique_ptr<Log> getInstance();
+    static std::shared_ptr<Log> getInstance();
     void info(const std::string& log);
     void warning(const std::string& log);
     void error(const std::string& log);
