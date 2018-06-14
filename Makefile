@@ -11,6 +11,7 @@ debug:
 
 release:
 	mkdir -p bin
+	git clean -xdf bin build
 	cd build && \
 		cmake -DCMAKE_BUILD_TYPE=Release .. && \
 		make compile_commands ; \
