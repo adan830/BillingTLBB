@@ -18,6 +18,7 @@ Log::Log() :
       std::cout << "Error when create log folder" << std::endl;
     }
 #endif
+
   auto dailySink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(
     m_folderName + "/" + m_fileName, 23, 59
     );
@@ -35,9 +36,9 @@ Log::~Log()
   spdlog::drop_all();
 }
 
-Log& Log::getInstance()
+std::unique_ptr<Log> Log::getInstance()
 {
-  static Log m_instance;
+  static auto m_instance = std::make_shared<Log>();
   return m_instance;
 }
 
@@ -65,5 +66,4 @@ void Log::error(const std::string& log)
   spdlog::get("console")->error(log);
 #endif
 }
-
 
