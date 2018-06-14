@@ -1,9 +1,9 @@
 #include "billing/net/BillingSocket.hpp"
 
-#include "billing/Log.hpp"
-#include "billing/Config.hpp"
-#include "billing/net/Packet.hpp"
 #include "billing/net/Session.hpp"
+#include "billing/net/Packet.hpp"
+#include "billing/Config.hpp"
+#include "billing/Log.hpp"
 
 #include <future>
 

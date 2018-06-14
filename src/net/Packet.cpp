@@ -2,8 +2,6 @@
 
 #include "billing/Utils.hpp"
 
-#include <iostream>
-
 namespace net
 {
   Packet::Packet(const std::shared_ptr<Buffer> buffer, const std::size_t size) :

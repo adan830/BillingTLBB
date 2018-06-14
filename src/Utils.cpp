@@ -1,6 +1,6 @@
 #include "billing/Utils.hpp"
 
-#include <iostream>
+#include "billing/Log.hpp"
 
 namespace Utils
 {

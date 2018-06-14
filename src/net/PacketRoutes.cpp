@@ -1,8 +1,8 @@
 #include "billing/net/PacketRoutes.hpp"
 
-#include "billing/Log.hpp"
-#include "billing/Utils.hpp"
 #include "billing/database/models/Account.hpp"
+#include "billing/Utils.hpp"
+#include "billing/Log.hpp"
 
 #include <utility>
 #include <thread>
