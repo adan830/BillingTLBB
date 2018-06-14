@@ -36,7 +36,7 @@ void Config::readData()
     std::string line;
     std::string configKey;
     std::string configValue;
-    char tempChar;
+    char operatorChar;
     while(std::getline(ifConfig, line))
     {
       if (line.empty())
@@ -54,7 +54,13 @@ void Config::readData()
         continue;
       }
 
-      std::stringstream(line) >> configKey >> tempChar >> configValue;
+      std::stringstream(line) >> configKey >> operatorChar >> configValue;
+
+      if (operatorChar != '=')
+      {
+        LOG->info("Invalid operator {}", operatorChar);
+        continue;
+      }
 
       if (configKey.empty())
       {

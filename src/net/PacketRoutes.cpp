@@ -154,6 +154,10 @@ namespace net
 
     LOG->info("Account {} is loggin", accountName);
 
+    // LastData start
+
+    // LastData end
+
     responseHexStr.append(m_checkSumLastStr);
     return Utils::hexToBytes(responseHexStr);
   }
