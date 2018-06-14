@@ -8,6 +8,7 @@ set(SRC_FILES ${SRC_FILES}
   src/Startup.cpp
   src/net/BillingSocket.cpp
   src/net/Packet.cpp
+  src/net/CommunicatePacketData.cpp
   src/net/PacketRoutes.cpp
   src/net/Session.cpp
   src/database/Connector.cpp

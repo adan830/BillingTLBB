@@ -15,11 +15,14 @@ namespace net
       static std::string m_footer;
 
     public:
+      CommunicatePacketData();
       CommunicatePacketData(const std::string& hexDataStr);
+      ~CommunicatePacketData();
 
     public:
-      const CommunicatePacketData& append(const std::string& hexDataStr);
+      const CommunicatePacketData& append(const std::string& hexBodyStr);
       const std::string& toHexString() const;
+      void setType(const std::string& type);
   };
 }
 
