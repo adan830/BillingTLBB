@@ -42,7 +42,7 @@ namespace net
         LOG->warning("Received {} byte(s)", len);
         if (ec)
         {
-          LOG->error("Socket receive error: ", ec.message());
+          LOG->error("Socket receive error: {}", ec.message());
         }
         else
         {
@@ -71,8 +71,8 @@ namespace net
       return false;
     }
 
-    LOG->warning("Packet Data: ", packet->toString());
-    LOG->warning("Packet Hex: ", packet->toHexString());
+    LOG->warning("Packet Data: {}", packet->toString());
+    LOG->warning("Packet Hex: {}", packet->toHexString());
 
     auto responseData = PacketRoutes::getInstance()[packet->toHexString()];
 
