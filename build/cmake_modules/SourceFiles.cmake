@@ -5,6 +5,7 @@ set(SRC_FILES ${SRC_FILES}
   src/Billing.cpp
   src/Utils.cpp
   src/Log.cpp
+  src/Startup.cpp
   src/net/BillingSocket.cpp
   src/net/Packet.cpp
   src/net/PacketRoutes.cpp

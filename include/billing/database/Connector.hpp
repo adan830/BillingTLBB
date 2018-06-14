@@ -15,12 +15,16 @@ namespace database
       Connector();
       ~Connector();
 
-    public:
-      template<class T, class U = void>
-      T execQuery(const std::string& query);
+    private:
+      void init();
 
+    public:
+      template<typename ...TReturn, typename ...TParams>
+      std::tuple<TReturn...> select(const std::string& query, TParams... params);
   };
 }
+
+#include "../../../src/database/ConnectorImplement.cpp"
 
 #endif
 

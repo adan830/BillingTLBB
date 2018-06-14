@@ -1,5 +1,7 @@
 #include "billing/Billing.hpp"
 
+#include "billing/Startup.hpp"
+
 #include <iostream>
 #include <memory>
 
@@ -7,7 +9,11 @@ int main(int argc, char* argv[])
 {
   try
   {
-    std::shared_ptr<Billing>(new Billing())->start();
+    {
+      std::make_shared<Startup>(argc, argv)->start();
+    }
+
+    std::make_shared<Billing>()->start();
   }
   catch (const std::exception& e)
   {

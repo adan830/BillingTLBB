@@ -5,7 +5,7 @@
 #include "billing/Config.hpp"
 #include "billing/Log.hpp"
 
-#include <future>
+#include <fstream>
 
 namespace net
 {
@@ -20,6 +20,24 @@ namespace net
       asio::ip::tcp::endpoint(
         asio::ip::address::from_string(configData->ip),
         configData->port
+        )
+      );
+
+    LOG->info("BillingSocket is initialized");
+  }
+
+  BillingSocket::BillingSocket(
+    const std::string& ip,
+    const unsigned short port) :
+    m_socket(m_asioIoService)
+  {
+    LOG->info("BillingSocket is initializing...");
+
+    m_acceptor = new asio::ip::tcp::acceptor(
+      m_asioIoService,
+      asio::ip::tcp::endpoint(
+        asio::ip::address::from_string(ip),
+        port
         )
       );
 
@@ -60,6 +78,14 @@ namespace net
 
   void BillingSocket::accept()
   {
+    if (std::ifstream("stop_billing.cmd").good())
+    {
+      std::remove("stop_billing.cmd");
+      LOG->info("Received stop command");
+      this->stop();
+      return;
+    }
+
     m_acceptor->async_accept(
       m_socket,
       [this](const std::error_code& ec)
@@ -82,7 +108,8 @@ namespace net
   {
     LOG->info("BillingSocket is stopping...");
 
-    m_asioIoService.stop();
+    m_acceptor->cancel();
+    // m_asioIoService.stop();
 
     LOG->info("BillingSocket is stopped!");
   }

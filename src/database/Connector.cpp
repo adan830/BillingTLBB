@@ -7,6 +7,7 @@ namespace database
   Connector::Connector() :
     m_connDriver(mysql_init(nullptr))
   {
+    this->init();
   }
 
   Connector::~Connector()
@@ -18,5 +19,9 @@ namespace database
     LOG->info("Database Connector is destructed");
   }
 
+  void Connector::init()
+  {
+
+  }
 }
 
