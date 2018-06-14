@@ -27,6 +27,9 @@ class Config final
       std::string gameDatabaseName;
       std::string gameDatabaseUserName;
       std::string gameDatabasePassword;
+
+      // Other
+      std::size_t maxAccountPerMac;
     };
 
   private:

@@ -44,6 +44,16 @@ void Config::readData()
         continue;
       }
 
+      if (line.find(';') == 0)
+      {
+        continue;
+      }
+
+      if (line.find('#') == 0)
+      {
+        continue;
+      }
+
       std::stringstream(line) >> configKey >> tempChar >> configValue;
 
       if (configKey.empty())
@@ -106,6 +116,10 @@ void Config::readData()
       else if (configKey == "GAME_DATABASE_PASSWORD")
       {
         m_data->gameDatabasePassword = configValue;
+      }
+      else if (configKey == "MAX_ACCOUNT_PER_MAC")
+      {
+        m_data->maxAccountPerMac = std::stoi(configValue);
       }
       else
       {

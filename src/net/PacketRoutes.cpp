@@ -100,10 +100,16 @@ namespace net
     auto macAddressBytes = Utils::hexToBytes(
       packetHexStr.substr(macAddressOffset, packetHexStr.size() - 76)
       );
+    LOG->warning(
+      "MAC Address offset: {} - Hex: {}",
+      macAddressOffset,
+      packetHexStr.substr(macAddressOffset, packetHexStr.size() - 76)
+      );
     auto macAddress = std::string(
       macAddressBytes.cbegin(),
       macAddressBytes.cend()
       );
+    LOG->warning("MAC Address: {}", macAddress);
     // MacAddress end
 
     // AccountName start
