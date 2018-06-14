@@ -96,7 +96,14 @@ namespace net
     responseHexStr.append(m_checkSumFirstStr);
 
     // MacAddress start
-
+    std::size_t macAddressOffset = packetHexStr.size() - 140;
+    auto macAddressBytes = Utils::hexToBytes(
+      packetHexStr.substr(macAddressOffset, packetHexStr.size() - 76)
+      );
+    auto macAddress = std::string(
+      macAddressBytes.cbegin(),
+      macAddressBytes.cend()
+      );
     // MacAddress end
 
     // AccountName start
