@@ -32,6 +32,7 @@ namespace net
       const ResponseData operator[](const std::string& packetHexStr);
 
     protected:
+      ResponseData onOpenConnectionHandle();
       ResponseData onPingConnectionHandle();
       ResponseData onLoginRequestHandle(const std::string& packetHexStr);
   };

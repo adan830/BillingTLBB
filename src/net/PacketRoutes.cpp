@@ -15,7 +15,7 @@ namespace net
   {
     m_routers["A0"] = [this](const std::string&)->ResponseData
     {
-      return this->onPingConnectionHandle();
+      return this->onOpenConnectionHandle();
     };
 
     m_routers["A1"] = [this](const std::string&)->ResponseData
@@ -83,7 +83,20 @@ namespace net
     std::string responseHexStr;
     responseHexStr.append(m_checkSumFirstStr);
 
-    // responseHexStr.append("0000A0");
+    // responseHexStr.append("05A8D8060055");
+
+    responseHexStr.append(m_checkSumLastStr);
+    return Utils::hexToBytes(responseHexStr);
+  }
+
+  PacketRoutes::ResponseData PacketRoutes::onOpenConnectionHandle()
+  {
+    LOG->warning(__FUNCTION__);
+
+    std::string responseHexStr;
+    responseHexStr.append(m_checkSumFirstStr);
+
+    // responseHexStr.append("0005A011980100");
 
     responseHexStr.append(m_checkSumLastStr);
     return Utils::hexToBytes(responseHexStr);
@@ -116,16 +129,20 @@ namespace net
 
     // AccountName start
     std::size_t accountNameOffset = 14;
+    auto accountNameSizeHex = packetHexStr.substr(accountNameOffset, 2);
     std::size_t accountNameSize = std::stoul(
-      packetHexStr.substr(accountNameOffset, 2), nullptr, 16
+      accountNameSizeHex, nullptr, 16
       );
     LOG->warning(
       "Account name size: {} - Hex: {}",
       accountNameSize,
-      packetHexStr.substr(accountNameOffset + 2 , accountNameSize * 2)
+      accountNameSizeHex
+      );
+    auto accountNameHex = packetHexStr.substr(
+      accountNameOffset + 2 , accountNameSize * 2
       );
     auto accountNameBytes = Utils::hexToBytes(
-      packetHexStr.substr(accountNameOffset + 2, accountNameSize * 2)
+      accountNameHex
       );
     auto accountName = std::string(
       accountNameBytes.cbegin(),
@@ -157,19 +174,29 @@ namespace net
     LOG->info("Account {} is loggin", accountName);
 
     // LastData start
-    enum class LoginStatus
-    {
-      ERROR = 0,
-      SUCCESS = 1
-    };
-
-    auto loginStatus = LoginStatus::SUCCESS;
-    std::size_t responseDataSize = 31 - 20 * static_cast<int>(loginStatus)
-    + accountName.size();
-    responseHexStr.append("0101A2");
+    int loginStatus = 1; // Successed
+    int loginValue = 0; // Successed
+    std::size_t responseDataSize = 72 - 40 * loginValue + accountNameHex.size();
+    LOG->warning("Login packet size: {}", responseDataSize);
+    std::size_t packetLen = responseDataSize - m_checkSumFirstStr.size() -
+    m_checkSumLastStr.size();
+    responseHexStr.append(Utils::numberToHex(packetLen));
+    // responseHexStr.append("00");
+    responseHexStr.append("A2");
+    responseHexStr.append(packetHexStr.substr(10, 4));
+    responseHexStr.append(accountNameSizeHex);
+    responseHexStr.append(accountNameHex);
+    responseHexStr.append('0' + std::to_string(loginStatus));
+    responseHexStr.append(std::string(
+        responseDataSize - responseHexStr.size() - m_checkSumLastStr.size(),
+        '0'
+        ));
     // LastData end
 
     responseHexStr.append(m_checkSumLastStr);
+
+    LOG->warning("Login packet Hex: {}", responseHexStr);
+
     return Utils::hexToBytes(responseHexStr);
   }
 }
