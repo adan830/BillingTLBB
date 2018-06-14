@@ -52,8 +52,6 @@ namespace net
 
     for (const auto& router : m_routers)
     {
-      // TODO: Middle of checksum may not same
-
       if (hexStr.find(m_checkSumFirstStr) != 0)
       {
         break;
