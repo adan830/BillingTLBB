@@ -1,6 +1,7 @@
 #include "billing/Config.hpp"
 
-#include <iostream>
+#include "billing/Log.hpp"
+
 #include <sstream>
 #include <fstream>
 
@@ -13,22 +14,22 @@ Config::Config() :
 
 Config::~Config()
 {
-  std::cout << "Config is destructing..." << std::endl;
+  LOG->info("Config is destructing...");
 
   delete m_data;
 
-  std::cout << "Config is destructed!" << std::endl;
+  LOG->info("Config is destructed!");
 }
 
 void Config::readData()
 {
-  std::cout << "Parsing file " << m_configFile.data() << std::endl;
+  LOG->info("Parsing file {}", m_configFile);
 
   std::ifstream ifConfig(m_configFile, std::ifstream::in);
 
   if (!ifConfig.is_open())
   {
-    std::cout << "Parse file " << m_configFile.data() << " error" << std::endl;
+    LOG->info("Parse file {} error", m_configFile);
   }
   else
   {
@@ -52,12 +53,11 @@ void Config::readData()
 
       if (configValue.empty())
       {
-        std::cout << "Key " << configKey << " is empty!!!" << std::endl;
+        LOG->info("configKey {} is empty", configKey);
         continue;
       }
 
-      std::cout << "LineInfo: " << configKey << tempChar << configValue
-      << std::endl;
+      LOG->warning("LineInfo: {}={}", configKey, configValue);
 
       if (configKey == "IP")
       {
@@ -109,16 +109,14 @@ void Config::readData()
       }
       else
       {
-        std::cout << "Config::readData Waring: " << configKey
-        << " is not a valid key"
-        << std::endl;
+        LOG->info("configKey: {} is not a valid key", configKey);
       }
 
       configKey.clear();
       configValue.clear();
     }
 
-    std::cout << "Parsed file " << m_configFile.data() << std::endl;
+    LOG->info("Parsed file {}", m_configFile);
 
     ifConfig.close();
   }

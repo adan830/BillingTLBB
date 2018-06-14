@@ -1,7 +1,5 @@
 #include "billing/Billing.hpp"
 
-#include "billing/Log.hpp"
-
 #include <iostream>
 #include <memory>
 
@@ -14,6 +12,7 @@ int main(int argc, char* argv[])
   catch (const std::exception& e)
   {
     std::cerr << "Exception: " << e.what() << std::endl;
+    return 1;
   }
   catch (...)
   {

@@ -1,41 +1,40 @@
 #include "billing/Billing.hpp"
 
 #include "billing/net/BillingSocket.hpp"
-
-#include <iostream>
+#include "billing/Log.hpp"
 
 Billing::Billing() :
   m_socket(new net::BillingSocket())
 {
-  std::cout << "Billing is initializing..." << std::endl;
+  LOG->info("Billing is initializing...");
 
-  std::cout << "Billing is initialized!" << std::endl;
+  LOG->info("Billing is initialized!");
 }
 
 Billing::~Billing()
 {
-  std::cout << "Billing is destructing..." << std::endl;
+  LOG->info("Billing is destructing...");
 
   delete m_socket;
 
-  std::cout << "Billing is destructed!" << std::endl;
+  LOG->info("Billing is destructed!");
 }
 
 void Billing::start()
 {
-  std::cout << "Billing is starting..." << std::endl;
+  LOG->info("Billing is starting...");
 
   m_socket->start();
 
-  std::cout << "Billing is started!" << std::endl;
+  LOG->info("Billing is started!");
 }
 
 void Billing::stop()
 {
-  std::cout << "Billing is stopping..." << std::endl;
+  LOG->info("Billing is stopping...");
 
   m_socket->stop();
 
-  std::cout << "Billing is stopped!" << std::endl;
+  LOG->info("Billing is stopped!");
 }
 

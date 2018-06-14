@@ -18,10 +18,27 @@ class Log
 
   public:
     static std::shared_ptr<Log> getInstance();
-    void info(const std::string& log);
-    void warning(const std::string& log);
-    void error(const std::string& log);
+
+    template<typename T>
+    void info(const T& log);
+
+    template<typename Arg1, typename... Args>
+    void info(const char* fmt, const Arg1& arg1, const Args& ...args);
+
+    template<typename T>
+    void warning(const T& log);
+
+    template<typename Arg1, typename... Args>
+    void warning(const char* fmt, const Arg1& arg1, const Args& ...args);
+
+    template<typename T>
+    void error(const T& log);
+
+    template<typename Arg1, typename... Args>
+    void error(const char* fmt, const Arg1& arg1, const Args& ...args);
 };
+
+#include "log/TemplateImplement.hpp"
 
 #define LOG Log::getInstance()
 
