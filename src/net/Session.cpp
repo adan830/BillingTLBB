@@ -23,10 +23,12 @@ namespace net
   Session::~Session()
   {
     LOG->info(
-      "Session with {}:{} is destructed",
+      "Session with {}:{} is closed",
       m_socket.remote_endpoint().address().to_string(),
       m_socket.remote_endpoint().port()
       );
+
+    m_socket.close();
   }
 
   void Session::start()
@@ -37,9 +39,14 @@ namespace net
     auto m_buffer = std::make_shared<Packet::Buffer>();
     m_socket.async_receive(
       asio::buffer(*m_buffer),
-      [self, m_buffer](const std::error_code& ec, const std::size_t len)
+      [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
       {
-        LOG->warning("Received {} byte(s)", len);
+        LOG->warning(
+          "Received {} byte(s) from {}:{}",
+          len,
+          m_socket.remote_endpoint().address().to_string(),
+          m_socket.remote_endpoint().port()
+          );
         if (ec)
         {
           LOG->error("Socket receive error: {}", ec.message());
@@ -53,14 +60,11 @@ namespace net
           }
         }
       }
-      );
+    );
   }
 
   bool Session::packetHandle(std::shared_ptr<Packet> packet)
   {
-    // Keep session alive
-    auto self = this->shared_from_this();
-
     if (packet->getSize() == 0)
     {
       LOG->error(
@@ -85,6 +89,18 @@ namespace net
         );
       return false;
     }
+    else
+    {
+      LOG->warning(
+        "Sending to {}:{}",
+        m_socket.remote_endpoint().address().to_string(),
+        m_socket.remote_endpoint().port()
+        );
+      LOG->warning("Raw data: {}", responseData.data());
+    }
+
+    // Keep session alive
+    auto self = this->shared_from_this();
 
     m_socket.async_send(
       asio::buffer(responseData),

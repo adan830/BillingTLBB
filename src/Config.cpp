@@ -56,12 +56,6 @@ void Config::readData()
 
       std::stringstream(line) >> configKey >> operatorChar >> configValue;
 
-      if (operatorChar != '=')
-      {
-        LOG->info("Invalid operator {}", operatorChar);
-        continue;
-      }
-
       if (configKey.empty())
       {
         continue;
@@ -70,6 +64,12 @@ void Config::readData()
       if (configValue.empty())
       {
         LOG->info("configKey {} is empty", configKey);
+        continue;
+      }
+
+      if (operatorChar != '=')
+      {
+        LOG->info("Invalid operator {}", operatorChar);
         continue;
       }
 

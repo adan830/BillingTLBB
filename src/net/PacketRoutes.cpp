@@ -83,6 +83,8 @@ namespace net
     std::string responseHexStr;
     responseHexStr.append(m_checkSumFirstStr);
 
+    // responseHexStr.append("0000A0");
+
     responseHexStr.append(m_checkSumLastStr);
     return Utils::hexToBytes(responseHexStr);
   }
@@ -155,7 +157,16 @@ namespace net
     LOG->info("Account {} is loggin", accountName);
 
     // LastData start
+    enum class LoginStatus
+    {
+      ERROR = 0,
+      SUCCESS = 1
+    };
 
+    auto loginStatus = LoginStatus::SUCCESS;
+    std::size_t responseDataSize = 31 - 20 * static_cast<int>(loginStatus)
+    + accountName.size();
+    responseHexStr.append("0101A2");
     // LastData end
 
     responseHexStr.append(m_checkSumLastStr);
