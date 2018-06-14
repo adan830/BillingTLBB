@@ -5,7 +5,7 @@
 #include <fstream>
 
 Config::Config() :
-  m_configFile("config.ini"),
+  m_configFile("Config.ini"),
   m_data(new Config::Data())
 {
   this->readData();

@@ -27,6 +27,12 @@ namespace net
     {
       return this->onLoginRequestHandle(packetHexStr);
     };
+
+    // StartUpKick
+    m_routers["A9"] = [this](const std::string&)->ResponseData
+    {
+      return this->onPingConnectionHandle();
+    };
   }
 
   PacketRoutes::~PacketRoutes()
@@ -91,15 +97,46 @@ namespace net
     std::string responseHexStr;
     responseHexStr.append(m_checkSumFirstStr);
 
-    // Handle start
+    // MacAddress start
 
-    std::size_t accountNameSize = std::atoi(
-      Utils::hexToBytes(packetHexStr.substr(15,2)).data()
+    // MacAddress end
+
+    // AccountName start
+    std::size_t accountNameOffset = 14;
+    std::size_t accountNameSize = std::stoul(
+      packetHexStr.substr(accountNameOffset, 2), nullptr, 16
       );
-    std::cout << "Account name size: " << accountNameSize << std::endl;
-    auto accountName = packetHexStr.substr(1,2);
+    std::cout << "Account name size: " << accountNameSize
+    << " - Hex: "
+    << packetHexStr.substr(accountNameOffset + 2 , accountNameSize * 2)
+    << std::endl;
+    auto accountNameBytes = Utils::hexToBytes(
+      packetHexStr.substr(accountNameOffset + 2, accountNameSize * 2)
+      );
+    auto accountName = std::string(
+      accountNameBytes.cbegin(),
+      accountNameBytes.cend()
+      );
+    std::cout << "Account name: " << accountName << std::endl;
+    // AccountName end
 
-    // Handle end
+    // Password start
+    std::size_t passwordOffset = accountNameOffset + 2 + accountNameSize * 2;
+    std::size_t passwordSize = std::stoul(
+      packetHexStr.substr(passwordOffset, 2), nullptr, 16
+      );
+    std::cout << "Password size: " << passwordSize
+    << " - Hex: " << packetHexStr.substr(passwordOffset, 2)
+    << std::endl;
+    auto passwordBytes = Utils::hexToBytes(
+      packetHexStr.substr(passwordOffset + 2, passwordSize * 2)
+      );
+    auto password = std::string(
+      passwordBytes.cbegin(),
+      passwordBytes.cend()
+      );
+    std::cout << "Password: " << password << std::endl;
+    // Password end
 
     responseHexStr.append(m_checkSumLastStr);
     return Utils::hexToBytes(responseHexStr);

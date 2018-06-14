@@ -17,6 +17,8 @@ namespace net
 
   Session::~Session()
   {
+    std::cout << "Session is destructing..." << std::endl;
+    std::cout << "Session is destructed!" << std::endl;
   }
 
   void Session::start()
