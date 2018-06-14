@@ -9,6 +9,10 @@ int main(int argc, char* argv[])
   {
     std::shared_ptr<Billing>(new Billing())->start();
   }
+  catch (const std::exception& e)
+  {
+    std::cerr << "Exception: " << e.what() << std::endl;
+  }
   catch (...)
   {
     std::cerr << "Exeption error" << std::endl;
