@@ -2,6 +2,9 @@
 if (${CMAKE_EXPORT_COMPILE_COMMANDS} STREQUAL ON)
   find_program(COMPDB compdb)
   if (COMPDB)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E
+      remove ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
+      )
     add_custom_target(compile_commands
       SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
       )
