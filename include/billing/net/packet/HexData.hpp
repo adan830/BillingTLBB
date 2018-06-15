@@ -9,11 +9,11 @@ namespace net { namespace packet
   class HexData
   {
     private:
-      static std::string m_header;
-      std::string m_size;
+      std::string m_header;
+      std::size_t m_size;
       std::string m_type;
       std::string m_body;
-      static std::string m_footer;
+      std::string m_footer;
 
     public:
       HexData();
@@ -22,6 +22,9 @@ namespace net { namespace packet
         );
       HexData(const std::string& hexDataStr);
       ~HexData();
+
+    private:
+      void init();
 
     public:
       const HexData& append(const std::string& hexBodyStr);
