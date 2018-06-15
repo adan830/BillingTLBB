@@ -3,6 +3,7 @@
 
 #include <mysql.h>
 #include <string>
+#include <tuple>
 
 namespace database
 {
@@ -19,8 +20,17 @@ namespace database
       void init();
 
     public:
+      bool exec(const char* q);
+
+      template<typename ...TParams>
+      bool exec(const char* q, const TParams&... params);
+
       template<typename ...TReturn, typename ...TParams>
-      std::tuple<TReturn...> select(const std::string& query, TParams... params);
+      std::tuple<TReturn...>
+      query(
+        const char* q,
+        const TParams&... params
+        );
   };
 }
 

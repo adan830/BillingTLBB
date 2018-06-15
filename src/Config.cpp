@@ -103,26 +103,6 @@ void Config::readData()
       {
         m_data->webDatabasePassword = configValue;
       }
-      else if (configKey == "GAME_DATABASE_IP")
-      {
-        m_data->gameDatabaseIp = configValue;
-      }
-      else if (configKey == "GAME_DATABASE_PORT")
-      {
-        m_data->gameDatabasePort = std::stoi(configValue);
-      }
-      else if (configKey == "GAME_DATABASE_NAME")
-      {
-        m_data->gameDatabaseName = configValue;
-      }
-      else if (configKey == "GAME_DATABASE_USERNAME")
-      {
-        m_data->gameDatabaseUserName = configValue;
-      }
-      else if (configKey == "GAME_DATABASE_PASSWORD")
-      {
-        m_data->gameDatabasePassword = configValue;
-      }
       else if (configKey == "MAX_ACCOUNT_PER_MAC")
       {
         m_data->maxAccountPerMac = std::stoi(configValue);

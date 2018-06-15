@@ -21,13 +21,6 @@ class Config final
       std::string webDatabaseUsername;
       std::string webDatabasePassword;
 
-      // Game Database Info
-      std::string gameDatabaseIp;
-      unsigned short gameDatabasePort;
-      std::string gameDatabaseName;
-      std::string gameDatabaseUserName;
-      std::string gameDatabasePassword;
-
       // Other
       std::size_t maxAccountPerMac;
     };
