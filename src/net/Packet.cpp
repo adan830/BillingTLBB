@@ -13,7 +13,7 @@ namespace net
 
     m_hexData = new packet::HexData(m_buffer, size);
 
-    m_hexString.assign(Utils::bytesToHex(m_string.data(), m_size));
+    m_hexString = m_hexData->toString();
   }
 
   Packet::~Packet()

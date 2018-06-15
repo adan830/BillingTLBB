@@ -32,11 +32,11 @@ namespace database {
 
     std::tuple<const TParams&...> tParams(params...);
 
-    for (std::size_t i = 0; i < sizeof...(params); i++)
-    {
-      const auto x = i;
-      bind[i]->buffer = std::get<x>(tParams);
-    }
+    // for (std::size_t i = 0; i < sizeof...(params); i++)
+    // {
+    //   const auto x = i;
+    //   bind[i]->buffer = std::get<x>(tParams);
+    // }
 
     if (mysql_stmt_bind_param(stmt, bind))
     {

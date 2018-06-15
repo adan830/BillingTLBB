@@ -28,7 +28,7 @@ namespace net { namespace packet
 
     public:
       const HexData& append(const std::string& hexBodyStr);
-      const std::string& toHexString() const;
+      std::string toString() const;
       void setType(const std::string& type);
   };
 } }
