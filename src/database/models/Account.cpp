@@ -44,6 +44,9 @@ namespace database { namespace models {
   void Account::init()
   {
     m_tableName = "account";
+
+    auto conn = this->getConnector();
+    conn->exec("", "");
   }
 
   int Account::getId() const
