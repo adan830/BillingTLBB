@@ -55,6 +55,10 @@ namespace net
         }
         else
         {
+          LOG->warning(
+            "Raw: {}",
+            std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
+            );
           LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
           if (len >= 7)
           {
@@ -98,7 +102,13 @@ namespace net
         m_socket.remote_endpoint().address().to_string(),
         m_socket.remote_endpoint().port()
         );
-      LOG->warning("Raw data: {}", responseData.data());
+      LOG->warning(
+        "RawData: {}",
+        std::string(
+          responseData.cbegin(),
+          responseData.cbegin() + responseData.size()
+          )
+        );
     }
 
     // Keep session alive
