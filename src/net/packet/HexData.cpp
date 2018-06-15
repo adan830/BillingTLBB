@@ -18,18 +18,36 @@ namespace net { namespace packet
     const std::shared_ptr<Packet::Buffer> buffer, const std::size_t size
     )
   {
-    auto hexData = Utils::bytesToHex(buffer->data(), size);
+    try
+    {
+      auto hexData = Utils::bytesToHex(buffer->data(), size);
 
-    m_header = hexData.substr(0, 4);
+      if (hexData.size() < 14)
+      {
+        throw std::runtime_error("Parse buffer to hex error");
+      }
 
-    m_size = std::stoul(hexData.substr(4, 4), nullptr, 16);
+      m_size = std::stoul(hexData.substr(4, 4), nullptr, 16);
 
-    LOG->warning("SIZE: {}", m_size);
+      m_header = hexData.substr(0, 4);
 
-    m_type = hexData.substr(8, 2);
-    m_body = hexData.substr(10, m_size);
+      m_type = hexData.substr(8, 2);
 
-    m_footer = hexData.substr(hexData.size() - 4);
+      std::size_t bodyLastPos = m_size * 2 - 2;
+      if (bodyLastPos > (hexData.size() - 12))
+      {
+        throw std::runtime_error("Error size");
+      }
+
+      m_body = hexData.substr(10, bodyLastPos);
+
+      m_footer = hexData.substr(hexData.size() - 4);
+    }
+    catch(const std::exception& e)
+    {
+      LOG->error("Error while parse buffer: {}", e.what());
+    }
+
     this->init();
   }
 
@@ -39,6 +57,19 @@ namespace net { namespace packet
 
   void HexData::init()
   {
+    if (
+      m_footer.empty() || m_header.empty() ||
+      (m_header != "AA55") || (m_footer != "55AA")
+      )
+    {
+      LOG->error("Buffer error");
+      delete this;
+      return;
+    }
+    LOG->warning(
+      "Header: {} | Size: {} | Type: {} | Body: {} | Footer: {}",
+      m_header, m_size, m_type, m_body, m_footer
+      );
   }
 
   const HexData& HexData::append(const std::string& hexBody)
@@ -56,7 +87,7 @@ namespace net { namespace packet
 
   std::string HexData::toString() const
   {
-    return m_footer
+    return m_header
     + Utils::numberToHex(m_size, 4)
     + m_type + m_body
     + m_footer;

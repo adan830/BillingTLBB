@@ -6,12 +6,20 @@
 namespace net
 {
   Packet::Packet(const std::shared_ptr<Buffer> buffer, const std::size_t size) :
-    m_buffer(buffer),
-    m_size(size)
+    m_buffer(buffer)
   {
-    m_string.assign(m_buffer->cbegin(), m_buffer->cbegin() + m_size);
-
     m_hexData = new packet::HexData(m_buffer, size);
+
+    if (!m_hexData)
+    {
+      m_size = 0;
+    }
+    else
+    {
+      m_size = size;
+    }
+
+    m_string.assign(m_buffer->cbegin(), m_buffer->cbegin() + size);
 
     m_hexString = m_hexData->toString();
   }

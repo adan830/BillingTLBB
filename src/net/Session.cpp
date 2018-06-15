@@ -2,6 +2,7 @@
 
 #include "billing/net/packet/Routes.hpp"
 #include "billing/net/Packet.hpp"
+#include "billing/Utils.hpp"
 #include "billing/Log.hpp"
 
 #include <asio.hpp>
@@ -53,7 +54,9 @@ namespace net
         }
         else
         {
+          LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
           auto m_packet = std::make_shared<Packet>(m_buffer, len);
+
           if (!self->packetHandle(m_packet))
           {
             self->start();
@@ -72,6 +75,7 @@ namespace net
         m_socket.remote_endpoint().address().to_string(),
         m_socket.remote_endpoint().port()
         );
+
       return false;
     }
 
