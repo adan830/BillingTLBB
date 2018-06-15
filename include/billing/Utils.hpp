@@ -13,11 +13,10 @@ namespace Utils
   std::string bytesToHex(const char* data, const std::size_t len);
 
   template<typename T>
-  std::string numberToHex(T i)
+  std::string numberToHex(T i, const std::size_t width)
   {
     std::stringstream sstream;
-    sstream << std::setfill('0') << std::setw(4)
-    << std::hex << i;
+    sstream << std::setfill('0') << std::setw(width) << std::hex << i;
 
     return sstream.str();
   }

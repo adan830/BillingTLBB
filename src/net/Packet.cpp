@@ -1,5 +1,6 @@
 #include "billing/net/Packet.hpp"
 
+#include "billing/net/packet/HexData.hpp"
 #include "billing/Utils.hpp"
 
 namespace net
@@ -10,11 +11,14 @@ namespace net
   {
     m_string.assign(m_buffer->cbegin(), m_buffer->cbegin() + m_size);
 
+    m_hexData = new packet::HexData(m_buffer, size);
+
     m_hexString.assign(Utils::bytesToHex(m_string.data(), m_size));
   }
 
   Packet::~Packet()
   {
+    delete m_hexData;
   }
 
   std::size_t Packet::getSize() const
@@ -30,11 +34,6 @@ namespace net
   const std::string& Packet::toHexString() const
   {
     return m_hexString;
-  }
-
-  void Packet::setSession(const std::shared_ptr<Session> session)
-  {
-    m_session = session;
   }
 }
 

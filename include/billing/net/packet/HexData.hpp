@@ -1,6 +1,7 @@
 #ifndef __BILLING_NET_PACKET_HEX_DATA_HPP__
 #define __BILLING_NET_PACKET_HEX_DATA_HPP__
 
+#include "../Packet.hpp"
 #include <string>
 
 namespace net { namespace packet
@@ -16,6 +17,9 @@ namespace net { namespace packet
 
     public:
       HexData();
+      HexData(
+        const std::shared_ptr<Packet::Buffer> buffer, const std::size_t size
+        );
       HexData(const std::string& hexDataStr);
       ~HexData();
 

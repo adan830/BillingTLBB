@@ -180,7 +180,7 @@ namespace net { namespace packet
     LOG->warning("Login packet size: {}", responseDataSize);
     std::size_t packetLen = responseDataSize - m_checkSumFirstStr.size() -
     m_checkSumLastStr.size();
-    responseHexStr.append(Utils::numberToHex(packetLen));
+    responseHexStr.append(Utils::numberToHex(packetLen, 4));
     // responseHexStr.append("00");
     responseHexStr.append("A2");
     responseHexStr.append(packetHexStr.substr(10, 4));
