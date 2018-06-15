@@ -1,4 +1,4 @@
-#include "billing/net/PacketRoutes.hpp"
+#include "billing/net/packet/Routes.hpp"
 
 #include "billing/database/models/Account.hpp"
 #include "billing/Utils.hpp"
@@ -7,9 +7,9 @@
 #include <utility>
 #include <thread>
 
-namespace net
+namespace net { namespace packet
 {
-  PacketRoutes::PacketRoutes() :
+  Routes::Routes() :
     m_checkSumFirstStr("AA55"),
     m_checkSumLastStr("55AA")
   {
@@ -35,18 +35,18 @@ namespace net
     };
   }
 
-  PacketRoutes::~PacketRoutes()
+  Routes::~Routes()
   {
   }
 
-  PacketRoutes& PacketRoutes::getInstance()
+  Routes& Routes::getInstance()
   {
-    static PacketRoutes s_instance;
+    static Routes s_instance;
     return s_instance;
   }
 
-  const PacketRoutes::ResponseData
-  PacketRoutes::operator[](const std::string& hexStr)
+  const Routes::ResponseData
+  Routes::operator[](const std::string& hexStr)
   {
     ResponseData m_responseData;
 
@@ -76,7 +76,7 @@ namespace net
     return m_responseData;
   }
 
-  PacketRoutes::ResponseData PacketRoutes::onPingConnectionHandle()
+  Routes::ResponseData Routes::onPingConnectionHandle()
   {
     LOG->warning(__FUNCTION__);
 
@@ -89,7 +89,7 @@ namespace net
     return Utils::hexToBytes(responseHexStr);
   }
 
-  PacketRoutes::ResponseData PacketRoutes::onOpenConnectionHandle()
+  Routes::ResponseData Routes::onOpenConnectionHandle()
   {
     LOG->warning(__FUNCTION__);
 
@@ -102,8 +102,8 @@ namespace net
     return Utils::hexToBytes(responseHexStr);
   }
 
-  PacketRoutes::ResponseData
-  PacketRoutes::onLoginRequestHandle(const std::string& packetHexStr)
+  Routes::ResponseData
+  Routes::onLoginRequestHandle(const std::string& packetHexStr)
   {
     LOG->warning(__FUNCTION__);
 
@@ -199,5 +199,5 @@ namespace net
 
     return Utils::hexToBytes(responseHexStr);
   }
-}
+} }
 

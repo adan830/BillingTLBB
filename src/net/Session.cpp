@@ -1,6 +1,6 @@
 #include "billing/net/Session.hpp"
 
-#include "billing/net/PacketRoutes.hpp"
+#include "billing/net/packet/Routes.hpp"
 #include "billing/net/Packet.hpp"
 #include "billing/Log.hpp"
 
@@ -78,7 +78,7 @@ namespace net
     LOG->warning("Packet Data: {}", packet->toString());
     LOG->warning("Packet Hex: {}", packet->toHexString());
 
-    auto responseData = PacketRoutes::getInstance()[packet->toHexString()];
+    auto responseData = packet::Routes::getInstance()[packet->toHexString()];
 
     if (responseData.empty())
     {

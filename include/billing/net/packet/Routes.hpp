@@ -6,9 +6,9 @@
 #include <string>
 #include <vector>
 
-namespace net
+namespace net { namespace packet
 {
-  class PacketRoutes
+  class Routes
   {
     public:
       using ResponseData = std::vector<char>;
@@ -22,13 +22,13 @@ namespace net
       const std::string m_checkSumLastStr;
 
     private:
-      PacketRoutes();
+      Routes();
 
     public:
-      ~PacketRoutes();
+      ~Routes();
 
     public:
-      static PacketRoutes& getInstance();
+      static Routes& getInstance();
       const ResponseData operator[](const std::string& packetHexStr);
 
     protected:
@@ -36,7 +36,7 @@ namespace net
       ResponseData onPingConnectionHandle();
       ResponseData onLoginRequestHandle(const std::string& packetHexStr);
   };
-}
+} }
 
 #endif
 
