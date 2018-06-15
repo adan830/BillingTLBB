@@ -113,10 +113,10 @@ namespace net { namespace packet
     // MacAddress end
 
     // AccountName start
-    std::size_t accountNameOffset = 14;
+    std::size_t accountNameOffset = 0;
     auto accountNameSizeHex = packetHexStr.substr(accountNameOffset, 2);
-    std::size_t accountNameSize = std::stoul(
-      accountNameSizeHex, nullptr, 16
+    std::size_t accountNameSize = Utils::hexToNumber<std::size_t>(
+      accountNameSizeHex
       );
     LOG->warning(
       "Account name size: {} - Hex: {}",
@@ -138,8 +138,8 @@ namespace net { namespace packet
 
     // Password start
     std::size_t passwordOffset = accountNameOffset + 2 + accountNameSize * 2;
-    std::size_t passwordSize = std::stoul(
-      packetHexStr.substr(passwordOffset, 2), nullptr, 16
+    std::size_t passwordSize = Utils::hexToNumber<std::size_t>(
+      packetHexStr.substr(passwordOffset, 2)
       );
     LOG->warning(
       "Password size: {} - Hex: {}",
