@@ -28,8 +28,10 @@ namespace net { namespace packet
 
     public:
       const HexData& append(const std::string& hexBodyStr);
-      std::string toString() const;
       void setType(const std::string& type);
+      const std::string& getType() const;
+      const std::string& getBody() const;
+      std::string toString() const;
   };
 } }
 

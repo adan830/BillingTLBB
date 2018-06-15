@@ -1,5 +1,6 @@
 #include "billing/net/Session.hpp"
 
+#include "billing/net/packet/HexData.hpp"
 #include "billing/net/packet/Routes.hpp"
 #include "billing/net/Packet.hpp"
 #include "billing/Utils.hpp"
@@ -66,7 +67,7 @@ namespace net
     );
   }
 
-  bool Session::packetHandle(std::shared_ptr<Packet> packet)
+  bool Session::packetHandle(const std::shared_ptr<Packet> packet)
   {
     if (packet->getSize() == 0)
     {
@@ -80,9 +81,9 @@ namespace net
     }
 
     LOG->warning("Packet Data: {}", packet->toString());
-    LOG->warning("Packet Hex: {}", packet->toHexString());
+    LOG->warning("Packet Hex: {}", packet->getHexData()->toString());
 
-    auto responseData = packet::Routes::getInstance()[packet->toHexString()];
+    auto responseData = packet::Routes::getInstance()[packet];
 
     if (responseData.empty())
     {

@@ -1,6 +1,7 @@
 #include "billing/net/packet/Routes.hpp"
 
 #include "billing/database/models/Account.hpp"
+#include "billing/net/packet/HexData.hpp"
 #include "billing/Utils.hpp"
 #include "billing/Log.hpp"
 
@@ -9,27 +10,28 @@
 
 namespace net { namespace packet
 {
-  Routes::Routes() :
-    m_checkSumFirstStr("AA55"),
-    m_checkSumLastStr("55AA")
+  Routes::Routes()
   {
-    m_routers["A0"] = [this](const std::string&)->ResponseData
+    m_routers["A0"] = [this](const std::shared_ptr<packet::HexData>) ->ResponseData
     {
       return this->onOpenConnectionHandle();
     };
 
-    m_routers["A1"] = [this](const std::string&)->ResponseData
+    m_routers["A1"] = [this](const std::shared_ptr<packet::HexData>)
+    ->ResponseData
     {
       return this->onPingConnectionHandle();
     };
 
-    m_routers["A2"] = [this](const std::string& packetHexStr)->ResponseData
+    m_routers["A2"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ResponseData
     {
-      return this->onLoginRequestHandle(packetHexStr);
+      return this->onLoginRequestHandle(hexData);
     };
 
     // StartUpKick
-    m_routers["A9"] = [this](const std::string&)->ResponseData
+    m_routers["A9"] = [this](const std::shared_ptr<packet::HexData>)
+    ->ResponseData
     {
       return this->onPingConnectionHandle();
     };
@@ -45,30 +47,16 @@ namespace net { namespace packet
     return s_instance;
   }
 
-  const Routes::ResponseData
-  Routes::operator[](const std::string& hexStr)
+  Routes::ResponseData
+  Routes::operator[](const std::shared_ptr<Packet> hexData)
   {
     ResponseData m_responseData;
 
     for (const auto& router : m_routers)
     {
-      if (hexStr.find(m_checkSumFirstStr) != 0)
+      if (hexData->getHexData()->getType() == router.first)
       {
-        break;
-      }
-      if (
-        hexStr.find(m_checkSumLastStr)
-        !=
-        (hexStr.size() - m_checkSumLastStr.size())
-        )
-      {
-        break;
-      }
-
-      auto pos = hexStr.find(router.first, m_checkSumFirstStr.size());
-      if (pos == m_checkSumFirstStr.size() + 4)
-      {
-        m_responseData = router.second(hexStr);
+        m_responseData = router.second(hexData->getHexData());
         break;
       }
     }
@@ -80,45 +68,42 @@ namespace net { namespace packet
   {
     LOG->warning(__FUNCTION__);
 
-    std::string responseHexStr;
-    responseHexStr.append(m_checkSumFirstStr);
+    packet::HexData responseData;
+    responseData.setType("A1");
 
-    // responseHexStr.append("05A8D8060055");
-
-    responseHexStr.append(m_checkSumLastStr);
-    return Utils::hexToBytes(responseHexStr);
+    return Utils::hexToBytes(responseData.toString());
   }
 
   Routes::ResponseData Routes::onOpenConnectionHandle()
   {
     LOG->warning(__FUNCTION__);
 
-    std::string responseHexStr;
-    responseHexStr.append(m_checkSumFirstStr);
+    packet::HexData responseData;
 
-    // responseHexStr.append("0005A011980100");
+    responseData.setType("A0");
 
-    responseHexStr.append(m_checkSumLastStr);
-    return Utils::hexToBytes(responseHexStr);
+    return Utils::hexToBytes(responseData.toString());
   }
 
   Routes::ResponseData
-  Routes::onLoginRequestHandle(const std::string& packetHexStr)
+  Routes::onLoginRequestHandle(const std::shared_ptr<packet::HexData> hexData)
   {
     LOG->warning(__FUNCTION__);
 
-    std::string responseHexStr;
-    responseHexStr.append(m_checkSumFirstStr);
+    packet::HexData responseData;
+
+    auto &packetHexStr = hexData->getBody();
 
     // MacAddress start
-    std::size_t macAddressOffset = packetHexStr.size() - 140;
-    auto macAddressBytes = Utils::hexToBytes(
-      packetHexStr.substr(macAddressOffset, packetHexStr.size() - 76)
+    std::size_t macAddressOffset = packetHexStr.size() - 136;
+    auto maxAddressHex = packetHexStr.substr(
+      macAddressOffset, packetHexStr.size() - 72
       );
+    auto macAddressBytes = Utils::hexToBytes(maxAddressHex);
     LOG->warning(
       "MAC Address offset: {} - Hex: {}",
       macAddressOffset,
-      packetHexStr.substr(macAddressOffset, packetHexStr.size() - 76)
+      maxAddressHex
       );
     auto macAddress = std::string(
       macAddressBytes.cbegin(),
@@ -178,26 +163,21 @@ namespace net { namespace packet
     int loginValue = 0; // Successed
     std::size_t responseDataSize = 72 - 40 * loginValue + accountNameHex.size();
     LOG->warning("Login packet size: {}", responseDataSize);
-    std::size_t packetLen = responseDataSize - m_checkSumFirstStr.size() -
-    m_checkSumLastStr.size();
-    responseHexStr.append(Utils::numberToHex(packetLen, 4));
-    // responseHexStr.append("00");
-    responseHexStr.append("A2");
-    responseHexStr.append(packetHexStr.substr(10, 4));
-    responseHexStr.append(accountNameSizeHex);
-    responseHexStr.append(accountNameHex);
-    responseHexStr.append('0' + std::to_string(loginStatus));
-    responseHexStr.append(std::string(
-        responseDataSize - responseHexStr.size() - m_checkSumLastStr.size(),
-        '0'
-        ));
+    responseData.append(packetHexStr.substr(10, 4));
+    responseData.append(accountNameSizeHex);
+    responseData.append(accountNameHex);
+    responseData.append('0' + std::to_string(loginStatus));
+    // responseData.append(std::string(
+    //     responseDataSize - responseData.size() - m_checkSumLastStr.size(),
+    //     '0'
+    //     ));
     // LastData end
 
-    responseHexStr.append(m_checkSumLastStr);
+    responseData.setType("A2");
 
-    LOG->warning("Login packet Hex: {}", responseHexStr);
+    LOG->warning("Login packet Hex: {}", responseData.toString());
 
-    return Utils::hexToBytes(responseHexStr);
+    return Utils::hexToBytes(responseData.toString());
   }
 } }
 

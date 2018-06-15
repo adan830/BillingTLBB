@@ -66,10 +66,6 @@ namespace net { namespace packet
       delete this;
       return;
     }
-    LOG->warning(
-      "Header: {} | Size: {} | Type: {} | Body: {} | Footer: {}",
-      m_header, m_size, m_type, m_body, m_footer
-      );
   }
 
   const HexData& HexData::append(const std::string& hexBody)
@@ -83,10 +79,30 @@ namespace net { namespace packet
   void HexData::setType(const std::string& type)
   {
     m_type = type;
+
+    if (m_size == 0)
+    {
+      m_size = m_type.size();
+    }
+  }
+
+  const std::string& HexData::getType() const
+  {
+    return m_type;
+  }
+
+  const std::string& HexData::getBody() const
+  {
+    return m_body;
   }
 
   std::string HexData::toString() const
   {
+    LOG->warning(
+      "Header: {} | Size: {} | Type: {} | Body: {} | Footer: {}",
+      m_header, m_size, m_type, m_body, m_footer
+      );
+
     return m_header
     + Utils::numberToHex(m_size, 4)
     + m_type + m_body

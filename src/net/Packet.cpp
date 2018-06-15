@@ -8,7 +8,9 @@ namespace net
   Packet::Packet(const std::shared_ptr<Buffer> buffer, const std::size_t size) :
     m_buffer(buffer)
   {
-    m_hexData = new packet::HexData(m_buffer, size);
+    m_hexData = std::shared_ptr<packet::HexData>(
+      new packet::HexData(m_buffer, size)
+      );
 
     if (!m_hexData)
     {
@@ -26,7 +28,6 @@ namespace net
 
   Packet::~Packet()
   {
-    delete m_hexData;
   }
 
   std::size_t Packet::getSize() const
@@ -39,9 +40,9 @@ namespace net
     return m_string;
   }
 
-  const std::string& Packet::toHexString() const
+  std::shared_ptr<packet::HexData> Packet::getHexData() const
   {
-    return m_hexString;
+    return m_hexData;
   }
 }
 

@@ -1,6 +1,8 @@
 #ifndef __BILLING_NET_PACKET_ROUTES_HPP__
 #define __BILLING_NET_PACKET_ROUTES_HPP__
 
+#include "../Packet.hpp"
+
 #include <unordered_map>
 #include <functional>
 #include <string>
@@ -13,7 +15,7 @@ namespace net { namespace packet
     public:
       using ResponseData = std::vector<char>;
       using Routers = std::unordered_map<std::string,
-            std::function<ResponseData(const std::string&)>
+            std::function<ResponseData(const std::shared_ptr<packet::HexData>)>
             >;
 
     private:
@@ -29,12 +31,14 @@ namespace net { namespace packet
 
     public:
       static Routes& getInstance();
-      const ResponseData operator[](const std::string& packetHexStr);
+      ResponseData operator[](const std::shared_ptr<Packet> packet);
 
     protected:
       ResponseData onOpenConnectionHandle();
       ResponseData onPingConnectionHandle();
-      ResponseData onLoginRequestHandle(const std::string& packetHexStr);
+      ResponseData onLoginRequestHandle(
+        const std::shared_ptr<packet::HexData> packetHexData
+        );
   };
 } }
 

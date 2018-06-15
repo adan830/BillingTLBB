@@ -22,12 +22,12 @@ namespace net
       std::size_t m_size;
       std::string m_string;
       std::string m_hexString;
-      packet::HexData* m_hexData;
+      std::shared_ptr<packet::HexData> m_hexData;
 
     public:
       Packet() = delete;
       Packet(const std::shared_ptr<Buffer> buffer, const std::size_t size);
-      Packet(const packet::HexData& hexData);
+      Packet(std::shared_ptr<packet::HexData> hexData);
       ~Packet();
 
     public:
@@ -35,7 +35,7 @@ namespace net
       std::size_t getSize() const;
       void setSize(const std::size_t size);
       const std::string& toString() const;
-      const std::string& toHexString() const;
+      std::shared_ptr<packet::HexData> getHexData() const;
   };
 }
 
