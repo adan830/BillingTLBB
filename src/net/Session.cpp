@@ -56,12 +56,12 @@ namespace net
         else
         {
           LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
-          auto m_packet = std::make_shared<Packet>(m_buffer, len);
-
-          if (!self->packetHandle(m_packet))
+          if (len >= 7)
           {
-            self->start();
+            self->packetHandle(std::make_shared<Packet>(m_buffer, len));
           }
+
+          self->start();
         }
       }
     );
@@ -79,9 +79,6 @@ namespace net
 
       return false;
     }
-
-    LOG->warning("Packet Data: {}", packet->toString());
-    LOG->warning("Packet Hex: {}", packet->getHexData()->toString());
 
     auto responseData = packet::Routes::getInstance()[packet];
 
@@ -126,12 +123,8 @@ namespace net
             ec.message()
             );
         }
-        else
-        {
-          self->start();
-        }
       }
-    );
+      );
 
     return true;
   }

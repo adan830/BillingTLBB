@@ -27,25 +27,44 @@ namespace net { namespace packet
         throw std::runtime_error("Parse buffer to hex error");
       }
 
-      m_size = std::stoul(hexData.substr(4, 4), nullptr, 16);
+      m_size = Utils::hexToNumber<HexData::SizeType>(hexData.substr(4, 4));
 
       m_header = hexData.substr(0, 4);
+
+      if (m_header != "AA55")
+      {
+        throw std::runtime_error("Buffer header error");
+      }
 
       m_type = hexData.substr(8, 2);
 
       std::size_t bodyLastPos = m_size * 2 - 2;
       if (bodyLastPos > (hexData.size() - 12))
       {
-        throw std::runtime_error("Error size");
+        throw std::runtime_error("Buffer size too large");
       }
 
       m_body = hexData.substr(10, bodyLastPos);
 
+      if (m_body.empty())
+      {
+        throw std::runtime_error("Buffer body error");
+      }
+
       m_footer = hexData.substr(hexData.size() - 4);
+
+      if (m_footer != "55AA")
+      {
+        throw std::runtime_error("Buffer footer error");
+      }
     }
     catch(const std::exception& e)
     {
       LOG->error("Error while parse buffer: {}", e.what());
+    }
+    catch(...)
+    {
+      LOG->error("Error exception in: {}", __FUNCTION__);
     }
 
     this->init();
@@ -53,19 +72,11 @@ namespace net { namespace packet
 
   HexData::~HexData()
   {
+    LOG->warning("{} is called", __FUNCTION__);
   }
 
   void HexData::init()
   {
-    if (
-      m_footer.empty() || m_header.empty() ||
-      (m_header != "AA55") || (m_footer != "55AA")
-      )
-    {
-      LOG->error("Buffer error");
-      delete this;
-      return;
-    }
   }
 
   const HexData& HexData::append(const std::string& hexBody)

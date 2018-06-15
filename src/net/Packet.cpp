@@ -12,7 +12,7 @@ namespace net
       new packet::HexData(m_buffer, size)
       );
 
-    if (!m_hexData)
+    if (m_hexData->getBody().empty())
     {
       m_size = 0;
     }

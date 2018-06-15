@@ -31,6 +31,8 @@ Log::Log() :
   spdlog::register_logger(
     std::make_shared<spdlog::logger>("console", stdoutSink)
     );
+
+  std::cout << "Created LOG" << std::endl;
 }
 
 Log::~Log()

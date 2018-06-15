@@ -13,12 +13,18 @@ namespace Utils
   std::string bytesToHex(const char* data, const std::size_t len);
 
   template<typename T>
-  std::string numberToHex(T i, const std::size_t width)
+  inline std::string numberToHex(T i, const std::size_t width)
   {
     std::stringstream sstream;
     sstream << std::setfill('0') << std::setw(width) << std::hex << i;
 
     return sstream.str();
+  }
+
+  template<typename T>
+  inline T hexToNumber(const std::string& hexStr)
+  {
+    return static_cast<T>(std::stoul(hexStr, nullptr, 16));
   }
 }
 

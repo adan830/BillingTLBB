@@ -8,9 +8,12 @@ namespace net { namespace packet
 {
   class HexData
   {
+    public:
+      using SizeType = unsigned short;
+
     private:
       std::string m_header;
-      std::size_t m_size;
+      SizeType m_size;
       std::string m_type;
       std::string m_body;
       std::string m_footer;
