@@ -38,6 +38,7 @@ namespace net
 
   void Session::start()
   {
+    LOG->warning("Session read starting");
     // Keep session alive
     auto self = this->shared_from_this();
 
@@ -143,6 +144,8 @@ namespace net
               m_socket.remote_endpoint().port(),
               ec.message()
               );
+          }
+          {
           }
         }
         );
