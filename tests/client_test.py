@@ -24,17 +24,20 @@ port = 12680
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-s.connect((host, port))
+try:
+  s.connect((host, port))
+except:
+  print('Error')
+else:
+  while messageHex != 'q':
+    s.sendall(binascii.unhexlify(messageHex))
 
-while messageHex != 'q':
-  s.sendall(binascii.unhexlify(messageHex))
+    data = s.recv(1024)
 
-  data = s.recv(1024)
+    print('Received', repr(data))
+    print('In Hex: {}', byteToHex(data))
 
-  print('Received', repr(data))
-  print('In Hex: {}', byteToHex(data))
-
-  messageHex = raw_input('Insert next Hex Data: ')
+    messageHex = raw_input('Insert next Hex Data: ')
 
 s.close()
 
