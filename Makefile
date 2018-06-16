@@ -23,3 +23,6 @@ clean:
 deps.update:
 	git submodule update --init --recursive
 
+test.client:
+	cd tests && make client
+

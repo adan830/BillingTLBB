@@ -26,24 +26,6 @@ namespace net
     LOG->info("BillingSocket is initialized");
   }
 
-  BillingSocket::BillingSocket(
-    const std::string& ip,
-    const unsigned short port) :
-    m_socket(m_asioIoService)
-  {
-    LOG->info("BillingSocket is initializing...");
-
-    m_acceptor = new asio::ip::tcp::acceptor(
-      m_asioIoService,
-      asio::ip::tcp::endpoint(
-        asio::ip::address::from_string(ip),
-        port
-        )
-      );
-
-    LOG->info("BillingSocket is initialized");
-  }
-
   BillingSocket::~BillingSocket()
   {
     LOG->info("BillingSocket is destructing...");
@@ -73,11 +55,23 @@ namespace net
 
     this->accept();
 
-    m_asioIoService.run();
+    try
+    {
+      m_asioIoService.run();
+    }
+    catch(const std::exception& e)
+    {
+      LOG->error("Error execepted: {}", e.what());
+    }
+    catch(...)
+    {
+      LOG->error("Error execepted at m_asioIoService");
+    }
   }
 
   void BillingSocket::accept()
   {
+    LOG->warning("Accepting new connection");
     if (std::ifstream("stop_billing.cmd").good())
     {
       std::remove("stop_billing.cmd");

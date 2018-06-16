@@ -15,7 +15,7 @@ namespace database
     protected:
       std::string m_tableName;
 
-    public:
+    protected:
       Model();
       virtual ~Model();
 

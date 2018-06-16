@@ -10,9 +10,6 @@
 #include <chrono>
 #include <thread>
 
-// Test
-#include "billing/database/models/Account.hpp"
-
 namespace net
 {
   Session::Session(asio::ip::tcp::socket socket) :
@@ -23,15 +20,6 @@ namespace net
       m_socket.remote_endpoint().address().to_string(),
       m_socket.remote_endpoint().port()
       );
-
-    try
-    {
-      database::models::Account a("1ssss");
-    }
-    catch(...)
-    {
-      LOG->info("Error in Database");
-    }
   }
 
   Session::~Session()
@@ -42,7 +30,10 @@ namespace net
       m_socket.remote_endpoint().port()
       );
 
-    m_socket.close();
+    if (m_socket.available())
+    {
+      m_socket.close();
+    }
   }
 
   void Session::start()
@@ -51,6 +42,11 @@ namespace net
     auto self = this->shared_from_this();
 
     auto m_buffer = std::make_shared<Packet::Buffer>();
+    if (!m_socket.available())
+    {
+      LOG->error("Socket is destroyed before trying to receive data");
+      return;
+    }
     m_socket.async_receive(
       asio::buffer(*m_buffer),
       [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
@@ -83,7 +79,7 @@ namespace net
     );
   }
 
-  bool Session::packetHandle(const std::shared_ptr<Packet> packet)
+  void Session::packetHandle(const std::shared_ptr<Packet> packet)
   {
     if (packet->getSize() == 0)
     {
@@ -93,7 +89,7 @@ namespace net
         m_socket.remote_endpoint().port()
         );
 
-      return false;
+      return;
     }
 
     auto responseData = packet::Routes::getInstance()[packet];
@@ -105,7 +101,7 @@ namespace net
         m_socket.remote_endpoint().address().to_string(),
         m_socket.remote_endpoint().port()
         );
-      return false;
+      return;
     }
     else
     {
@@ -125,6 +121,12 @@ namespace net
 
     // Keep session alive
     auto self = this->shared_from_this();
+
+    if (!m_socket.available())
+    {
+      LOG->error("Socket is destroyed before send");
+      return;
+    }
 
     m_socket.async_send(
       asio::buffer(responseData),
@@ -147,8 +149,6 @@ namespace net
         }
       }
       );
-
-    return true;
   }
 
   const asio::ip::tcp::socket& Session::getSocket() const
