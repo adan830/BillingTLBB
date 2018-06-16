@@ -167,7 +167,7 @@ namespace net { namespace packet
     }
     catch (...)
     {
-      LOG->error("Error");
+      LOG->error("Sql database has error");
     }
 
     LOG->info("Account {} sent login request", accountName);
