@@ -41,6 +41,10 @@ namespace database { namespace models {
     auto ret = conn->query<int, std::string, int>(q.data(), name);
   }
 
+  Account::~Account()
+  {
+  }
+
   void Account::init()
   {
     m_tableName = "account";

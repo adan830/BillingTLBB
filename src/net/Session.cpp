@@ -10,6 +10,9 @@
 #include <chrono>
 #include <thread>
 
+// Test
+#include "billing/database/models/Account.hpp"
+
 namespace net
 {
   Session::Session(asio::ip::tcp::socket socket) :
@@ -20,6 +23,7 @@ namespace net
       m_socket.remote_endpoint().address().to_string(),
       m_socket.remote_endpoint().port()
       );
+    database::models::Account a("1");
   }
 
   Session::~Session()
