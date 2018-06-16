@@ -107,6 +107,11 @@ namespace net { namespace packet
     return m_body;
   }
 
+  HexData::SizeType HexData::getSize() const
+  {
+    return m_size;
+  }
+
   std::string HexData::toString() const
   {
     LOG->warning(

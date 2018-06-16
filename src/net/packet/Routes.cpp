@@ -113,7 +113,7 @@ namespace net { namespace packet
     // MacAddress end
 
     // AccountName start
-    std::size_t accountNameOffset = 0;
+    std::size_t accountNameOffset = 4;
     auto accountNameSizeHex = packetHexStr.substr(accountNameOffset, 2);
     std::size_t accountNameSize = Utils::hexToNumber<std::size_t>(
       accountNameSizeHex
@@ -141,14 +141,15 @@ namespace net { namespace packet
     std::size_t passwordSize = Utils::hexToNumber<std::size_t>(
       packetHexStr.substr(passwordOffset, 2)
       );
+    auto passwordHexStr = packetHexStr.substr(
+      passwordOffset + 2, passwordSize * 2
+      );
     LOG->warning(
       "Password size: {} - Hex: {}",
       passwordSize,
-      packetHexStr.substr(passwordOffset + 2 , passwordSize * 2)
+      passwordHexStr
       );
-    auto passwordBytes = Utils::hexToBytes(
-      packetHexStr.substr(passwordOffset + 2, passwordSize * 2)
-      );
+    auto passwordBytes = Utils::hexToBytes(passwordHexStr);
     auto password = std::string(
       passwordBytes.cbegin(),
       passwordBytes.cend()
@@ -156,24 +157,25 @@ namespace net { namespace packet
     LOG->warning("Password: {}", password);
     // Password end
 
-    LOG->info("Account {} is loggin", accountName);
+    LOG->info("Account {} sent login request", accountName);
 
     // LastData start
     int loginStatus = 1; // Successed
     int loginValue = 0; // Successed
-    std::size_t responseDataSize = 72 - 40 * loginValue + accountNameHex.size();
+    std::size_t responseDataSize = 50 - 40 * loginValue + accountNameHex.size();
     LOG->warning("Login packet size: {}", responseDataSize);
-    responseData.append(packetHexStr.substr(10, 4));
+    responseData.setType("A2");
+    responseData.append(packetHexStr.substr(0, 4));
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
-    responseData.append('0' + std::to_string(loginStatus));
-    // responseData.append(std::string(
-    //     responseDataSize - responseData.size() - m_checkSumLastStr.size(),
-    //     '0'
-    //     ));
+    responseData.append(Utils::numberToHex(loginStatus, 2));
+    responseData.append(std::string(
+        responseDataSize
+        - responseData.getSize(),
+        '0'
+        ));
     // LastData end
 
-    responseData.setType("A2");
 
     LOG->warning("Login packet Hex: {}", responseData.toString());
 

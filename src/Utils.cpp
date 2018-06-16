@@ -31,5 +31,14 @@ namespace Utils
     }
     return hexStr;
   }
+
+  std::string strToUpper(const std::string& s)
+  {
+    std::string str = s;
+
+    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+
+    return str;
+  }
 }
 

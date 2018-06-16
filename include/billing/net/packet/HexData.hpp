@@ -34,6 +34,7 @@ namespace net { namespace packet
       void setType(const std::string& type);
       const std::string& getType() const;
       const std::string& getBody() const;
+      SizeType getSize() const;
       std::string toString() const;
   };
 } }

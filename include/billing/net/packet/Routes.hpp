@@ -20,8 +20,6 @@ namespace net { namespace packet
 
     private:
       Routers m_routers;
-      const std::string m_checkSumFirstStr;
-      const std::string m_checkSumLastStr;
 
     private:
       Routes();

@@ -1,6 +1,7 @@
 #ifndef __BILLING_UTILS_HPP__
 #define __BILLING_UTILS_HPP__
 
+#include <algorithm>
 #include <sstream>
 #include <iomanip>
 #include <vector>
@@ -8,6 +9,8 @@
 
 namespace Utils
 {
+  std::string strToUpper(const std::string& s);
+
   std::vector<char> hexToBytes(const std::string& hex);
 
   std::string bytesToHex(const char* data, const std::size_t len);
@@ -16,7 +19,9 @@ namespace Utils
   inline std::string numberToHex(T i, const std::size_t width)
   {
     std::stringstream sstream;
-    sstream << std::setfill('0') << std::setw(width) << std::hex << i;
+    sstream << std::setfill('0') << std::setw(width)
+    << std::uppercase
+    << std::hex << i;
 
     return sstream.str();
   }
