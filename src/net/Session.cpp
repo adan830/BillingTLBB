@@ -44,8 +44,7 @@ namespace net
 
     auto m_buffer = std::make_shared<Packet::Buffer>();
 
-    asio::async_read(
-      m_socket,
+    m_socket.async_receive(
       asio::buffer(*m_buffer),
       [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
       {
@@ -65,18 +64,20 @@ namespace net
             std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
             );
           LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
-          if (len >= 7)
+          if (
+            (len >= 7)
+            ||
+            self->packetHandle(std::make_shared<Packet>(m_buffer, len))
+            )
           {
-            self->packetHandle(std::make_shared<Packet>(m_buffer, len));
+            self->start();
           }
-
-          self->start();
         }
       }
     );
   }
 
-  void Session::packetHandle(const std::shared_ptr<Packet> packet)
+  bool Session::packetHandle(const std::shared_ptr<Packet> packet)
   {
     if (packet->getSize() == 0)
     {
@@ -86,7 +87,7 @@ namespace net
         m_socket.remote_endpoint().port()
         );
 
-      return;
+      return false;
     }
 
     // Keep session alive
@@ -101,7 +102,7 @@ namespace net
         m_socket.remote_endpoint().address().to_string(),
         m_socket.remote_endpoint().port()
         );
-      return;
+      return false;
     }
 
     LOG->warning(
@@ -117,8 +118,8 @@ namespace net
         )
       );
 
-    asio::async_write(
-      m_socket, asio::buffer(responseData),
+    m_socket.async_send(
+      asio::buffer(responseData),
       [this, self](const std::error_code& ec, const std::size_t len)
       {
         LOG->warning(
@@ -135,8 +136,14 @@ namespace net
             ec.message()
             );
         }
+        else
+        {
+          self->start();
+        }
       }
     );
+
+    return true;
   }
 
   const asio::ip::tcp::socket& Session::getSocket() const
