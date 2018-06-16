@@ -43,36 +43,43 @@ namespace net
 
     auto m_buffer = std::make_shared<Packet::Buffer>();
 
-    m_socket.async_receive(
-      asio::buffer(*m_buffer),
-      [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
-      {
-        LOG->warning(
-          "Received {} byte(s) from {}:{}",
-          len,
-          m_socket.remote_endpoint().address().to_string(),
-          m_socket.remote_endpoint().port()
-          );
-        if (ec)
-        {
-          LOG->error("Socket receive error: {}", ec.message());
-        }
-        else
+    try
+    {
+      m_socket.async_receive(
+        asio::buffer(*m_buffer),
+        [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
         {
           LOG->warning(
-            "Raw: {}",
-            std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
+            "Received {} byte(s) from {}:{}",
+            len,
+            m_socket.remote_endpoint().address().to_string(),
+            m_socket.remote_endpoint().port()
             );
-          LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
-          if (len >= 7)
+          if (ec)
           {
-            self->packetHandle(std::make_shared<Packet>(m_buffer, len));
+            LOG->error("Socket receive error: {}", ec.message());
           }
+          else
+          {
+            LOG->warning(
+              "Raw: {}",
+              std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
+              );
+            LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
+            if (len >= 7)
+            {
+              self->packetHandle(std::make_shared<Packet>(m_buffer, len));
+            }
 
-          self->start();
+            self->start();
+          }
         }
-      }
-    );
+      );
+    }
+    catch(...)
+    {
+      LOG->error("Error while trying to read");
+    }
   }
 
   void Session::packetHandle(const std::shared_ptr<Packet> packet)
