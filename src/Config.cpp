@@ -85,7 +85,7 @@ void Config::readData()
       }
       else if (configKey == "WEB_DATABASE_IP")
       {
-        m_data->webDatabaseIp = configKey;
+        m_data->webDatabaseIp = configValue;
       }
       else if (configKey == "WEB_DATABASE_PORT")
       {
