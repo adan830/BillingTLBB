@@ -25,8 +25,6 @@ void Billing::start()
   LOG->info("Billing is starting...");
 
   m_socket->start();
-
-  LOG->info("Billing is started!");
 }
 
 void Billing::stop()

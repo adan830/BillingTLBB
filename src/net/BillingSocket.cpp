@@ -55,21 +55,17 @@ namespace net
 
     this->accept();
 
-    while(true)
+    try
     {
-      try
-      {
-        m_asioIoService.run();
-        break;
-      }
-      catch(const std::exception& e)
-      {
-        LOG->error("Error execepted: {}", e.what());
-      }
-      catch(...)
-      {
-        LOG->error("Error execepted at m_asioIoService");
-      }
+      m_asioIoService.run();
+    }
+    catch(const std::exception& e)
+    {
+      LOG->error("Error execepted: {}", e.what());
+    }
+    catch(...)
+    {
+      LOG->error("Error execepted at m_asioIoService");
     }
   }
 
@@ -107,7 +103,7 @@ namespace net
     LOG->info("BillingSocket is stopping...");
 
     m_acceptor->cancel();
-    // m_asioIoService.stop();
+    m_asioIoService.stop();
 
     LOG->info("BillingSocket is stopped!");
   }

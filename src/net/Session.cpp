@@ -56,7 +56,7 @@ namespace net
           );
         if (ec)
         {
-          LOG->error("Socket receive error: {}", ec.message());
+          LOG->error("Socket received error: {}", ec.message());
         }
         else
         {
