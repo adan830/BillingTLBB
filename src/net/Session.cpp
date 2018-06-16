@@ -65,7 +65,7 @@ namespace net
             );
           LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
           if (
-            (len >= 7)
+            (len < 7)
             ||
             self->packetHandle(std::make_shared<Packet>(m_buffer, len))
             )
