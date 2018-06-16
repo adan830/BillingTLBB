@@ -55,17 +55,21 @@ namespace net
 
     this->accept();
 
-    try
+    while(true)
     {
-      m_asioIoService.run();
-    }
-    catch(const std::exception& e)
-    {
-      LOG->error("Error execepted: {}", e.what());
-    }
-    catch(...)
-    {
-      LOG->error("Error execepted at m_asioIoService");
+      try
+      {
+        m_asioIoService.run();
+        break;
+      }
+      catch(const std::exception& e)
+      {
+        LOG->error("Error execepted: {}", e.what());
+      }
+      catch(...)
+      {
+        LOG->error("Error execepted at m_asioIoService");
+      }
     }
   }
 

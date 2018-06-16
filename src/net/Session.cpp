@@ -42,11 +42,7 @@ namespace net
     auto self = this->shared_from_this();
 
     auto m_buffer = std::make_shared<Packet::Buffer>();
-    if (!m_socket.available())
-    {
-      LOG->error("Socket is destroyed before trying to receive data");
-      return;
-    }
+
     m_socket.async_receive(
       asio::buffer(*m_buffer),
       [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
@@ -92,6 +88,9 @@ namespace net
       return;
     }
 
+    // Keep session alive
+    auto self = this->shared_from_this();
+
     auto responseData = packet::Routes::getInstance()[packet];
 
     if (responseData.empty())
@@ -103,52 +102,48 @@ namespace net
         );
       return;
     }
-    else
-    {
-      LOG->warning(
-        "Sending to {}:{}",
-        m_socket.remote_endpoint().address().to_string(),
-        m_socket.remote_endpoint().port()
-        );
-      LOG->warning(
-        "RawData: {}",
-        std::string(
-          responseData.cbegin(),
-          responseData.cbegin() + responseData.size()
-          )
-        );
-    }
 
-    // Keep session alive
-    auto self = this->shared_from_this();
-
-    if (!m_socket.available())
-    {
-      LOG->error("Socket is destroyed before send");
-      return;
-    }
-
-    m_socket.async_send(
-      asio::buffer(responseData),
-      [this, self](const std::error_code& ec, const std::size_t len)
-      {
-        LOG->warning(
-          "Sent {} byte(s) to {}:{}",
-          len,
-          m_socket.remote_endpoint().address().to_string(),
-          m_socket.remote_endpoint().port()
-          );
-        if (ec)
-        {
-          LOG->error(
-            "Session with {}:{} has error: {}",
-            m_socket.remote_endpoint().address().to_string(),
-            m_socket.remote_endpoint().port(),
-            ec.message()
-            );
-        }
-      }
+    LOG->warning(
+      "Sending to {}:{}",
+      m_socket.remote_endpoint().address().to_string(),
+      m_socket.remote_endpoint().port()
       );
+    LOG->warning(
+      "RawData: {}",
+      std::string(
+        responseData.cbegin(),
+        responseData.cbegin() + responseData.size()
+        )
+      );
+
+    try
+    {
+      m_socket.async_send(
+        asio::buffer(responseData),
+        [this, self](const std::error_code& ec, const std::size_t len)
+        {
+          LOG->warning(
+            "Sent {} byte(s) to {}:{}",
+            len,
+            m_socket.remote_endpoint().address().to_string(),
+            m_socket.remote_endpoint().port()
+            );
+          if (ec)
+          {
+            LOG->error(
+              "Session with {}:{} has error: {}",
+              m_socket.remote_endpoint().address().to_string(),
+              m_socket.remote_endpoint().port(),
+              ec.message()
+              );
+          }
+        }
+        );
+    }
+    catch(...)
+    {
+      LOG->error("Error while async_send");
+    }
   }
 
   const asio::ip::tcp::socket& Session::getSocket() const
