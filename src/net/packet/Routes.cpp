@@ -12,15 +12,16 @@ namespace net { namespace packet
 {
   Routes::Routes()
   {
-    m_routers["A0"] = [this](const std::shared_ptr<packet::HexData>) ->ResponseData
-    {
-      return this->onOpenConnectionHandle();
-    };
-
-    m_routers["A1"] = [this](const std::shared_ptr<packet::HexData>)
+    m_routers["A0"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ResponseData
     {
-      return this->onPingConnectionHandle();
+      return this->onOpenConnectionHandle(hexData);
+    };
+
+    m_routers["A1"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ResponseData
+    {
+      return this->onKeepLiveHandle(hexData);
     };
 
     m_routers["A2"] = [this](const std::shared_ptr<packet::HexData> hexData)
@@ -29,11 +30,17 @@ namespace net { namespace packet
       return this->onLoginRequestHandle(hexData);
     };
 
-    // StartUpKick
-    m_routers["A9"] = [this](const std::shared_ptr<packet::HexData>)
+    m_routers["A3"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ResponseData
     {
-      return this->onPingConnectionHandle();
+      return this->onSelectCharHandle(hexData);
+    };
+
+    // StartUpKick
+    m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ResponseData
+    {
+      return this->onStartUpKickHandle(hexData);
     };
   }
 
@@ -64,25 +71,39 @@ namespace net { namespace packet
     return m_responseData;
   }
 
-  Routes::ResponseData Routes::onPingConnectionHandle()
+  Routes::ResponseData
+  Routes::onOpenConnectionHandle(const std::shared_ptr<packet::HexData> hexData)
+  {
+    LOG->warning(__FUNCTION__);
+
+    packet::HexData responseData;
+
+    responseData.setType(hexData->getType());
+    responseData.append("11980100");
+
+    return Utils::hexToBytes(responseData.toString());
+  }
+
+  Routes::ResponseData
+  Routes::onKeepLiveHandle(const std::shared_ptr<packet::HexData> hexData)
+  {
+    LOG->warning(__FUNCTION__);
+
+    packet::HexData responseData;
+    responseData.setType(hexData->getType());
+    responseData.append("A8D80600");
+
+    return Utils::hexToBytes(responseData.toString());
+  }
+
+  Routes::ResponseData
+  Routes::onStartUpKickHandle(const std::shared_ptr<packet::HexData> hexData)
   {
     LOG->warning(__FUNCTION__);
 
     packet::HexData responseData;
     responseData.setType("A1");
     responseData.append("A8D80600");
-
-    return Utils::hexToBytes(responseData.toString());
-  }
-
-  Routes::ResponseData Routes::onOpenConnectionHandle()
-  {
-    LOG->warning(__FUNCTION__);
-
-    packet::HexData responseData;
-
-    responseData.setType("A0");
-    responseData.append("11980100");
 
     return Utils::hexToBytes(responseData.toString());
   }
@@ -160,7 +181,7 @@ namespace net { namespace packet
     // Password end
 
     int loginStatus = 1; // Successed
-    int loginValue = 0; // Successed
+    int loginValue = 1; // Successed
     try
     {
       database::models::Account a(accountName);
@@ -174,18 +195,18 @@ namespace net { namespace packet
       LOG->error("Sql database has error");
     }
 
-    LOG->info("Account {} sent login request", accountName);
+    LOG->info("Account [{}] sent login request", accountName);
 
     // LastData start
     std::size_t responseDataSize = 50 - 40 * loginValue + accountNameHex.size();
     LOG->warning("Login packet size: {}", responseDataSize);
-    responseData.setType("A2");
+    responseData.setType(hexData->getType());
     responseData.append(packetHexStr.substr(0, 4));
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
     responseData.append(Utils::numberToHex(loginStatus, 2));
     responseData.append(std::string(
-        responseDataSize - responseData.getSize(), '0'
+        responseDataSize - responseData.getSize()*2, '0'
         ));
     // LastData end
 
@@ -193,6 +214,18 @@ namespace net { namespace packet
       auto resHex = responseData.toString();
       LOG->warning("Login packet Hex: {}:{}", resHex, resHex.size());
     }
+
+    return Utils::hexToBytes(responseData.toString());
+  }
+
+  Routes::ResponseData
+  Routes::onSelectCharHandle(const std::shared_ptr<packet::HexData> hexData)
+  {
+    packet::HexData responseData;
+
+    // LastData start
+    responseData.setType(hexData->getType());
+    // LastData end
 
     return Utils::hexToBytes(responseData.toString());
   }
