@@ -2,14 +2,28 @@
 
 #include "billing/Log.hpp"
 
-#include "billing/any.hpp"
+#if (__cplusplus > 201402L) &&  __has_include(<any>)
+#  include <any>
+#else
+#  include "billing/any.hpp"
+namespace std
+{
+  using any = linb::any;
+}
+#endif
 
 namespace database
 {
   template<typename ...TParams>
   bool Connector::exec(const char* q, const TParams&... params)
   {
-    LOG->warning("Executing: {}", q);
+    LOG->warning("Executing {}: {}", __PRETTY_FUNCTION__, q);
+
+    if (std::strlen(q) == 0)
+    {
+      LOG->error("Sql query is empty");
+      return false;
+    }
 
     MYSQL_STMT *stmt = mysql_stmt_init(m_connDriver);
 
@@ -34,7 +48,7 @@ namespace database
     MYSQL_BIND bind[sizeof...(params)];
 
     // std::tuple<const TParams&...> tParams(params...);
-    std::vector<linb::any> tParams = {params...};
+    std::vector<std::any> tParams = {params...};
 
     for (std::size_t i = 0; i < tParams.size(); i++)
     {
@@ -67,6 +81,63 @@ namespace database
     )
   {
     LOG->warning("Executing: {}", q);
+
+    MYSQL_STMT *stmt = mysql_stmt_init(m_connDriver);
+
+    if (!stmt)
+    {
+      LOG->error("Error: {}", mysql_error(m_connDriver));
+      throw nullptr;
+    }
+
+    if (mysql_stmt_prepare(stmt, q, std::strlen(q)))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    MYSQL_BIND bind[sizeof...(params)];
+
+    // std::tuple<const TParams&...> tParams(params...);
+    std::vector<std::any> tParams = {params...};
+
+    for (std::size_t i = 0; i < tParams.size(); i++)
+    {
+      LOG->info(tParams[i].type().name());
+      if (tParams[i].type().name() == typeid(std::string).name())
+      {
+      }
+      else if(tParams[i].type().name() == typeid(int).name())
+      {
+      }
+      else if(tParams[i].type().name() == typeid(bool).name())
+      {
+      }
+      else if(tParams[i].type().name() == typeid(float).name())
+      {
+      }
+    }
+
+    if (mysql_stmt_execute(stmt))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    // for (std::size_t i = 0; i < sizeof...(params); i++)
+    // {
+    //   const auto x = i;
+    //   bind[i]->buffer = std::get<x>(tParams);
+    // }
+
+    if (mysql_stmt_bind_param(stmt, bind))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
 
     std::tuple<TReturn...> returnData;
 

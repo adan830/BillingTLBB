@@ -6,11 +6,11 @@ namespace database { namespace models {
   Account::Account(const int id) :
     database::Model()
   {
-    LOG->warning("Account is constructing...");
+    LOG->warning("Account is constructing with id: {}", id);
 
     this->init();
 
-    std::string q = R"(
+    constexpr auto q = R"(
       SELECT
         id,
         name,
@@ -22,31 +22,29 @@ namespace database { namespace models {
     )";
 
     auto conn = this->getConnector();
-    if (!conn)
-    {
-      LOG->error("Database connector error");
-    }
-    auto ret = conn->query<int, std::string, int>(q.data(), id);
+    auto ret = conn->query<int, std::string, int>(q, id);
   }
 
   Account::Account(const std::string& name) :
     database::Model()
   {
-    LOG->warning("Account is constructing...");
+    LOG->warning("Account is constructing with name: {}", name);
 
     this->init();
 
-    std::string q = R"(
+    constexpr auto q = R"(
       SELECT
         id,
         name,
         point
+      FROM
+        account
       WHERE
         name=?
     )";
 
     auto conn = this->getConnector();
-    auto ret = conn->query<int, std::string, int>(q.data(), name);
+    auto ret = conn->query<int, std::string, int>(q, name);
   }
 
   Account::~Account()
@@ -56,9 +54,6 @@ namespace database { namespace models {
   void Account::init()
   {
     m_tableName = "account";
-
-    auto conn = this->getConnector();
-    conn->exec("", "");
   }
 
   int Account::getId() const

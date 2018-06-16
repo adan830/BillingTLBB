@@ -53,7 +53,7 @@ namespace database
 
   bool Connector::exec(const char* q)
   {
-    LOG->warning("Executing: {}", q);
+    LOG->warning("Executing bool {}: {}", __FUNCTION__, q);
 
     if (mysql_query(m_connDriver, q))
     {

@@ -157,9 +157,11 @@ namespace net { namespace packet
     LOG->warning("Password: {}", password);
     // Password end
 
+    int loginStatus = 1; // Successed
+    int loginValue = 0; // Successed
     try
     {
-      database::models::Account a(1);
+      database::models::Account a(accountName);
     }
     catch (const std::exception& e)
     {
@@ -173,8 +175,6 @@ namespace net { namespace packet
     LOG->info("Account {} sent login request", accountName);
 
     // LastData start
-    int loginStatus = 1; // Successed
-    int loginValue = 0; // Successed
     std::size_t responseDataSize = 50 - 40 * loginValue + accountNameHex.size();
     LOG->warning("Login packet size: {}", responseDataSize);
     responseData.setType("A2");
@@ -183,9 +183,7 @@ namespace net { namespace packet
     responseData.append(accountNameHex);
     responseData.append(Utils::numberToHex(loginStatus, 2));
     responseData.append(std::string(
-        responseDataSize
-        - responseData.getSize(),
-        '0'
+        responseDataSize - responseData.getSize(), '0'
         ));
     // LastData end
 

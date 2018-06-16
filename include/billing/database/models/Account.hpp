@@ -13,8 +13,8 @@ namespace database { namespace models {
       int m_point;
 
     public:
-      Account(const int id);
-      Account(const std::string& name);
+      explicit Account(const int id);
+      explicit Account(const std::string& name);
       virtual ~Account();
 
     private:
