@@ -70,6 +70,7 @@ namespace net { namespace packet
 
     packet::HexData responseData;
     responseData.setType("A1");
+    responseData.append("A8D80600");
 
     return Utils::hexToBytes(responseData.toString());
   }
@@ -81,6 +82,7 @@ namespace net { namespace packet
     packet::HexData responseData;
 
     responseData.setType("A0");
+    responseData.append("11980100");
 
     return Utils::hexToBytes(responseData.toString());
   }
@@ -187,8 +189,10 @@ namespace net { namespace packet
         ));
     // LastData end
 
-
-    LOG->warning("Login packet Hex: {}", responseData.toString());
+    {
+      auto resHex = responseData.toString();
+      LOG->warning("Login packet Hex: {}:{}", resHex, resHex.size());
+    }
 
     return Utils::hexToBytes(responseData.toString());
   }

@@ -82,7 +82,7 @@ namespace net { namespace packet
   const HexData& HexData::append(const std::string& hexBody)
   {
     m_body.append(hexBody);
-    m_size = m_type.size() + m_body.size();
+    m_size = (m_type.size() + m_body.size()) / 2;
 
     return *this;
   }
@@ -93,7 +93,7 @@ namespace net { namespace packet
 
     if (m_size == 0)
     {
-      m_size = m_type.size();
+      m_size = m_type.size() / 2;
     }
   }
 
