@@ -67,7 +67,7 @@ namespace net
           if (
             (len < 7)
             ||
-            self->packetHandle(std::make_shared<Packet>(m_buffer, len))
+            !self->packetHandle(std::make_shared<Packet>(m_buffer, len))
             )
           {
             self->start();
@@ -119,8 +119,8 @@ namespace net
       Utils::bytesToHex(responseData.data(), responseData.size())
       );
 
-    m_socket.async_send(
-      asio::buffer(responseData),
+    asio::async_write(
+      m_socket, asio::buffer(responseData),
       [this, self](const std::error_code& ec, const std::size_t len)
       {
         LOG->warning(

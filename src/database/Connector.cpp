@@ -16,14 +16,14 @@ namespace database
 
   Connector::~Connector()
   {
-    LOG->info("Database Connector is destructing...");
+    LOG->warning("Database Connector is destructing...");
 
     if (m_connDriver)
     {
       mysql_close(m_connDriver);
     }
 
-    LOG->info("Database Connector is destructed");
+    LOG->warning("Database Connector is destructed");
   }
 
   void Connector::init()

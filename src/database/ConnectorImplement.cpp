@@ -99,21 +99,29 @@ namespace database
     MYSQL_BIND bind[sizeof...(params)];
 
     // std::tuple<const TParams&...> tParams(params...);
-    std::vector<std::any> tParams = {params...};
+    const std::vector<std::any> &tParams = {params...};
 
     for (std::size_t i = 0; i < tParams.size(); i++)
     {
-      LOG->info(tParams[i].type().name());
-      if (tParams[i].type().name() == typeid(std::string).name())
+      const auto &param = tParams[i];
+
+      if (param.type().name() == typeid(std::string).name())
+      {
+        auto rp = linb::any_cast<char*>(param);
+        LOG->warning("Bind: {}", rp);
+        bind[i].buffer_type = MYSQL_TYPE_VARCHAR;
+        bind[i].buffer = rp;
+        bind[i].length = (decltype(bind[i].length))std::strlen(rp);
+        bind[i].is_null = 0;
+        bind[i].error = nullptr;
+      }
+      else if (param.type().name() == typeid(int).name())
       {
       }
-      else if(tParams[i].type().name() == typeid(int).name())
+      else if (param.type().name() == typeid(bool).name())
       {
       }
-      else if(tParams[i].type().name() == typeid(bool).name())
-      {
-      }
-      else if(tParams[i].type().name() == typeid(float).name())
+      else if (param.type().name() == typeid(float).name())
       {
       }
     }
