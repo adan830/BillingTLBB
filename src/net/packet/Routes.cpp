@@ -15,7 +15,7 @@ namespace net { namespace packet
     m_routers["A0"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ResponseData
     {
-      return this->onOpenConnectionHandle(hexData);
+      return this->onConnectHandle(hexData);
     };
 
     m_routers["A1"] = [this](const std::shared_ptr<packet::HexData> hexData)
@@ -31,6 +31,12 @@ namespace net { namespace packet
     };
 
     m_routers["A3"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ResponseData
+    {
+      return this->onSelectCharHandle(hexData);
+    };
+
+    m_routers["A4"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ResponseData
     {
       return this->onSelectCharHandle(hexData);
@@ -72,7 +78,7 @@ namespace net { namespace packet
   }
 
   Routes::ResponseData
-  Routes::onOpenConnectionHandle(const std::shared_ptr<packet::HexData> hexData)
+  Routes::onConnectHandle(const std::shared_ptr<packet::HexData> hexData)
   {
     LOG->warning(__FUNCTION__);
 
@@ -206,7 +212,7 @@ namespace net { namespace packet
     responseData.append(accountNameHex);
     responseData.append(Utils::numberToHex(loginStatus, 2));
     responseData.append(std::string(
-        responseDataSize - responseData.getSize()*2, '0'
+        responseDataSize - (responseData.getSize() * 2), '0'
         ));
     // LastData end
 
@@ -225,6 +231,7 @@ namespace net { namespace packet
 
     // LastData start
     responseData.setType(hexData->getType());
+    responseData.append("");
     // LastData end
 
     return Utils::hexToBytes(responseData.toString());

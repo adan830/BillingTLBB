@@ -32,7 +32,7 @@ namespace net { namespace packet
       ResponseData operator[](const std::shared_ptr<Packet> packet);
 
     protected:
-      ResponseData onOpenConnectionHandle(
+      ResponseData onConnectHandle(
         const std::shared_ptr<packet::HexData> packetHexData
         );
       ResponseData onKeepLiveHandle(

@@ -111,11 +111,12 @@ namespace net
       m_socket.remote_endpoint().port()
       );
     LOG->warning(
-      "RawData: {}",
+      "RawData: {} - Hex: {}",
       std::string(
         responseData.cbegin(),
         responseData.cbegin() + responseData.size()
-        )
+        ),
+      Utils::bytesToHex(responseData.data(), responseData.size())
       );
 
     m_socket.async_send(
