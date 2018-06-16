@@ -41,7 +41,9 @@ void Startup::start()
 
   m_routers[m_cmd](m_cmd);
 
-  throw std::runtime_error("Completed command: " + m_cmd);
+  LOG->info("Executed command: {}", m_cmd);
+
+  throw nullptr;
 }
 
 void Startup::stop()
