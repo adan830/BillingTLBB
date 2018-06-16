@@ -23,7 +23,15 @@ namespace net
       m_socket.remote_endpoint().address().to_string(),
       m_socket.remote_endpoint().port()
       );
-    database::models::Account a("1");
+
+    try
+    {
+      database::models::Account a("1ssss");
+    }
+    catch(...)
+    {
+      LOG->info("Error in Database");
+    }
   }
 
   Session::~Session()

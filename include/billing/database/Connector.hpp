@@ -26,8 +26,7 @@ namespace database
       bool exec(const char* q, const TParams&... params);
 
       template<typename ...TReturn, typename ...TParams>
-      std::tuple<TReturn...>
-      query(
+      std::tuple<TReturn...> query(
         const char* q,
         const TParams&... params
         );

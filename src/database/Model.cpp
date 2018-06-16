@@ -4,13 +4,15 @@
 
 namespace database
 {
-  Model::Model() :
-    m_connector()
+  Model::Model()
   {
+    LOG->warning("Model is constructing...");
+    m_connector = new Connector();
   }
 
   Model::~Model()
   {
+    LOG->warning("Model is destructing...");
     delete m_connector;
   }
 

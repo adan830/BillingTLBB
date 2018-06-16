@@ -17,7 +17,7 @@ namespace database
 
     public:
       Model();
-      ~Model();
+      virtual ~Model();
 
     protected:
       Connector* getConnector() const;

@@ -7,7 +7,7 @@
 namespace database
 {
   template<typename ...TParams>
-  inline bool Connector::exec(const char* q, const TParams&... params)
+  bool Connector::exec(const char* q, const TParams&... params)
   {
     LOG->warning("Executing: {}", q);
 
