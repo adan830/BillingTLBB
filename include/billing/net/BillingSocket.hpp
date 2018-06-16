@@ -18,7 +18,6 @@ namespace net
 
     public:
       BillingSocket();
-      BillingSocket(const std::string& ip, const unsigned short port);
       ~BillingSocket();
 
     public:

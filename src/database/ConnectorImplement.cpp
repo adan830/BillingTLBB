@@ -2,9 +2,12 @@
 
 #include "billing/Log.hpp"
 
-namespace database {
+#include "billing/any.hpp"
+
+namespace database
+{
   template<typename ...TParams>
-  inline bool Connector::exec(const char* q, const TParams&... params)
+  bool Connector::exec(const char* q, const TParams&... params)
   {
     LOG->warning("Executing: {}", q);
 
@@ -30,7 +33,13 @@ namespace database {
 
     MYSQL_BIND bind[sizeof...(params)];
 
-    std::tuple<const TParams&...> tParams(params...);
+    // std::tuple<const TParams&...> tParams(params...);
+    std::vector<linb::any> tParams = {params...};
+
+    for (std::size_t i = 0; i < tParams.size(); i++)
+    {
+      LOG->info(tParams[i].type().name());
+    }
 
     // for (std::size_t i = 0; i < sizeof...(params); i++)
     // {

@@ -6,6 +6,8 @@ namespace database { namespace models {
   Account::Account(const int id) :
     database::Model()
   {
+    LOG->warning("Account is constructing...");
+
     this->init();
 
     std::string q = R"(
@@ -20,12 +22,18 @@ namespace database { namespace models {
     )";
 
     auto conn = this->getConnector();
+    if (!conn)
+    {
+      LOG->error("Database connector error");
+    }
     auto ret = conn->query<int, std::string, int>(q.data(), id);
   }
 
   Account::Account(const std::string& name) :
     database::Model()
   {
+    LOG->warning("Account is constructing...");
+
     this->init();
 
     std::string q = R"(
@@ -39,6 +47,10 @@ namespace database { namespace models {
 
     auto conn = this->getConnector();
     auto ret = conn->query<int, std::string, int>(q.data(), name);
+  }
+
+  Account::~Account()
+  {
   }
 
   void Account::init()

@@ -15,9 +15,9 @@ namespace database
     protected:
       std::string m_tableName;
 
-    public:
+    protected:
       Model();
-      ~Model();
+      virtual ~Model();
 
     protected:
       Connector* getConnector() const;

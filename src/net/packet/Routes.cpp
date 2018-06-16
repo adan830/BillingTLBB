@@ -35,6 +35,21 @@ namespace net { namespace packet
     {
       return this->onPingConnectionHandle();
     };
+
+    // Test
+    m_routers["FF"] = [](const std::shared_ptr<packet::HexData>)->ResponseData
+    {
+      try
+      {
+        database::models::Account a(1);
+      }
+      catch(...)
+      {
+        LOG->error("Error");
+      }
+
+      return ResponseData();
+    };
   }
 
   Routes::~Routes()

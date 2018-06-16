@@ -5,9 +5,12 @@
 
 namespace database
 {
-  Connector::Connector() :
-    m_connDriver(mysql_init(nullptr))
+  Connector::Connector()
   {
+    LOG->warning("Connector is constructing...");
+
+    m_connDriver = mysql_init(nullptr);
+
     this->init();
   }
 
@@ -25,6 +28,7 @@ namespace database
 
   void Connector::init()
   {
+    LOG->warning("Connector is initializing...");
     auto configData = Config::getInstance().getData();
 
     auto c = mysql_real_connect(
@@ -40,8 +44,11 @@ namespace database
 
     if (!c)
     {
-      throw std::runtime_error(mysql_error(m_connDriver));
+      LOG->error("Connector Error: {}", mysql_error(m_connDriver));
+      throw nullptr;
     }
+
+    LOG->warning("Opened connector database");
   }
 
   bool Connector::exec(const char* q)

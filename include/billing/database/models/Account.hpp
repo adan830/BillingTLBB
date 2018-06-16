@@ -15,7 +15,7 @@ namespace database { namespace models {
     public:
       Account(const int id);
       Account(const std::string& name);
-      ~Account();
+      virtual ~Account();
 
     private:
       void init();

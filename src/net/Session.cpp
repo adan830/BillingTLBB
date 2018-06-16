@@ -30,48 +30,60 @@ namespace net
       m_socket.remote_endpoint().port()
       );
 
-    m_socket.close();
+    if (m_socket.available())
+    {
+      m_socket.close();
+    }
   }
 
   void Session::start()
   {
+    LOG->warning("Session read starting");
     // Keep session alive
     auto self = this->shared_from_this();
 
     auto m_buffer = std::make_shared<Packet::Buffer>();
-    m_socket.async_receive(
-      asio::buffer(*m_buffer),
-      [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
-      {
-        LOG->warning(
-          "Received {} byte(s) from {}:{}",
-          len,
-          m_socket.remote_endpoint().address().to_string(),
-          m_socket.remote_endpoint().port()
-          );
-        if (ec)
-        {
-          LOG->error("Socket receive error: {}", ec.message());
-        }
-        else
+
+    try
+    {
+      m_socket.async_receive(
+        asio::buffer(*m_buffer),
+        [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
         {
           LOG->warning(
-            "Raw: {}",
-            std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
+            "Received {} byte(s) from {}:{}",
+            len,
+            m_socket.remote_endpoint().address().to_string(),
+            m_socket.remote_endpoint().port()
             );
-          LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
-          if (len >= 7)
+          if (ec)
           {
-            self->packetHandle(std::make_shared<Packet>(m_buffer, len));
+            LOG->error("Socket receive error: {}", ec.message());
           }
+          else
+          {
+            LOG->warning(
+              "Raw: {}",
+              std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
+              );
+            LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
+            if (len >= 7)
+            {
+              self->packetHandle(std::make_shared<Packet>(m_buffer, len));
+            }
 
-          self->start();
+            self->start();
+          }
         }
-      }
-    );
+      );
+    }
+    catch(...)
+    {
+      LOG->error("Error while trying to read");
+    }
   }
 
-  bool Session::packetHandle(const std::shared_ptr<Packet> packet)
+  void Session::packetHandle(const std::shared_ptr<Packet> packet)
   {
     if (packet->getSize() == 0)
     {
@@ -81,8 +93,11 @@ namespace net
         m_socket.remote_endpoint().port()
         );
 
-      return false;
+      return;
     }
+
+    // Keep session alive
+    auto self = this->shared_from_this();
 
     auto responseData = packet::Routes::getInstance()[packet];
 
@@ -93,50 +108,52 @@ namespace net
         m_socket.remote_endpoint().address().to_string(),
         m_socket.remote_endpoint().port()
         );
-      return false;
-    }
-    else
-    {
-      LOG->warning(
-        "Sending to {}:{}",
-        m_socket.remote_endpoint().address().to_string(),
-        m_socket.remote_endpoint().port()
-        );
-      LOG->warning(
-        "RawData: {}",
-        std::string(
-          responseData.cbegin(),
-          responseData.cbegin() + responseData.size()
-          )
-        );
+      return;
     }
 
-    // Keep session alive
-    auto self = this->shared_from_this();
-
-    m_socket.async_send(
-      asio::buffer(responseData),
-      [this, self](const std::error_code& ec, const std::size_t len)
-      {
-        LOG->warning(
-          "Sent {} byte(s) to {}:{}",
-          len,
-          m_socket.remote_endpoint().address().to_string(),
-          m_socket.remote_endpoint().port()
-          );
-        if (ec)
-        {
-          LOG->error(
-            "Session with {}:{} has error: {}",
-            m_socket.remote_endpoint().address().to_string(),
-            m_socket.remote_endpoint().port(),
-            ec.message()
-            );
-        }
-      }
+    LOG->warning(
+      "Sending to {}:{}",
+      m_socket.remote_endpoint().address().to_string(),
+      m_socket.remote_endpoint().port()
+      );
+    LOG->warning(
+      "RawData: {}",
+      std::string(
+        responseData.cbegin(),
+        responseData.cbegin() + responseData.size()
+        )
       );
 
-    return true;
+    try
+    {
+      m_socket.async_send(
+        asio::buffer(responseData),
+        [this, self](const std::error_code& ec, const std::size_t len)
+        {
+          LOG->warning(
+            "Sent {} byte(s) to {}:{}",
+            len,
+            m_socket.remote_endpoint().address().to_string(),
+            m_socket.remote_endpoint().port()
+            );
+          if (ec)
+          {
+            LOG->error(
+              "Session with {}:{} has error: {}",
+              m_socket.remote_endpoint().address().to_string(),
+              m_socket.remote_endpoint().port(),
+              ec.message()
+              );
+          }
+          {
+          }
+        }
+        );
+    }
+    catch(...)
+    {
+      LOG->error("Error while async_send");
+    }
   }
 
   const asio::ip::tcp::socket& Session::getSocket() const
