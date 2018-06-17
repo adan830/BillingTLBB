@@ -15,9 +15,9 @@ namespace database { namespace models {
         id,
         name,
         password,
-        point,
+        point/*,
         is_online,
-        is_lock
+        is_lock*/
       FROM
         account
       WHERE

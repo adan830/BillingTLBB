@@ -101,19 +101,26 @@ namespace database
     // std::tuple<const TParams&...> tParams(params...);
     const std::vector<std::any> &tParams = {params...};
 
+    std::vector<std::size_t> bindSizes;
+
     for (std::size_t i = 0; i < tParams.size(); i++)
     {
       const auto &param = tParams[i];
 
+      LOG->warning("FOR:  {}", param.type().name());
+
       if (param.type().name() == typeid(std::string).name())
       {
-        auto rp = linb::any_cast<char*>(param);
-        LOG->warning("Bind: {}", rp);
-        bind[i].buffer_type = MYSQL_TYPE_VARCHAR;
-        bind[i].buffer = rp;
-        bind[i].length = (decltype(bind[i].length))std::strlen(rp);
+        LOG->warning("TYPE: {}", typeid(std::string).name());
+        auto rp = linb::any_cast<std::string>(param);
+        bindSizes.emplace_back(rp.size());
+        bind[i].buffer_type = MYSQL_TYPE_LONG;
+        bind[i].buffer = const_cast<char*>(rp.data());
+        bind[i].buffer_length = sizeof(rp.data());
+        bind[i].length = (decltype(bind[i].length))bindSizes.at(i);
         bind[i].is_null = 0;
         bind[i].error = nullptr;
+        LOG->warning("Binded: {}", rp);
       }
       else if (param.type().name() == typeid(int).name())
       {
@@ -126,12 +133,6 @@ namespace database
       }
     }
 
-    if (mysql_stmt_execute(stmt))
-    {
-      LOG->error("Error: {}", mysql_stmt_error(stmt));
-      throw nullptr;
-    }
-
     // for (std::size_t i = 0; i < sizeof...(params); i++)
     // {
     //   const auto x = i;
@@ -142,6 +143,20 @@ namespace database
     {
       LOG->error("Error: {}", mysql_stmt_error(stmt));
       throw nullptr;
+    }
+
+    if (mysql_stmt_execute(stmt))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    MYSQL_BIND resultBind[sizeof...(TReturn)];
+
+    while(!mysql_stmt_fetch(stmt))
+    {
+      LOG->warning("FOUND DATA");
+      // printf("6 - %d \n", );
     }
 
     mysql_stmt_free_result(stmt);
