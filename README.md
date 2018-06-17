@@ -1,5 +1,11 @@
 # TLBB.Billing
 
+## Install:
+
+- You can download executable binary in Release
+- Import Sql file in `db` to your database (Must choose only one)
+- Open `Config.ini` to configure the info
+
 ## Packet research
 
 ### Ping
