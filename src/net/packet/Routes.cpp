@@ -57,7 +57,7 @@ namespace net { namespace packet
     m_routers["E2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onStartUpKickHandle(hexData);
+      return this->onAskPrizeHandle(hexData);
     };
 
   }
@@ -330,8 +330,7 @@ namespace net { namespace packet
     LOG->warning("Account name: {}", accountName);
 
     // TODO: Select Database
-
-    unsigned short accountPoint = 0;
+    std::size_t accountPoint = 0;
 
     packet::HexData responseData;
     responseData.setType(hexData->getType());
