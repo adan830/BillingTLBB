@@ -36,11 +36,11 @@ namespace net { namespace packet
       return this->onSelectCharHandle(hexData);
     };
 
-    // m_routers["A4"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    // ->ByteArray
-    // {
-    //   return this->onSelectCharHandle(hexData);
-    // };
+    m_routers["A4"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ByteArray
+    {
+      return this->onCharLogOutHandle(hexData);
+    };
 
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
@@ -241,7 +241,9 @@ namespace net { namespace packet
     auto accountNameHex = packetHexStr.substr(
       accountNameSizeHex.size(), accountNameSize * 2
       );
-    auto accountName = Utils::hexToBytes(accountNameHex);
+
+    // TODO: Update Database
+    // auto accountName = Utils::hexToBytes(accountNameHex);
 
     // LastData start
     packet::HexData responseData;
@@ -255,6 +257,35 @@ namespace net { namespace packet
     responseData.append("00000027100000270F000022B800");
     // LastData end
 
+    return responseData.toByteArray();
+  }
+
+  ByteArray Routes::onCharLogOutHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
+  {
+    LOG->warning(__FUNCTION__);
+
+    auto &packetHexStr = hexData->getBody();
+
+    auto accountNameSizeHex = packetHexStr.substr(0, 2);
+    auto accountNameSize = Utils::hexToNumber<std::size_t>(
+      accountNameSizeHex
+      );
+    auto accountNameHex = packetHexStr.substr(
+      accountNameSizeHex.size(),
+      accountNameSize * 2
+      );
+
+    // TODO: Update Database
+    // auto accountName = Utils::hexToBytes(accountNameHex);
+
+    packet::HexData responseData;
+    responseData.setType(hexData->getType());
+    responseData.setId(hexData->getId());
+    responseData.append(accountNameSizeHex);
+    responseData.append(accountNameHex);
+    responseData.append("00");
     return responseData.toByteArray();
   }
 } }

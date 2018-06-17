@@ -32,19 +32,22 @@ namespace net { namespace packet
 
     protected:
       ByteArray onConnectHandle(
-        const std::shared_ptr<packet::HexData> packetHexData
+        const std::shared_ptr<packet::HexData> hexData
         );
       ByteArray onKeepLiveHandle(
-        const std::shared_ptr<packet::HexData> packetHexData
+        const std::shared_ptr<packet::HexData> hexData
         );
       ByteArray onLoginRequestHandle(
-        const std::shared_ptr<packet::HexData> packetHexData
+        const std::shared_ptr<packet::HexData> hexData
         );
       ByteArray onSelectCharHandle(
-        const std::shared_ptr<packet::HexData> packetHexData
+        const std::shared_ptr<packet::HexData> hexData
+        );
+      ByteArray onCharLogOutHandle(
+        const std::shared_ptr<packet::HexData> hexData
         );
       ByteArray onStartUpKickHandle(
-        const std::shared_ptr<packet::HexData> packetHexData
+        const std::shared_ptr<packet::HexData> hexData
         );
   };
 } }
