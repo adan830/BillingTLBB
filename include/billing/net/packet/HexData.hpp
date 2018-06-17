@@ -15,6 +15,7 @@ namespace net { namespace packet
       std::string m_header;
       SizeType m_size;
       std::string m_type;
+      std::string m_id;
       std::string m_body;
       std::string m_footer;
 
@@ -31,11 +32,21 @@ namespace net { namespace packet
 
     public:
       const HexData& append(const std::string& hexBodyStr);
-      void setType(const std::string& type);
-      const std::string& getType() const;
-      const std::string& getBody() const;
+
       SizeType getSize() const;
+
+      const std::string& getType() const;
+      void setType(const std::string& type);
+
+      const std::string& getId() const;
+      void setId(const std::string& id);
+
+      const std::string& getBody() const;
+
       std::string toString() const;
+
+    private:
+      void updateSize();
   };
 } }
 

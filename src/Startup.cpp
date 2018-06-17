@@ -8,7 +8,7 @@
 
 Startup::Startup(const int argc, char* argv[])
 {
-  LOG->info("Startup is constructing with {} param(s)", argc);
+  LOG->warning("Startup is constructing with {} param(s)", argc);
 
   if (argc == 2)
   {
@@ -20,14 +20,14 @@ Startup::Startup(const int argc, char* argv[])
     this->stop();
   };
 
-  LOG->info("Startup is constructed");
+  LOG->warning("Startup is constructed");
 }
 
 Startup::~Startup()
 {
-  LOG->info("Startup is destructing...");
+  LOG->warning("Startup is destructing...");
 
-  LOG->info("Startup is destructed");
+  LOG->warning("Startup is destructed");
 }
 
 void Startup::start()

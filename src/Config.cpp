@@ -14,11 +14,11 @@ Config::Config() :
 
 Config::~Config()
 {
-  LOG->info("Config is destructing...");
+  LOG->warning("Config is destructing...");
 
   delete m_data;
 
-  LOG->info("Config is destructed!");
+  LOG->warning("Config is destructed!");
 }
 
 void Config::readData()
@@ -109,7 +109,7 @@ void Config::readData()
       }
       else
       {
-        LOG->info("configKey: {} is not a valid key", configKey);
+        LOG->warning("configKey: {} is not a valid key", configKey);
       }
 
       configKey.clear();

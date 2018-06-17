@@ -27,8 +27,6 @@ namespace net { namespace packet
         throw std::runtime_error("Parse buffer to hex error");
       }
 
-      m_size = Utils::hexToNumber<HexData::SizeType>(hexData.substr(4, 4));
-
       m_header = hexData.substr(0, 4);
 
       if (m_header != "AA55")
@@ -36,15 +34,25 @@ namespace net { namespace packet
         throw std::runtime_error("Buffer header error");
       }
 
+      m_size = Utils::hexToNumber<HexData::SizeType>(hexData.substr(
+          m_header.size(), 4
+          ));
+
       m_type = hexData.substr(8, 2);
 
-      std::size_t bodyLastPos = m_size * 2 - 2;
+      std::size_t bodyLastPos = m_size * 2 - m_type.size();
       if (bodyLastPos > (hexData.size() - 12))
       {
         throw std::runtime_error("Buffer size too large");
       }
 
-      m_body = hexData.substr(10, bodyLastPos);
+      m_id = hexData.substr(10, 4);
+      if (m_id.empty())
+      {
+        throw std::runtime_error("Not found packet ID");
+      }
+
+      m_body = hexData.substr(12, bodyLastPos);
 
       if (m_body.empty())
       {
@@ -82,7 +90,8 @@ namespace net { namespace packet
   const HexData& HexData::append(const std::string& hexBody)
   {
     m_body.append(hexBody);
-    m_size = (m_type.size() + m_body.size()) / 2;
+
+    this->updateSize();
 
     return *this;
   }
@@ -91,15 +100,24 @@ namespace net { namespace packet
   {
     m_type = type;
 
-    if (m_size == 0)
-    {
-      m_size = m_type.size() / 2;
-    }
+    this->updateSize();
   }
 
   const std::string& HexData::getType() const
   {
     return m_type;
+  }
+
+  const std::string& HexData::getId() const
+  {
+    return m_id;
+  }
+
+  void HexData::setId(const std::string& id)
+  {
+    m_id = id;
+
+    this->updateSize();
   }
 
   const std::string& HexData::getBody() const
@@ -115,14 +133,17 @@ namespace net { namespace packet
   std::string HexData::toString() const
   {
     LOG->warning(
-      "Header: {} | Size: {} | Type: {} | Body: {} | Footer: {}",
-      m_header, m_size, m_type, m_body, m_footer
+      "Header: {} | Size: {} | Type: {} | Id: {} | Body: {} | Footer: {}",
+      m_header, m_size, m_type, m_id, m_body, m_footer
       );
 
-    return m_header
-    + Utils::numberToHex(m_size, 4)
-    + m_type + m_body
+    return m_header + Utils::numberToHex(m_size, 4) + m_type + m_id + m_body
     + m_footer;
+  }
+
+  void HexData::updateSize()
+  {
+    m_size = (m_type.size() + m_id.size() + m_body.size()) / 2;
   }
 } }
 

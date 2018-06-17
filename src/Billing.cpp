@@ -6,18 +6,18 @@
 Billing::Billing() :
   m_socket(new net::BillingSocket())
 {
-  LOG->info("Billing is initializing...");
+  LOG->warning("Billing is initializing...");
 
-  LOG->info("Billing is initialized!");
+  LOG->warning("Billing is initialized!");
 }
 
 Billing::~Billing()
 {
-  LOG->info("Billing is destructing...");
+  LOG->warning("Billing is destructing...");
 
   delete m_socket;
 
-  LOG->info("Billing is destructed!");
+  LOG->warning("Billing is destructed!");
 }
 
 void Billing::start()

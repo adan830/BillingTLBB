@@ -42,7 +42,6 @@ namespace net { namespace packet
       return this->onSelectCharHandle(hexData);
     };
 
-    // StartUpKick
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ResponseData
     {
@@ -85,7 +84,8 @@ namespace net { namespace packet
     packet::HexData responseData;
 
     responseData.setType(hexData->getType());
-    responseData.append("11980100");
+    responseData.setId(hexData->getId());
+    responseData.append("0100");
 
     return Utils::hexToBytes(responseData.toString());
   }
@@ -97,7 +97,8 @@ namespace net { namespace packet
 
     packet::HexData responseData;
     responseData.setType(hexData->getType());
-    responseData.append("A8D80600");
+    responseData.setId(hexData->getId());
+    responseData.append("0600");
 
     return Utils::hexToBytes(responseData.toString());
   }
@@ -109,7 +110,8 @@ namespace net { namespace packet
 
     packet::HexData responseData;
     responseData.setType("A1");
-    responseData.append("A8D80600");
+    responseData.setId(hexData->getId());
+    responseData.append("0600");
 
     return Utils::hexToBytes(responseData.toString());
   }
@@ -207,7 +209,7 @@ namespace net { namespace packet
     std::size_t responseDataSize = 50 - 40 * loginValue + accountNameHex.size();
     LOG->warning("Login packet size: {}", responseDataSize);
     responseData.setType(hexData->getType());
-    responseData.append(packetHexStr.substr(0, 4));
+    responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
     responseData.append(Utils::numberToHex(loginStatus, 2));
@@ -231,7 +233,7 @@ namespace net { namespace packet
 
     // LastData start
     responseData.setType(hexData->getType());
-    responseData.append("");
+    responseData.setId(hexData->getId());
     // LastData end
 
     return Utils::hexToBytes(responseData.toString());

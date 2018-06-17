@@ -12,7 +12,7 @@ namespace net
   BillingSocket::BillingSocket() :
     m_socket(m_asioIoService)
   {
-    LOG->info("BillingSocket is initializing...");
+    LOG->warning("BillingSocket is initializing...");
 
     auto configData = Config::getInstance().getData();
     m_acceptor = new asio::ip::tcp::acceptor(
@@ -23,16 +23,16 @@ namespace net
         )
       );
 
-    LOG->info("BillingSocket is initialized");
+    LOG->warning("BillingSocket is initialized");
   }
 
   BillingSocket::~BillingSocket()
   {
-    LOG->info("BillingSocket is destructing...");
+    LOG->warning("BillingSocket is destructing...");
 
     delete m_acceptor;
 
-    LOG->info("BillingSocket is destructed!");
+    LOG->warning("BillingSocket is destructed!");
   }
 
   void BillingSocket::start()
