@@ -97,11 +97,13 @@ namespace database
     }
 
     MYSQL_BIND bind[sizeof...(params)];
+    MYSQL_BIND resultBind[sizeof...(TReturn)];
 
     // std::tuple<const TParams&...> tParams(params...);
     const std::vector<std::any> &tParams = {params...};
 
     std::vector<std::size_t> bindSizes;
+    char *e;
 
     for (std::size_t i = 0; i < tParams.size(); i++)
     {
@@ -121,6 +123,9 @@ namespace database
         bind[i].is_null = 0;
         bind[i].error = nullptr;
         LOG->warning("Binded: {}", rp);
+
+        resultBind[i].buffer_type = MYSQL_TYPE_STRING;
+        resultBind[i].buffer = &e;
       }
       else if (param.type().name() == typeid(int).name())
       {
@@ -145,13 +150,23 @@ namespace database
       throw nullptr;
     }
 
+    if (mysql_stmt_bind_result(stmt, resultBind))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
     if (mysql_stmt_execute(stmt))
     {
       LOG->error("Error: {}", mysql_stmt_error(stmt));
       throw nullptr;
     }
 
-    MYSQL_BIND resultBind[sizeof...(TReturn)];
+    if (mysql_stmt_store_result(stmt))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
 
     while(!mysql_stmt_fetch(stmt))
     {

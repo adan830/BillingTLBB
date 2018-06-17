@@ -63,5 +63,10 @@ namespace database
 
     return true;
   }
+
+  MYSQL* Connector::getConnDriver() const
+  {
+    return m_connDriver;
+  }
 }
 

@@ -8,8 +8,8 @@ namespace database { namespace models {
   {
     private:
       int m_id;
-      std::string m_name;
-      std::string m_password;
+      char m_name[50];
+      char m_password[32];
 
       int m_point;
       bool m_isPointChanged;
@@ -30,9 +30,9 @@ namespace database { namespace models {
     public:
       int getId() const;
 
-      const std::string& getName() const;
+      const char* getName() const;
 
-      const std::string& getPassword() const;
+      const char* getPassword() const;
 
       int getPoint() const;
       void setPoint(const int point);

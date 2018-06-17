@@ -30,10 +30,14 @@ namespace database
         const char* q,
         const TParams&... params
         );
+
+      // TODO: Delete this funciton
+      MYSQL* getConnDriver() const;
   };
 }
 
-#include "../../../src/database/ConnectorImplement.cpp"
+// TODO: Implement this
+// #include "../../../src/database/ConnectorImplement.cpp"
 
 #endif
 

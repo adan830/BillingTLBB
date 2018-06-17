@@ -1,6 +1,7 @@
 #include "billing/database/Model.hpp"
 
 #include "billing/database/Connector.hpp"
+#include "billing/Log.hpp"
 
 namespace database
 {

@@ -5,6 +5,5 @@ set(INC_DIRS ${INC_DIRS}
   # Third Party
   deps/asio/asio/include
   deps/spdlog/include
-  deps/include
   )
 

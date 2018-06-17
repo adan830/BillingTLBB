@@ -1,6 +1,7 @@
 #include "billing/database/models/Account.hpp"
 
 #include "billing/database/Connector.hpp"
+#include "billing/Log.hpp"
 
 namespace database { namespace models {
   Account::Account(const std::string& name) :
@@ -24,8 +25,108 @@ namespace database { namespace models {
         name=?
     )";
 
+    // TODO: Wrap this
     auto conn = this->getConnector();
-    auto ret = conn->query<int, std::string, int>(q, name);
+    // auto ret = conn->query<int, std::string, int>(q, name);
+
+    auto m_connDriver = conn->getConnDriver();
+    MYSQL_STMT *stmt = mysql_stmt_init(m_connDriver);
+    if (!stmt)
+    {
+      LOG->error("Error: {}", mysql_error(m_connDriver));
+      throw nullptr;
+    }
+    if (mysql_stmt_prepare(stmt, q, std::strlen(q)))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    MYSQL_BIND bindParams[1];
+
+    std::memset(bindParams, 0, sizeof(bindParams));
+
+    bindParams[0].buffer_type = MYSQL_TYPE_STRING;
+    bindParams[0].buffer = const_cast<char*>(name.data());
+    bindParams[0].buffer_length = sizeof(name.size());
+    bindParams[0].length = decltype(bindParams[0].length)(
+      name.size()
+      );
+    bindParams[0].is_null = 0;
+
+    if (mysql_stmt_bind_param(stmt, bindParams))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    LOG->warning("Params binded");
+
+    MYSQL_BIND bindResult[4];
+    unsigned long length[4];
+    my_bool is_null[4];
+    my_bool error[4];
+
+    std::memset(bindResult, 0, sizeof(bindResult));
+
+    bindResult[0].buffer_type = MYSQL_TYPE_LONG;
+    bindResult[0].buffer = (char*)&m_id;
+    bindResult[0].length = &length[0];
+    bindResult[0].is_null = &is_null[0];
+    bindResult[0].error = &error[0];
+
+    bindResult[1].buffer_type = MYSQL_TYPE_STRING;
+    bindResult[1].buffer = (char*)&m_name;
+    bindResult[1].buffer_length = sizeof(m_name);
+    bindResult[1].length = &length[1];
+    bindResult[1].is_null = &is_null[1];
+    bindResult[1].error = &error[1];
+
+    bindResult[2].buffer_type = MYSQL_TYPE_STRING;
+    bindResult[2].buffer = (char*)&m_password;
+    bindResult[2].buffer_length = sizeof(m_password);
+    bindResult[2].length = &length[2];
+    bindResult[2].is_null = &is_null[2];
+    bindResult[2].error = &error[2];
+
+    bindResult[3].buffer_type = MYSQL_TYPE_LONG;
+    bindResult[3].buffer = (char*)&m_point;
+    bindResult[3].length = &length[3];
+    bindResult[3].is_null = &is_null[3];
+    bindResult[3].error = &error[3];
+
+    if (mysql_stmt_bind_result(stmt, bindResult))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    LOG->warning("Results binded");
+
+    if (mysql_stmt_execute(stmt))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    LOG->warning("Executed");
+
+    if (mysql_stmt_store_result(stmt))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    LOG->warning("Has result");
+
+    while(!mysql_stmt_fetch(stmt))
+    {
+      LOG->warning("FOUND DATA");
+      // printf("6 - %d \n", );
+    }
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
   }
 
   Account::~Account()
@@ -46,12 +147,12 @@ namespace database { namespace models {
     return m_id;
   }
 
-  const std::string& Account::getName() const
+  const char* Account::getName() const
   {
     return m_name;
   }
 
-  const std::string& Account::getPassword() const
+  const char* Account::getPassword() const
   {
     return m_password;
   }
