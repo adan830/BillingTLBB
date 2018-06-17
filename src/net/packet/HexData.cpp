@@ -24,46 +24,50 @@ namespace net { namespace packet
 
       if (hexData.size() < 14)
       {
-        throw std::runtime_error("Parse buffer to hex error");
+        throw std::runtime_error("Buffer size is invalid");
       }
 
       m_header = hexData.substr(0, 4);
 
       if (m_header != "AA55")
       {
-        throw std::runtime_error("Buffer header error");
+        throw std::runtime_error("Buffer header is invalid");
       }
 
-      m_size = Utils::hexToNumber<HexData::SizeType>(hexData.substr(
-          m_header.size(), 4
-          ));
+      auto sizeHex = hexData.substr(m_header.size(), 4);
+      m_size = Utils::hexToNumber<HexData::SizeType>(sizeHex);
 
-      m_type = hexData.substr(8, 2);
+      m_type = hexData.substr(m_header.size() + sizeHex.size(), 2);
 
-      std::size_t bodyLastPos = m_size * 2 - m_type.size();
+      std::size_t bodyLastPos = (m_size * 2) - m_type.size();
       if (bodyLastPos > (hexData.size() - 12))
       {
-        throw std::runtime_error("Buffer size too large");
+        throw std::runtime_error("Buffer size is too large");
       }
 
-      m_id = hexData.substr(10, 4);
+      m_id = hexData.substr(
+        m_header.size() + sizeHex.size() + m_type.size(), 4
+        );
       if (m_id.empty())
       {
         throw std::runtime_error("Not found packet ID");
       }
 
-      m_body = hexData.substr(12, bodyLastPos);
+      m_body = hexData.substr(
+        m_header.size() + sizeHex.size() + m_type.size() + m_id.size(),
+        bodyLastPos
+        );
 
       if (m_body.empty())
       {
-        throw std::runtime_error("Buffer body error");
+        throw std::runtime_error("Buffer body is empty");
       }
 
       m_footer = hexData.substr(hexData.size() - 4);
 
       if (m_footer != "55AA")
       {
-        throw std::runtime_error("Buffer footer error");
+        throw std::runtime_error("Buffer footer is empty");
       }
     }
     catch(const std::exception& e)
@@ -80,7 +84,6 @@ namespace net { namespace packet
 
   HexData::~HexData()
   {
-    LOG->warning("{} is called", __FUNCTION__);
   }
 
   void HexData::init()

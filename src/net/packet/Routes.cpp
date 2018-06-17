@@ -144,8 +144,7 @@ namespace net { namespace packet
     // MacAddress end
 
     // AccountName start
-    std::size_t accountNameOffset = 4;
-    auto accountNameSizeHex = packetHexStr.substr(accountNameOffset, 2);
+    auto accountNameSizeHex = packetHexStr.substr(0, 2);
     std::size_t accountNameSize = Utils::hexToNumber<std::size_t>(
       accountNameSizeHex
       );
@@ -155,7 +154,7 @@ namespace net { namespace packet
       accountNameSizeHex
       );
     auto accountNameHex = packetHexStr.substr(
-      accountNameOffset + 2 , accountNameSize * 2
+       accountNameSizeHex.size(), accountNameSize * 2
       );
     auto accountNameBytes = Utils::hexToBytes(
       accountNameHex
@@ -168,7 +167,7 @@ namespace net { namespace packet
     // AccountName end
 
     // Password start
-    std::size_t passwordOffset = accountNameOffset + 2 + accountNameSize * 2;
+    std::size_t passwordOffset = accountNameSizeHex.size() + accountNameSize * 2;
     std::size_t passwordSize = Utils::hexToNumber<std::size_t>(
       packetHexStr.substr(passwordOffset, 2)
       );
