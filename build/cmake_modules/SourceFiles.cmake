@@ -16,3 +16,8 @@ set(SRC_FILES ${SRC_FILES}
   src/database/models/Account.cpp
   )
 
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/ee/src)
+  set(SRC_FILES ${SRC_FILES}
+    )
+endif()
+

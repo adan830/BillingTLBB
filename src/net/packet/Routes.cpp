@@ -42,11 +42,24 @@ namespace net { namespace packet
       return this->onCharLogOutHandle(hexData);
     };
 
+    m_routers["A6"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ByteArray
+    {
+      return this->onWLBillingKeepHandle(hexData);
+    };
+
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
       return this->onStartUpKickHandle(hexData);
     };
+
+    m_routers["E2"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ByteArray
+    {
+      return this->onStartUpKickHandle(hexData);
+    };
+
   }
 
   Routes::~Routes()
@@ -157,9 +170,7 @@ namespace net { namespace packet
     auto accountNameHex = packetHexStr.substr(
        accountNameSizeHex.size(), accountNameSize * 2
       );
-    auto accountNameBytes = Utils::hexToBytes(
-      accountNameHex
-      );
+    auto accountNameBytes = Utils::hexToBytes(accountNameHex);
     auto accountName = std::string(
       accountNameBytes.cbegin(),
       accountNameBytes.cend()
@@ -241,9 +252,14 @@ namespace net { namespace packet
     auto accountNameHex = packetHexStr.substr(
       accountNameSizeHex.size(), accountNameSize * 2
       );
+    auto accountNameBytes = Utils::hexToBytes(accountNameHex);
+    auto accountName = std::string(
+      accountNameBytes.cbegin(),
+      accountNameBytes.cend()
+      );
+    LOG->warning("Account name: {}", accountName);
 
     // TODO: Update Database
-    // auto accountName = Utils::hexToBytes(accountNameHex);
 
     // LastData start
     packet::HexData responseData;
@@ -276,9 +292,10 @@ namespace net { namespace packet
       accountNameSizeHex.size(),
       accountNameSize * 2
       );
+    auto accountNameBytes = Utils::hexToBytes(accountNameHex);
+    auto accountName = Utils::hexToBytes(accountNameHex);
 
     // TODO: Update Database
-    // auto accountName = Utils::hexToBytes(accountNameHex);
 
     packet::HexData responseData;
     responseData.setType(hexData->getType());
@@ -286,6 +303,75 @@ namespace net { namespace packet
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
     responseData.append("00");
+    return responseData.toByteArray();
+  }
+
+  ByteArray Routes::onAskPrizeHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
+  {
+    LOG->warning(__FUNCTION__);
+
+    auto &packetHexStr = hexData->getBody();
+
+    auto accountNameSizeHex = packetHexStr.substr(0, 2);
+    auto accountNameSize = Utils::hexToNumber<std::size_t>(
+      accountNameSizeHex
+      );
+    auto accountNameHex = packetHexStr.substr(
+      accountNameSizeHex.size(),
+      accountNameSize * 2
+      );
+    auto accountNameBytes = Utils::hexToBytes(accountNameHex);
+    auto accountName = std::string(
+      accountNameBytes.cbegin(),
+      accountNameBytes.cend()
+      );
+    LOG->warning("Account name: {}", accountName);
+
+    // TODO: Select Database
+
+    unsigned short accountPoint = 0;
+
+    packet::HexData responseData;
+    responseData.setType(hexData->getType());
+    responseData.setId(hexData->getId());
+    responseData.append(accountNameSizeHex);
+    responseData.append(accountNameHex);
+    responseData.append(Utils::numberToHex(accountPoint, 8));
+    return responseData.toByteArray();
+  }
+
+  ByteArray Routes::onWLBillingKeepHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
+  {
+    LOG->warning(__FUNCTION__);
+
+    auto &packetHexStr = hexData->getBody();
+    auto accountNameSizeHex = packetHexStr.substr(0, 2);
+    auto accountNameSize = Utils::hexToNumber<std::size_t>(
+      accountNameSizeHex
+      );
+    auto accountNameHex = packetHexStr.substr(
+      accountNameSizeHex.size(),
+      accountNameSize * 2
+      );
+    auto accountNameBytes = Utils::hexToBytes(accountNameHex);
+    auto accountName = std::string(
+      accountNameBytes.cbegin(),
+      accountNameBytes.cend()
+      );
+    LOG->warning("Account name: {}", accountName);
+
+    // TODO: Select Database
+
+    packet::HexData responseData;
+    responseData.setType(hexData->getType());
+    responseData.setId(hexData->getId());
+    responseData.append(accountNameSizeHex);
+    responseData.append(accountNameHex);
+    responseData.append("010000");
     return responseData.toByteArray();
   }
 } }

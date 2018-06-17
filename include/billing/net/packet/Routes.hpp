@@ -46,6 +46,12 @@ namespace net { namespace packet
       ByteArray onCharLogOutHandle(
         const std::shared_ptr<packet::HexData> hexData
         );
+      ByteArray onWLBillingKeepHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        );
+      ByteArray onAskPrizeHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        );
       ByteArray onStartUpKickHandle(
         const std::shared_ptr<packet::HexData> hexData
         );
