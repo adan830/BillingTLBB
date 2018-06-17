@@ -4,9 +4,9 @@
 
 namespace Utils
 {
-  std::vector<char> hexToBytes(const std::string& hex)
+  ByteArray hexToBytes(const std::string& hex)
   {
-    std::vector<char> bytes;
+    ByteArray bytes;
 
     for (std::size_t i = 0; i < hex.size(); i += 2)
     {

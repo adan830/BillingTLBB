@@ -1,6 +1,8 @@
 #ifndef __BILLING_UTILS_HPP__
 #define __BILLING_UTILS_HPP__
 
+#include "BaseType.hpp"
+
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
@@ -11,7 +13,7 @@ namespace Utils
 {
   std::string strToUpper(const std::string& s);
 
-  std::vector<char> hexToBytes(const std::string& hex);
+  ByteArray hexToBytes(const std::string& hex);
 
   std::string bytesToHex(const char* data, const std::size_t len);
 

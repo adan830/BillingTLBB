@@ -36,11 +36,11 @@ namespace net { namespace packet
       return this->onSelectCharHandle(hexData);
     };
 
-    m_routers["A4"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ByteArray
-    {
-      return this->onSelectCharHandle(hexData);
-    };
+    // m_routers["A4"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    // ->ByteArray
+    // {
+    //   return this->onSelectCharHandle(hexData);
+    // };
 
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
@@ -59,8 +59,7 @@ namespace net { namespace packet
     return s_instance;
   }
 
-  ByteArray
-  Routes::operator[](const std::shared_ptr<Packet> hexData)
+  ByteArray Routes::operator[](const std::shared_ptr<Packet> hexData)
   {
     ByteArray m_responseData;
 
@@ -76,8 +75,9 @@ namespace net { namespace packet
     return m_responseData;
   }
 
-  ByteArray
-  Routes::onConnectHandle(const std::shared_ptr<packet::HexData> hexData)
+  ByteArray Routes::onConnectHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
   {
     LOG->warning(__FUNCTION__);
 
@@ -87,11 +87,12 @@ namespace net { namespace packet
     responseData.setId(hexData->getId());
     responseData.append("0100");
 
-    return Utils::hexToBytes(responseData.toString());
+    return responseData.toByteArray();
   }
 
-  ByteArray
-  Routes::onKeepLiveHandle(const std::shared_ptr<packet::HexData> hexData)
+  ByteArray Routes::onKeepLiveHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
   {
     LOG->warning(__FUNCTION__);
 
@@ -103,8 +104,9 @@ namespace net { namespace packet
     return Utils::hexToBytes(responseData.toString());
   }
 
-  ByteArray
-  Routes::onStartUpKickHandle(const std::shared_ptr<packet::HexData> hexData)
+  ByteArray Routes::onStartUpKickHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
   {
     LOG->warning(__FUNCTION__);
 
@@ -113,15 +115,14 @@ namespace net { namespace packet
     responseData.setId(hexData->getId());
     responseData.append("0600");
 
-    return Utils::hexToBytes(responseData.toString());
+    return responseData.toByteArray();
   }
 
-  ByteArray
-  Routes::onLoginRequestHandle(const std::shared_ptr<packet::HexData> hexData)
+  ByteArray Routes::onLoginRequestHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
   {
     LOG->warning(__FUNCTION__);
-
-    packet::HexData responseData;
 
     auto &packetHexStr = hexData->getBody();
 
@@ -205,6 +206,7 @@ namespace net { namespace packet
     LOG->info("Account [{}] sent login request", accountName);
 
     // LastData start
+    packet::HexData responseData;
     std::size_t responseDataSize = 50 - 40 * loginValue + accountNameHex.size();
     LOG->warning("Login packet size: {}", responseDataSize);
     responseData.setType(hexData->getType());
@@ -222,19 +224,35 @@ namespace net { namespace packet
       LOG->warning("Login packet Hex: {}:{}", resHex, resHex.size());
     }
 
-    return Utils::hexToBytes(responseData.toString());
+    return responseData.toByteArray();
   }
 
-  ByteArray
-  Routes::onSelectCharHandle(const std::shared_ptr<packet::HexData> hexData)
+  ByteArray Routes::onSelectCharHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
   {
     LOG->warning(__FUNCTION__);
 
-    packet::HexData responseData;
+    auto &packetHexStr = hexData->getBody();
+
+    auto accountNameSizeHex = packetHexStr.substr(0, 2);
+    auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
+
+    auto accountNameHex = packetHexStr.substr(
+      accountNameSizeHex.size(), accountNameSize * 2
+      );
+    auto accountName = Utils::hexToBytes(accountNameHex);
 
     // LastData start
+    packet::HexData responseData;
+    int status = 0;
+    status = 1;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
+    responseData.append(accountNameSizeHex);
+    responseData.append(accountNameHex);
+    responseData.append(Utils::numberToHex(status, 2));
+    responseData.append("00000027100000270F000022B800");
     // LastData end
 
     return responseData.toByteArray();
