@@ -3,28 +3,6 @@
 #include "billing/database/Connector.hpp"
 
 namespace database { namespace models {
-  Account::Account(const int id) :
-    database::Model()
-  {
-    LOG->warning("Account is constructing with id: {}", id);
-
-    this->init();
-
-    constexpr auto q = R"(
-      SELECT
-        id,
-        name,
-        point
-      FROM
-        account
-      WHERE
-        id=?
-    )";
-
-    auto conn = this->getConnector();
-    auto ret = conn->query<int, std::string, int>(q, id);
-  }
-
   Account::Account(const std::string& name) :
     database::Model()
   {
@@ -36,7 +14,10 @@ namespace database { namespace models {
       SELECT
         id,
         name,
-        point
+        password,
+        point,
+        is_online,
+        is_lock
       FROM
         account
       WHERE
@@ -54,6 +35,10 @@ namespace database { namespace models {
   void Account::init()
   {
     m_tableName = "account";
+
+    m_isPointChanged = false;
+    m_isIsLockChanged = false;
+    m_isIsOnlineChanged = false;
   }
 
   int Account::getId() const
@@ -74,6 +59,41 @@ namespace database { namespace models {
   int Account::getPoint() const
   {
     return m_point;
+  }
+
+  void Account::setPoint(const int point)
+  {
+    m_point = point;
+    m_isPointChanged = true;
+  }
+
+  bool Account::getIsOnline() const
+  {
+    return m_is_online;
+  }
+
+  void Account::setIsOnline(const bool isOnline)
+  {
+    m_point = isOnline;
+    m_isPointChanged = true;
+  }
+
+  bool Account::getIsLock() const
+  {
+    return m_is_lock;
+  }
+
+  void Account::setIsLock(const bool isLock)
+  {
+    m_is_lock = isLock;
+    m_isIsLockChanged = true;
+  }
+
+  void Account::save()
+  {
+    LOG->warning("Saving account: {}", m_name);
+
+    LOG->warning("Saving account: {} completed", m_name);
   }
 } }
 

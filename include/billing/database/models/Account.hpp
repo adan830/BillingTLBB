@@ -4,16 +4,23 @@
 #include "../Model.hpp"
 
 namespace database { namespace models {
-  class Account : public database::Model
+  class Account final : public database::Model
   {
     private:
       int m_id;
       std::string m_name;
       std::string m_password;
+
       int m_point;
+      bool m_isPointChanged;
+
+      bool m_is_online;
+      bool m_isIsOnlineChanged;
+
+      bool m_is_lock;
+      bool m_isIsLockChanged;
 
     public:
-      explicit Account(const int id);
       explicit Account(const std::string& name);
       virtual ~Account();
 
@@ -22,9 +29,22 @@ namespace database { namespace models {
 
     public:
       int getId() const;
+
       const std::string& getName() const;
+
       const std::string& getPassword() const;
+
       int getPoint() const;
+      void setPoint(const int point);
+
+      bool getIsOnline() const;
+      void setIsOnline(const bool isOnline);
+
+      bool getIsLock() const;
+      void setIsLock(const bool isLock);
+
+    public:
+      virtual void save();
   };
 } }
 

@@ -24,6 +24,7 @@ namespace database
 
     public:
       const std::string& getTableName() const;
+      virtual void save() = 0;
   };
 }
 
