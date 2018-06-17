@@ -144,6 +144,11 @@ namespace net { namespace packet
     + m_footer;
   }
 
+  ByteArray HexData::toByteArray() const
+  {
+    return Utils::hexToBytes(this->toString());
+  }
+
   void HexData::updateSize()
   {
     m_size = (m_type.size() + m_id.size() + m_body.size()) / 2;

@@ -2,20 +2,19 @@
 #define __BILLING_NET_PACKET_ROUTES_HPP__
 
 #include "../Packet.hpp"
+#include "../../BaseType.hpp"
 
 #include <unordered_map>
 #include <functional>
 #include <string>
-#include <vector>
 
 namespace net { namespace packet
 {
   class Routes
   {
     public:
-      using ResponseData = std::vector<char>;
       using Routers = std::unordered_map<std::string,
-            std::function<ResponseData(const std::shared_ptr<packet::HexData>)>
+            std::function<ByteArray(const std::shared_ptr<packet::HexData>)>
             >;
 
     private:
@@ -29,22 +28,22 @@ namespace net { namespace packet
 
     public:
       static Routes& getInstance();
-      ResponseData operator[](const std::shared_ptr<Packet> packet);
+      ByteArray operator[](const std::shared_ptr<Packet> packet);
 
     protected:
-      ResponseData onConnectHandle(
+      ByteArray onConnectHandle(
         const std::shared_ptr<packet::HexData> packetHexData
         );
-      ResponseData onKeepLiveHandle(
+      ByteArray onKeepLiveHandle(
         const std::shared_ptr<packet::HexData> packetHexData
         );
-      ResponseData onLoginRequestHandle(
+      ByteArray onLoginRequestHandle(
         const std::shared_ptr<packet::HexData> packetHexData
         );
-      ResponseData onSelectCharHandle(
+      ByteArray onSelectCharHandle(
         const std::shared_ptr<packet::HexData> packetHexData
         );
-      ResponseData onStartUpKickHandle(
+      ByteArray onStartUpKickHandle(
         const std::shared_ptr<packet::HexData> packetHexData
         );
   };

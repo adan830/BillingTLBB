@@ -1,7 +1,9 @@
 #ifndef __BILLING_NET_PACKET_HEX_DATA_HPP__
 #define __BILLING_NET_PACKET_HEX_DATA_HPP__
 
+#include "../../BaseType.hpp"
 #include "../Packet.hpp"
+#include "Routes.hpp"
 #include <string>
 
 namespace net { namespace packet
@@ -44,6 +46,8 @@ namespace net { namespace packet
       const std::string& getBody() const;
 
       std::string toString() const;
+
+      ByteArray toByteArray() const;
 
     private:
       void updateSize();

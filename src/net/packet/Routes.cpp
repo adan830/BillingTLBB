@@ -13,37 +13,37 @@ namespace net { namespace packet
   Routes::Routes()
   {
     m_routers["A0"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ResponseData
+    ->ByteArray
     {
       return this->onConnectHandle(hexData);
     };
 
     m_routers["A1"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ResponseData
+    ->ByteArray
     {
       return this->onKeepLiveHandle(hexData);
     };
 
     m_routers["A2"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ResponseData
+    ->ByteArray
     {
       return this->onLoginRequestHandle(hexData);
     };
 
     m_routers["A3"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ResponseData
+    ->ByteArray
     {
       return this->onSelectCharHandle(hexData);
     };
 
     m_routers["A4"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ResponseData
+    ->ByteArray
     {
       return this->onSelectCharHandle(hexData);
     };
 
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ResponseData
+    ->ByteArray
     {
       return this->onStartUpKickHandle(hexData);
     };
@@ -59,10 +59,10 @@ namespace net { namespace packet
     return s_instance;
   }
 
-  Routes::ResponseData
+  ByteArray
   Routes::operator[](const std::shared_ptr<Packet> hexData)
   {
-    ResponseData m_responseData;
+    ByteArray m_responseData;
 
     for (const auto& router : m_routers)
     {
@@ -76,7 +76,7 @@ namespace net { namespace packet
     return m_responseData;
   }
 
-  Routes::ResponseData
+  ByteArray
   Routes::onConnectHandle(const std::shared_ptr<packet::HexData> hexData)
   {
     LOG->warning(__FUNCTION__);
@@ -90,7 +90,7 @@ namespace net { namespace packet
     return Utils::hexToBytes(responseData.toString());
   }
 
-  Routes::ResponseData
+  ByteArray
   Routes::onKeepLiveHandle(const std::shared_ptr<packet::HexData> hexData)
   {
     LOG->warning(__FUNCTION__);
@@ -103,7 +103,7 @@ namespace net { namespace packet
     return Utils::hexToBytes(responseData.toString());
   }
 
-  Routes::ResponseData
+  ByteArray
   Routes::onStartUpKickHandle(const std::shared_ptr<packet::HexData> hexData)
   {
     LOG->warning(__FUNCTION__);
@@ -116,7 +116,7 @@ namespace net { namespace packet
     return Utils::hexToBytes(responseData.toString());
   }
 
-  Routes::ResponseData
+  ByteArray
   Routes::onLoginRequestHandle(const std::shared_ptr<packet::HexData> hexData)
   {
     LOG->warning(__FUNCTION__);
@@ -225,9 +225,11 @@ namespace net { namespace packet
     return Utils::hexToBytes(responseData.toString());
   }
 
-  Routes::ResponseData
+  ByteArray
   Routes::onSelectCharHandle(const std::shared_ptr<packet::HexData> hexData)
   {
+    LOG->warning(__FUNCTION__);
+
     packet::HexData responseData;
 
     // LastData start
@@ -235,7 +237,7 @@ namespace net { namespace packet
     responseData.setId(hexData->getId());
     // LastData end
 
-    return Utils::hexToBytes(responseData.toString());
+    return responseData.toByteArray();
   }
 } }
 
