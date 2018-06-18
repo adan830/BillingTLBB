@@ -45,7 +45,7 @@ namespace database { namespace models {
     MYSQL_BIND bindParams[1];
     std::memset(bindParams, 0, sizeof(bindParams));
 
-    std::size_t l = name.size();
+    unsigned long l = name.size();
     char c[50];
     std::strcpy(c, name.data());
 

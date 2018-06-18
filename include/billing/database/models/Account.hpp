@@ -9,7 +9,7 @@ namespace database { namespace models {
     private:
       int m_id;
       char m_name[50];
-      char m_password[32];
+      char m_password[33];
 
       int m_point;
       bool m_isPointChanged;
