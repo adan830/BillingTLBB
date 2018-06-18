@@ -458,7 +458,7 @@ namespace net { namespace packet
     {
       database::models::Account a(accountName);
 
-      accountPoint = a.getPoint() * 1000;
+      accountPoint = a.getPoint();
     }
     catch (const std::exception& e)
     {

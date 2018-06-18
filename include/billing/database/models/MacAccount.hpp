@@ -17,6 +17,5 @@ namespace database { namespace models {
       MacAccount();
       ~MacAccount();
   };
-
 } }
 
