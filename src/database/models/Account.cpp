@@ -16,9 +16,9 @@ namespace database { namespace models {
         id,
         name,
         password,
-        point/*,
+        point,
         is_online,
-        is_lock*/
+        is_lock
       FROM
         account
       WHERE
@@ -68,8 +68,9 @@ namespace database { namespace models {
       throw nullptr;
     }
 
-    auto numFields = mysql_num_fields(metaData);
-    if (numFields != 4)
+    constexpr std::size_t numFields = 6;
+    auto stmtNumFields = mysql_num_fields(metaData);
+    if (stmtNumFields != numFields)
     {
       LOG->error("Num fields is invalid");
       throw nullptr;
@@ -77,38 +78,50 @@ namespace database { namespace models {
 
     LOG->warning("Params binded");
 
-    MYSQL_BIND bindResult[4];
-    unsigned long length[4];
-    my_bool is_null[4];
-    my_bool error[4];
+    MYSQL_BIND bindResult[numFields];
+    unsigned long length[numFields];
+    my_bool is_null[numFields];
+    my_bool error[numFields];
 
     std::memset(bindResult, 0, sizeof(bindResult));
 
     bindResult[0].buffer_type = MYSQL_TYPE_LONG;
-    bindResult[0].buffer = (char*)&m_id;
+    bindResult[0].buffer = &m_id;
     bindResult[0].length = &length[0];
     bindResult[0].is_null = &is_null[0];
     bindResult[0].error = &error[0];
 
     bindResult[1].buffer_type = MYSQL_TYPE_STRING;
-    bindResult[1].buffer = (char*)&m_name;
+    bindResult[1].buffer = &m_name;
     bindResult[1].buffer_length = sizeof(m_name);
     bindResult[1].length = &length[1];
     bindResult[1].is_null = &is_null[1];
     bindResult[1].error = &error[1];
 
     bindResult[2].buffer_type = MYSQL_TYPE_STRING;
-    bindResult[2].buffer = (char*)&m_password;
+    bindResult[2].buffer = &m_password;
     bindResult[2].buffer_length = sizeof(m_password);
     bindResult[2].length = &length[2];
     bindResult[2].is_null = &is_null[2];
     bindResult[2].error = &error[2];
 
     bindResult[3].buffer_type = MYSQL_TYPE_LONG;
-    bindResult[3].buffer = (char*)&m_point;
+    bindResult[3].buffer = &m_point;
     bindResult[3].length = &length[3];
     bindResult[3].is_null = &is_null[3];
     bindResult[3].error = &error[3];
+
+    bindResult[4].buffer_type = MYSQL_TYPE_TINY;
+    bindResult[4].buffer = &m_is_online;
+    bindResult[4].length = &length[4];
+    bindResult[4].is_null = &is_null[4];
+    bindResult[4].error = &error[4];
+
+    bindResult[5].buffer_type = MYSQL_TYPE_TINY;
+    bindResult[5].buffer = &m_is_lock;
+    bindResult[5].length = &length[4];
+    bindResult[5].is_null = &is_null[4];
+    bindResult[5].error = &error[4];
 
     if (mysql_stmt_bind_result(stmt, bindResult))
     {
@@ -134,25 +147,16 @@ namespace database { namespace models {
 
     LOG->warning("Has result");
 
-    bool found = false;
-
     while(!mysql_stmt_fetch(stmt))
     {
       LOG->warning(
-        "Id: {}, Name: {}, Password: {}, Point: {}",
-        m_id, m_name, m_password, m_point
+        "Id: {}, Name: {}, Password: {}, Point: {}, Online: {}, Lock: {}",
+        m_id, m_name, m_password, m_point, m_is_online, m_is_lock
         );
-      found = true;
     }
 
     mysql_stmt_free_result(stmt);
     mysql_stmt_close(stmt);
-
-    if (!found)
-    {
-      LOG->warning("Account [{}] not found", name);
-      throw nullptr;
-    }
   }
 
   Account::~Account()

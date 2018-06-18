@@ -199,7 +199,19 @@ namespace net { namespace packet
     LOG->warning("Password: {}", password);
     // Password end
 
-    int loginStatus = 1; // Successed
+    /**
+     * List Status
+     *
+     * 1: OK
+     * 2: Wrong info
+     * 3: Wrong info
+     * 4: Is online
+     * 5: Account is exists (for reg form)
+     * 6: Fail from server
+     * 7: Is being locked
+     * 8: Fields empty found
+     */
+    int loginStatus = 6;
     try
     {
       database::models::Account a(accountName);
@@ -214,18 +226,24 @@ namespace net { namespace packet
         loginStatus = 7;
         LOG->error("Account [{}] is being locked", a.getName());
       }
-
-      LOG->info("Account [{}] sent login request", accountName);
+      else if (a.getPassword() != password)
+      {
+        loginStatus = 2;
+        LOG->error("Account [{}] tried login with invalid info", a.getName());
+      }
+      else
+      {
+        loginStatus = 1;
+        LOG->info("Account [{}] sent login request", accountName);
+      }
     }
     catch (const std::exception& e)
     {
-      loginStatus = 2;
       LOG->error("Sql database error: ", e.what());
     }
     catch (...)
     {
-      loginStatus = 2;
-      LOG->error("Exception: Error");
+      LOG->error("Exception: Error code not found");
     }
 
     int loginValue = 1; // Successed
