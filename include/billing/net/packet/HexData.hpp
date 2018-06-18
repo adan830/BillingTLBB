@@ -15,10 +15,23 @@ namespace net { namespace packet
 
     private:
       std::string m_header;
+
       SizeType m_size;
+
+      /**
+       * Type code
+       *
+       * A0: Connect
+       * A1: KeepLive
+       * A2: LoginRequest
+       * A3: CharLogOut
+       */
       std::string m_type;
+
       std::string m_id;
+
       std::string m_body;
+
       std::string m_footer;
 
     public:

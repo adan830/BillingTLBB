@@ -54,12 +54,31 @@ namespace net { namespace packet
       return this->onStartUpKickHandle(hexData);
     };
 
+    // m_routers["C1"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    // ->ByteArray
+    // {
+    // };
+
+    // m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    // ->ByteArray
+    // {
+    // };
+
+    // m_routers["C6"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    // ->ByteArray
+    // {
+    // };
+
+    // m_routers["E1"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    // ->ByteArray
+    // {
+    // };
+
     m_routers["E2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
       return this->onAskPrizeHandle(hexData);
     };
-
   }
 
   Routes::~Routes()
@@ -88,6 +107,7 @@ namespace net { namespace packet
     return m_responseData;
   }
 
+  // A0
   ByteArray Routes::onConnectHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
@@ -103,6 +123,7 @@ namespace net { namespace packet
     return responseData.toByteArray();
   }
 
+  // A1
   ByteArray Routes::onKeepLiveHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
@@ -131,6 +152,7 @@ namespace net { namespace packet
     return responseData.toByteArray();
   }
 
+  // A2
   ByteArray Routes::onLoginRequestHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
@@ -279,6 +301,7 @@ namespace net { namespace packet
     return responseData.toByteArray();
   }
 
+  // A3
   ByteArray Routes::onSelectCharHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
@@ -337,6 +360,7 @@ namespace net { namespace packet
     return responseData.toByteArray();
   }
 
+  // A4
   ByteArray Routes::onCharLogOutHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
@@ -388,6 +412,7 @@ namespace net { namespace packet
     return responseData.toByteArray();
   }
 
+  // E2
   ByteArray Routes::onAskPrizeHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
@@ -438,6 +463,7 @@ namespace net { namespace packet
     return responseData.toByteArray();
   }
 
+  // A6
   ByteArray Routes::onWLBillingKeepHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
