@@ -43,20 +43,35 @@ namespace database { namespace models {
     }
 
     MYSQL_BIND bindParams[1];
-
     std::memset(bindParams, 0, sizeof(bindParams));
 
+    std::size_t l = name.size();
+    char c[50];
+    std::strcpy(c, name.data());
+
     bindParams[0].buffer_type = MYSQL_TYPE_STRING;
-    bindParams[0].buffer = const_cast<char*>(name.data());
+    bindParams[0].buffer = &c;
     bindParams[0].buffer_length = sizeof(name.size());
-    bindParams[0].length = decltype(bindParams[0].length)(
-      name.size()
-      );
+    bindParams[0].length = &l;
     bindParams[0].is_null = 0;
 
     if (mysql_stmt_bind_param(stmt, bindParams))
     {
       LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    auto metaData = mysql_stmt_result_metadata(stmt);
+    if (!metaData)
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    auto numFields = mysql_num_fields(metaData);
+    if (numFields != 4)
+    {
+      LOG->error("Num fields is invalid");
       throw nullptr;
     }
 
@@ -119,14 +134,25 @@ namespace database { namespace models {
 
     LOG->warning("Has result");
 
+    bool found = false;
+
     while(!mysql_stmt_fetch(stmt))
     {
-      LOG->warning("FOUND DATA");
-      // printf("6 - %d \n", );
+      LOG->warning(
+        "Id: {}, Name: {}, Password: {}, Point: {}",
+        m_id, m_name, m_password, m_point
+        );
+      found = true;
     }
 
     mysql_stmt_free_result(stmt);
     mysql_stmt_close(stmt);
+
+    if (!found)
+    {
+      LOG->warning("Account [{}] not found", name);
+      throw nullptr;
+    }
   }
 
   Account::~Account()
@@ -136,6 +162,9 @@ namespace database { namespace models {
   void Account::init()
   {
     m_tableName = "account";
+
+    m_is_online = false;
+    m_is_lock = false;
 
     m_isPointChanged = false;
     m_isIsLockChanged = false;

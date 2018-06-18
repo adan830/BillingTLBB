@@ -200,21 +200,39 @@ namespace net { namespace packet
     // Password end
 
     int loginStatus = 1; // Successed
-    int loginValue = 1; // Successed
     try
     {
       database::models::Account a(accountName);
+
+      if (a.getIsOnline())
+      {
+        loginStatus = 4;
+        LOG->error("Account [{}] is currently logged in", a.getName());
+      }
+      else if (a.getIsLock())
+      {
+        loginStatus = 7;
+        LOG->error("Account [{}] is being locked", a.getName());
+      }
+
+      LOG->info("Account [{}] sent login request", accountName);
     }
     catch (const std::exception& e)
     {
+      loginStatus = 2;
       LOG->error("Sql database error: ", e.what());
     }
     catch (...)
     {
-      LOG->error("Sql database has error");
+      loginStatus = 2;
+      LOG->error("Exception: Error");
     }
 
-    LOG->info("Account [{}] sent login request", accountName);
+    int loginValue = 1; // Successed
+    if (loginStatus != 1)
+    {
+      loginValue = 1;
+    }
 
     // LastData start
     packet::HexData responseData;
