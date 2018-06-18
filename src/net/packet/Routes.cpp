@@ -464,6 +464,9 @@ namespace net { namespace packet
     return responseData.toByteArray();
   }
 
+#ifndef __BILLING_ENTERPRISE_EDITION__
+
+  // E1
   ByteArray Routes::onAskPrizeAskBuyHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
@@ -475,6 +478,8 @@ namespace net { namespace packet
     responseData.setId(hexData->getId());
     return responseData.toByteArray();
   }
+
+#endif
 
   // A6
   ByteArray Routes::onWLBillingKeepHandle(
