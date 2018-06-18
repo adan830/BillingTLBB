@@ -163,9 +163,9 @@ namespace net { namespace packet
     auto &packetHexStr = hexData->getBody();
 
     // MacAddress start
-    std::size_t macAddressOffset = packetHexStr.size() - 136;
+    std::size_t macAddressOffset = packetHexStr.size() - 140;
     auto maxAddressHex = packetHexStr.substr(
-      macAddressOffset, packetHexStr.size() - 72
+      macAddressOffset, 64
       );
     auto macAddressBytes = Utils::hexToBytes(maxAddressHex);
     LOG->warning(
@@ -283,7 +283,6 @@ namespace net { namespace packet
     // LastData start
     packet::HexData responseData;
     std::size_t responseDataSize = 50 - 40 * loginValue + accountNameHex.size();
-    LOG->warning("Login packet size: {}", responseDataSize);
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex);
@@ -293,11 +292,6 @@ namespace net { namespace packet
         responseDataSize - (responseData.getSize() * 2), '0'
         ));
     // LastData end
-
-    {
-      auto resHex = responseData.toString();
-      LOG->warning("Login packet Hex: {}:{}", resHex, resHex.size());
-    }
 
     return responseData.toByteArray();
   }
@@ -391,8 +385,12 @@ namespace net { namespace packet
       if (a.getIsOnline())
       {
         a.setIsOnline(false);
-        LOG->error("Account [{}] is currently logged in", a.getName());
       }
+      else
+      {
+        LOG->warning("Account [{}] is currently not logged in", accountName);
+      }
+
       a.save();
     }
     catch (const std::exception& e)
@@ -412,6 +410,23 @@ namespace net { namespace packet
     responseData.append("00");
     return responseData.toByteArray();
   }
+
+#ifndef __BILLING_ENTERPRISE_EDITION__
+
+  // E1
+  ByteArray Routes::onAskPrizeAskBuyHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
+  {
+    LOG->warning(__FUNCTION__);
+
+    packet::HexData responseData;
+    responseData.setType(hexData->getType());
+    responseData.setId(hexData->getId());
+    return responseData.toByteArray();
+  }
+
+#endif
 
   // E2
   ByteArray Routes::onAskPrizeAskPointHandle(
@@ -437,14 +452,13 @@ namespace net { namespace packet
       );
     LOG->warning("Account name: {}", accountName);
 
-    // TODO: Select Database
-    std::size_t accountPoint = 0;
+    unsigned long long accountPoint = 0;
 
     try
     {
       database::models::Account a(accountName);
 
-      accountPoint = a.getPoint();
+      accountPoint = a.getPoint() * 1000;
     }
     catch (const std::exception& e)
     {
@@ -463,23 +477,6 @@ namespace net { namespace packet
     responseData.append(Utils::numberToHex(accountPoint, 8));
     return responseData.toByteArray();
   }
-
-#ifndef __BILLING_ENTERPRISE_EDITION__
-
-  // E1
-  ByteArray Routes::onAskPrizeAskBuyHandle(
-    const std::shared_ptr<packet::HexData> hexData
-    )
-  {
-    LOG->warning(__FUNCTION__);
-
-    packet::HexData responseData;
-    responseData.setType(hexData->getType());
-    responseData.setId(hexData->getId());
-    return responseData.toByteArray();
-  }
-
-#endif
 
   // A6
   ByteArray Routes::onWLBillingKeepHandle(
