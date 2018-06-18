@@ -39,15 +39,16 @@ namespace net { namespace packet
 
       m_type = hexData.substr(m_header.size() + sizeHex.size(), 2);
 
-      std::size_t bodyLastPos = (m_size * 2) - m_type.size();
+      m_id = hexData.substr(
+        m_header.size() + sizeHex.size() + m_type.size(), 4
+        );
+
+      std::size_t bodyLastPos = (m_size * 2) - m_id.size() - m_type.size();
       if (bodyLastPos > (hexData.size() - 12))
       {
         throw std::runtime_error("Buffer size is too large");
       }
 
-      m_id = hexData.substr(
-        m_header.size() + sizeHex.size() + m_type.size(), 4
-        );
       if (m_id.empty())
       {
         throw std::runtime_error("Not found packet ID");

@@ -165,7 +165,7 @@ namespace net { namespace packet
     // MacAddress start
     std::size_t macAddressOffset = packetHexStr.size() - 140;
     auto maxAddressHex = packetHexStr.substr(
-      macAddressOffset, 64
+      macAddressOffset, 68
       );
     auto macAddressBytes = Utils::hexToBytes(maxAddressHex);
     LOG->warning(
