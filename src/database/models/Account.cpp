@@ -25,10 +25,10 @@ namespace database { namespace models {
         name=?
     )";
 
-    // TODO: Wrap this
     auto conn = this->getConnector();
     // auto ret = conn->query<int, std::string, int>(q, name);
 
+    // TODO: Wrap this bellow
     auto m_connDriver = conn->getConnDriver();
     MYSQL_STMT *stmt = mysql_stmt_init(m_connDriver);
     if (!stmt)
@@ -167,8 +167,8 @@ namespace database { namespace models {
   {
     m_tableName = "account";
 
-    m_is_online = false;
-    m_is_lock = false;
+    m_is_online = 0;
+    m_is_lock = 0;
 
     m_isPointChanged = false;
     m_isIsLockChanged = false;
@@ -208,7 +208,7 @@ namespace database { namespace models {
 
   void Account::setIsOnline(const bool isOnline)
   {
-    m_point = isOnline;
+    m_is_online = static_cast<unsigned short>(isOnline);
     m_isPointChanged = true;
   }
 
@@ -219,7 +219,7 @@ namespace database { namespace models {
 
   void Account::setIsLock(const bool isLock)
   {
-    m_is_lock = isLock;
+    m_is_lock = static_cast<unsigned short>(isLock);
     m_isIsLockChanged = true;
   }
 
@@ -227,7 +227,61 @@ namespace database { namespace models {
   {
     LOG->warning("Saving account: {}", m_name);
 
-    LOG->warning("Saving account: {} completed", m_name);
+    constexpr auto q = R"(
+      UPDATE
+        account
+      SET
+        is_online=?
+      WHERE
+        id=?
+    )";
+
+    auto conn = this->getConnector();
+
+    // TODO: Wrap this bellow
+    auto m_connDriver = conn->getConnDriver();
+    MYSQL_STMT *stmt = mysql_stmt_init(m_connDriver);
+    if (!stmt)
+    {
+      LOG->error("Error: {}", mysql_error(m_connDriver));
+      throw nullptr;
+    }
+
+    if (mysql_stmt_prepare(stmt, q, std::strlen(q)))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    constexpr std::size_t bindParamNums = 2;
+    MYSQL_BIND bindParams[bindParamNums];
+    std::memset(bindParams, 0, sizeof(bindParams));
+
+    bindParams[0].buffer_type = MYSQL_TYPE_TINY;
+    bindParams[0].buffer = &m_is_online;
+    bindParams[0].buffer_length = sizeof(m_is_online);
+    bindParams[0].is_null = 0;
+    bindParams[0].error = nullptr;
+
+    bindParams[1].buffer_type = MYSQL_TYPE_LONG;
+    bindParams[1].buffer = &m_id;
+    bindParams[1].buffer_length = sizeof(m_id);
+    bindParams[1].is_null = 0;
+    bindParams[1].error = nullptr;
+
+    if (mysql_stmt_bind_param(stmt, bindParams))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    if (mysql_stmt_execute(stmt))
+    {
+      LOG->error("Error: {}", mysql_stmt_error(stmt));
+      throw nullptr;
+    }
+
+    LOG->warning("Saved account: {}", m_name);
   }
 } }
 

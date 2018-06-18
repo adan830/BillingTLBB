@@ -14,10 +14,10 @@ namespace database { namespace models {
       int m_point;
       bool m_isPointChanged;
 
-      bool m_is_online;
+      unsigned short m_is_online;
       bool m_isIsOnlineChanged;
 
-      bool m_is_lock;
+      unsigned short m_is_lock;
       bool m_isIsLockChanged;
 
     public:

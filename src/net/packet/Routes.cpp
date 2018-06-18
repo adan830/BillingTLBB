@@ -218,6 +218,7 @@ namespace net { namespace packet
 
       if (a.getIsOnline())
       {
+        a.setIsOnline(false);
         loginStatus = 4;
         LOG->error("Account [{}] is currently logged in", a.getName());
       }
@@ -236,6 +237,7 @@ namespace net { namespace packet
         loginStatus = 1;
         LOG->info("Account [{}] sent login request", accountName);
       }
+      a.save();
     }
     catch (const std::exception& e)
     {
@@ -295,7 +297,24 @@ namespace net { namespace packet
       );
     LOG->warning("Account name: {}", accountName);
 
-    // TODO: Update Database
+    try
+    {
+      database::models::Account a(accountName);
+
+      if (!a.getIsOnline())
+      {
+        a.setIsOnline(true);
+      }
+      a.save();
+    }
+    catch (const std::exception& e)
+    {
+      LOG->error("Sql database error: ", e.what());
+    }
+    catch (...)
+    {
+      LOG->error("Exception: Error code not found");
+    }
 
     // LastData start
     packet::HexData responseData;
@@ -329,9 +348,30 @@ namespace net { namespace packet
       accountNameSize * 2
       );
     auto accountNameBytes = Utils::hexToBytes(accountNameHex);
-    auto accountName = Utils::hexToBytes(accountNameHex);
+    auto accountName = std::string(
+      accountNameBytes.cbegin(),
+      accountNameBytes.cend()
+      );
 
-    // TODO: Update Database
+    try
+    {
+      database::models::Account a(accountName);
+
+      if (a.getIsOnline())
+      {
+        a.setIsOnline(false);
+        LOG->error("Account [{}] is currently logged in", a.getName());
+      }
+      a.save();
+    }
+    catch (const std::exception& e)
+    {
+      LOG->error("Sql database error: ", e.what());
+    }
+    catch (...)
+    {
+      LOG->error("Exception: Error code not found");
+    }
 
     packet::HexData responseData;
     responseData.setType(hexData->getType());
