@@ -18,7 +18,7 @@ release:
 		make -j$(shell nproc)
 
 clean:
-	git clean -xdf bin
+	git clean -xdf bin build
 
 deps.update:
 	git submodule update --init --recursive

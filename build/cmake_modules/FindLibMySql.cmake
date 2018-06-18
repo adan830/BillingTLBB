@@ -17,6 +17,7 @@
 include(CheckCXXSourceCompiles)
 
 if(WIN32)
+  set(CMAKE_FIND_LIBRARY_SUFFIXES .lib ${CMAKE_FIND_LIBRARY_SUFFIXES})
   find_path(MYSQL_INCLUDE_DIR mysql.h
     PATHS
     $ENV{MYSQL_INCLUDE_DIR}
@@ -25,6 +26,8 @@ if(WIN32)
     $ENV{SystemDrive}/MySQL/*/include
     $ENV{ProgramW6432}/MySQL/*/include
     )
+elseif(MINGW OR MSYS)
+  # set(CMAKE_FIND_LIBRARY_SUFFIXES .lib ${CMAKE_FIND_LIBRARY_SUFFIXES})
 else(WIN32)
   set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
   find_path(MYSQL_INCLUDE_DIR mysql.h
@@ -72,6 +75,7 @@ if(WIN32)
     PATHS
     ${MYSQL_LIB_PATHS}
     )
+elseif(MINGW OR MSYS)
 else(WIN32)
   # find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
   set(MYSQL_LIB_PATHS
@@ -116,9 +120,22 @@ endif()
 if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
   set(LIBMYSQL_DOWNLOAD_LINK)
   set(LIBMYSQL_DOWNLOAD_SAVE_FILE)
-  if(WIN32)
-  else()
+  if (WIN32)
+  elseif (MINGW OR MSYS)
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+      set(MYSQL_DOWNLOAD_LINK
+        https://downloads.mysql.com/archives/get/file/mysql-connector-c-6.1.11-winx64.zip
+        )
+    else()
+      set(MYSQL_DOWNLOAD_LINK
+        https://downloads.mysql.com/archives/get/file/mysql-connector-c-6.1.11-win32.zip
+        )
+    endif()
+    set(LIBMYSQL_DOWNLOAD_SAVE_FILE
+      /tmp/libmysqlclient.zip
+      )
+  else()
+    if (CMAKE_SIZEOF_VOID_P EQUAL 8)
       set(MYSQL_DOWNLOAD_LINK
         https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar.gz
         )
@@ -151,14 +168,27 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/include
       )
   endif()
+  if (MYSQL_INCLUDE_DIR)
+    message(STATUS "Found MYSQL_INCLUDE_DIR ${MYSQL_INCLUDE_DIR}")
+  endif()
   if (NOT LIB_MYSQL_CLIENT)
     set(MYSQL_LIB_PATHS
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/lib
       )
-    find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
-      PATHS
-      ${MYSQL_LIB_PATHS}
-      )
+    if (WIN32)
+    elseif (MINGW OR MSYS)
+      message(STATUS "Finding libmysql")
+      find_library(LIB_MYSQL_CLIENT NAMES libmysql
+        PATHS
+        ${MYSQL_LIB_PATHS}
+        )
+      message(STATUS "libmysql: ${LIB_MYSQL_CLIENT}")
+    else()
+      find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
+        PATHS
+        ${MYSQL_LIB_PATHS}
+        )
+    endif()
   endif()
   if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
     message(FATAL_ERROR "Lib MySql Client not found")
