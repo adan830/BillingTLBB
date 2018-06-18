@@ -237,7 +237,10 @@ namespace net { namespace packet
         loginStatus = 1;
         LOG->info("Account [{}] sent login request", accountName);
       }
-      a.save();
+      if (!a.save())
+      {
+        loginStatus = 6;
+      }
     }
     catch (const std::exception& e)
     {
@@ -297,6 +300,7 @@ namespace net { namespace packet
       );
     LOG->warning("Account name: {}", accountName);
 
+    int status = 0;
     try
     {
       database::models::Account a(accountName);
@@ -305,7 +309,11 @@ namespace net { namespace packet
       {
         a.setIsOnline(true);
       }
-      a.save();
+
+      if (a.save())
+      {
+        status = 1;
+      }
     }
     catch (const std::exception& e)
     {
@@ -318,8 +326,6 @@ namespace net { namespace packet
 
     // LastData start
     packet::HexData responseData;
-    int status = 0;
-    status = 1;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex);

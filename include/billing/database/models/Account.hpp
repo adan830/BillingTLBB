@@ -44,7 +44,7 @@ namespace database { namespace models {
       void setIsLock(const bool isLock);
 
     public:
-      virtual void save();
+      virtual bool save();
   };
 } }
 

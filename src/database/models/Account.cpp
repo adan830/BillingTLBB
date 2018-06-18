@@ -223,7 +223,7 @@ namespace database { namespace models {
     m_isIsLockChanged = true;
   }
 
-  void Account::save()
+  bool Account::save()
   {
     LOG->warning("Saving account: {}", m_name);
 
@@ -244,13 +244,13 @@ namespace database { namespace models {
     if (!stmt)
     {
       LOG->error("Error: {}", mysql_error(m_connDriver));
-      throw nullptr;
+      return false;
     }
 
     if (mysql_stmt_prepare(stmt, q, std::strlen(q)))
     {
       LOG->error("Error: {}", mysql_stmt_error(stmt));
-      throw nullptr;
+      return false;
     }
 
     constexpr std::size_t bindParamNums = 2;
@@ -272,16 +272,18 @@ namespace database { namespace models {
     if (mysql_stmt_bind_param(stmt, bindParams))
     {
       LOG->error("Error: {}", mysql_stmt_error(stmt));
-      throw nullptr;
+      return false;
     }
 
     if (mysql_stmt_execute(stmt))
     {
       LOG->error("Error: {}", mysql_stmt_error(stmt));
-      throw nullptr;
+      return false;
     }
 
     LOG->warning("Saved account: {}", m_name);
+
+    return true;
   }
 } }
 
