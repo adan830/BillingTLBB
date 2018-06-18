@@ -408,6 +408,21 @@ namespace net { namespace packet
     // TODO: Select Database
     std::size_t accountPoint = 0;
 
+    try
+    {
+      database::models::Account a(accountName);
+
+      accountPoint = a.getPoint();
+    }
+    catch (const std::exception& e)
+    {
+      LOG->error("Sql database error: ", e.what());
+    }
+    catch (...)
+    {
+      LOG->error("Exception: Error code not found");
+    }
+
     packet::HexData responseData;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
