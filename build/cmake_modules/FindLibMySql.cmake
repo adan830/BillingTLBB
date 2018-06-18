@@ -117,10 +117,15 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_LIBRARIES)
   set(LIBMYSQL_DOWNLOAD_SAVE_FILE)
   if(WIN32)
   else()
-    set(MYSQL_DOWNLOAD_LINK
-      https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar.gz
-      # https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-6.1.11-linux-glibc2.12-i686.tar.gz
-      )
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+      set(MYSQL_DOWNLOAD_LINK
+        https://downloads.mysql.com/archives/get/file/mysql-connector-c-6.1.11-linux-glibc2.12-i686.tar.gz
+        )
+    else()
+      set(MYSQL_DOWNLOAD_LINK
+        https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar.gz
+        )
+    endif()
     set(LIBMYSQL_DOWNLOAD_SAVE_FILE
       /tmp/libmysqlclient.tar.gz
       )
