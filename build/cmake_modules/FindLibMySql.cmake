@@ -2,8 +2,8 @@
 # Find the MySQL includes and client library
 # This module defines
 #  MYSQL_INCLUDE_DIR, where to find mysql.h
-#  MYSQL_CLIENT, the libraries needed to use MySQL.
-#  MYSQL_LIB_DIR, path to the MYSQL_CLIENT
+#  LIB_MYSQL_CLIENT, the libraries needed to use MySQL.
+#  MYSQL_LIB_DIR, path to the LIB_MYSQL_CLIENT
 #  MYSQL_EMBEDDED_LIBRARIES, the libraries needed to use MySQL Embedded.
 #  MYSQL_EMBEDDED_LIB_DIR, path to the MYSQL_EMBEDDED_LIBRARIES
 #  MYSQL_FOUND, If false, do not try to use MySQL.
@@ -26,6 +26,7 @@ if(WIN32)
     $ENV{ProgramW6432}/MySQL/*/include
     )
 else(WIN32)
+  set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
   find_path(MYSQL_INCLUDE_DIR mysql.h
     PATHS
     $ENV{MYSQL_INCLUDE_DIR}
@@ -54,7 +55,7 @@ if(WIN32)
     set(build_dist Release)
   endif(CMAKE_BUILD_TYPE_TOLOWER MATCHES "debug")
 
-  #   find_library(MYSQL_CLIENT NAMES mysqlclient
+  #   find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
   set(MYSQL_LIB_PATHS
     $ENV{MYSQL_DIR}/lib/${binary_dist}
     $ENV{MYSQL_DIR}/libmysql/${build_dist}
@@ -67,12 +68,12 @@ if(WIN32)
     $ENV{SystemDrive}/MySQL/*/lib/opt
     $ENV{ProgramW6432}/MySQL/*/lib
     )
-  find_library(MYSQL_CLIENT NAMES libmysql
+  find_library(LIB_MYSQL_CLIENT NAMES libmysql
     PATHS
     ${MYSQL_LIB_PATHS}
     )
 else(WIN32)
-  # find_library(MYSQL_CLIENT NAMES mysqlclient
+  # find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
   set(MYSQL_LIB_PATHS
     $ENV{MYSQL_DIR}/libmysql_r/.libs
     $ENV{MYSQL_DIR}/lib
@@ -87,7 +88,7 @@ else(WIN32)
     PATH_SUFFIXES
     mysql
     )
-  find_library(MYSQL_CLIENT NAMES mysqlclient
+  find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
     PATHS
     ${MYSQL_LIB_PATHS}
     )
@@ -102,17 +103,17 @@ if (NOT MYSQL_INCLUDE_DIR)
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/include
     )
 endif()
-if (NOT MYSQL_CLIENT)
+if (NOT LIB_MYSQL_CLIENT)
   set(MYSQL_LIB_PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/lib
     )
-  find_library(MYSQL_CLIENT NAMES mysqlclient
+  find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
     PATHS
     ${MYSQL_LIB_PATHS}
     )
 endif()
 # Download lib
-if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_CLIENT)
+if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
   set(LIBMYSQL_DOWNLOAD_LINK)
   set(LIBMYSQL_DOWNLOAD_SAVE_FILE)
   if(WIN32)
@@ -150,25 +151,25 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_CLIENT)
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/include
       )
   endif()
-  if (NOT MYSQL_CLIENT)
+  if (NOT LIB_MYSQL_CLIENT)
     set(MYSQL_LIB_PATHS
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/lib
       )
-    find_library(MYSQL_CLIENT NAMES mysqlclient
+    find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
       PATHS
       ${MYSQL_LIB_PATHS}
       )
   endif()
-  if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_CLIENT)
+  if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
     message(FATAL_ERROR "Lib MySql Client not found")
   endif()
 endif()
-if (MYSQL_INCLUDE_DIR AND MYSQL_CLIENT)
+if (MYSQL_INCLUDE_DIR AND LIB_MYSQL_CLIENT)
   set(INC_DIRS ${INC_DIRS}
     ${MYSQL_INCLUDE_DIR}
     )
   set(LIBS_REQUIRED ${LIBS_REQUIRED}
-    ${MYSQL_CLIENT}
+    ${LIB_MYSQL_CLIENT}
     )
 endif()
 # End customize
@@ -178,9 +179,9 @@ find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld
   ${MYSQL_LIB_PATHS}
   )
 
-if(MYSQL_CLIENT)
-  get_filename_component(MYSQL_LIB_DIR ${MYSQL_CLIENT} PATH)
-endif(MYSQL_CLIENT)
+if(LIB_MYSQL_CLIENT)
+  get_filename_component(MYSQL_LIB_DIR ${LIB_MYSQL_CLIENT} PATH)
+endif(LIB_MYSQL_CLIENT)
 
 if(MYSQL_EMBEDDED_LIBRARIES)
   get_filename_component(MYSQL_EMBEDDED_LIB_DIR ${MYSQL_EMBEDDED_LIBRARIES} PATH)
@@ -190,13 +191,13 @@ set( CMAKE_REQUIRED_INCLUDES ${MYSQL_INCLUDE_DIR} )
 set( CMAKE_REQUIRED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES} )
 check_cxx_source_compiles("#include <mysql.h>\nint main() { int i = MYSQL_OPT_USE_EMBEDDED_CONNECTION; }" HAVE_MYSQL_OPT_EMBEDDED_CONNECTION)
 
-if(MYSQL_INCLUDE_DIR AND MYSQL_CLIENT)
+if(MYSQL_INCLUDE_DIR AND LIB_MYSQL_CLIENT)
   set(MYSQL_FOUND TRUE)
-  message(STATUS "Found MySQL: ${MYSQL_INCLUDE_DIR}, ${MYSQL_CLIENT}")
-else(MYSQL_INCLUDE_DIR AND MYSQL_CLIENT)
+  message(STATUS "Found MySQL: ${MYSQL_INCLUDE_DIR}, ${LIB_MYSQL_CLIENT}")
+else(MYSQL_INCLUDE_DIR AND LIB_MYSQL_CLIENT)
   set(MYSQL_FOUND FALSE)
   message(STATUS "MySQL not found.")
-endif(MYSQL_INCLUDE_DIR AND MYSQL_CLIENT)
+endif(MYSQL_INCLUDE_DIR AND LIB_MYSQL_CLIENT)
 
 if(MYSQL_INCLUDE_DIR AND MYSQL_EMBEDDED_LIBRARIES AND HAVE_MYSQL_OPT_EMBEDDED_CONNECTION)
   set(MYSQL_EMBEDDED_FOUND TRUE)
@@ -206,5 +207,5 @@ else(MYSQL_INCLUDE_DIR AND MYSQL_EMBEDDED_LIBRARIES AND HAVE_MYSQL_OPT_EMBEDDED_
   message(STATUS "MySQL Embedded not found.")
 endif(MYSQL_INCLUDE_DIR AND MYSQL_EMBEDDED_LIBRARIES AND HAVE_MYSQL_OPT_EMBEDDED_CONNECTION)
 
-mark_as_advanced(MYSQL_INCLUDE_DIR MYSQL_CLIENT MYSQL_EMBEDDED_LIBRARIES)
+mark_as_advanced(MYSQL_INCLUDE_DIR LIB_MYSQL_CLIENT MYSQL_EMBEDDED_LIBRARIES)
 
