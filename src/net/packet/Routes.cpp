@@ -69,15 +69,16 @@ namespace net { namespace packet
     // {
     // };
 
-    // m_routers["E1"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    // ->ByteArray
-    // {
-    // };
+    m_routers["E1"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ByteArray
+    {
+      return this->onAskPrizeAskBuyHandle(hexData);
+    };
 
     m_routers["E2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onAskPrizeHandle(hexData);
+      return this->onAskPrizeAskPointHandle(hexData);
     };
   }
 
@@ -413,7 +414,7 @@ namespace net { namespace packet
   }
 
   // E2
-  ByteArray Routes::onAskPrizeHandle(
+  ByteArray Routes::onAskPrizeAskPointHandle(
     const std::shared_ptr<packet::HexData> hexData
     )
   {
@@ -460,6 +461,18 @@ namespace net { namespace packet
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
     responseData.append(Utils::numberToHex(accountPoint, 8));
+    return responseData.toByteArray();
+  }
+
+  ByteArray Routes::onAskPrizeAskBuyHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    )
+  {
+    LOG->warning(__FUNCTION__);
+
+    packet::HexData responseData;
+    responseData.setType(hexData->getType());
+    responseData.setId(hexData->getId());
     return responseData.toByteArray();
   }
 
