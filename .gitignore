@@ -2,6 +2,7 @@
 .editorconfig
 compile_commands.json
 /deps/mysql*
+CMakeLists.txt.user
 
 # Prerequisites
 *.d
