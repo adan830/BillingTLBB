@@ -26,7 +26,11 @@ Log::Log() :
     std::make_shared<spdlog::logger>("everythings", dailySink)
     );
 
+#if defined(__WIN32)
+  auto stdoutSink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+#else
   auto stdoutSink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+#endif
 
   spdlog::register_logger(
     std::make_shared<spdlog::logger>("console", stdoutSink)
