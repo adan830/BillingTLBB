@@ -31,7 +31,7 @@ namespace Utils
   template<typename T>
   inline T hexToNumber(const std::string& hexStr)
   {
-    return static_cast<T>(std::stoul(hexStr, nullptr, 16));
+    return std::stoul(hexStr, nullptr, 16);
   }
 }
 
