@@ -6,4 +6,4 @@
 	url = https://github.com/gabime/spdlog.git
 [submodule "deps/ee"]
 	path = deps/ee
-	url = https://gitlab.com/HadesD/TLBB.Billing-EE
+	url = https://gitlab.com/HadesD/TLBB.Billing-EE.git
