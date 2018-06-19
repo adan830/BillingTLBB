@@ -76,6 +76,10 @@ if(WIN32)
     ${MYSQL_LIB_PATHS}
     )
 elseif(MINGW OR MSYS)
+  find_library(LIB_MYSQL_CLIENT NAMES mysql
+    PATHS
+    ${MYSQL_LIB_PATHS}
+    )
 else(WIN32)
   # find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
   set(MYSQL_LIB_PATHS
@@ -111,10 +115,18 @@ if (NOT LIB_MYSQL_CLIENT)
   set(MYSQL_LIB_PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/lib
     )
-  find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
-    PATHS
-    ${MYSQL_LIB_PATHS}
-    )
+  if (WIN32)
+  elseif (MINGW OR MSYS)
+    find_library(LIB_MYSQL_CLIENT NAMES mysql
+      PATHS
+      ${MYSQL_LIB_PATHS}
+      )
+  else()
+    find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
+      PATHS
+      ${MYSQL_LIB_PATHS}
+      )
+  endif()
 endif()
 # Download lib
 if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
@@ -172,17 +184,12 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
     message(STATUS "Found MYSQL_INCLUDE_DIR ${MYSQL_INCLUDE_DIR}")
   endif()
   if (NOT LIB_MYSQL_CLIENT)
-    set(MYSQL_LIB_PATHS
-      ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/lib
-      )
     if (WIN32)
     elseif (MINGW OR MSYS)
-      message(STATUS "Finding libmysql")
-      find_library(LIB_MYSQL_CLIENT NAMES libmysql
+      find_library(LIB_MYSQL_CLIENT NAMES mysql
         PATHS
         ${MYSQL_LIB_PATHS}
         )
-      message(STATUS "libmysql: ${LIB_MYSQL_CLIENT}")
     else()
       find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
         PATHS
