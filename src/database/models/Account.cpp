@@ -231,7 +231,8 @@ namespace database { namespace models {
       UPDATE
         account
       SET
-        is_online=?
+        is_online=?,
+        point=?
       WHERE
         id=?
     )";
@@ -253,7 +254,7 @@ namespace database { namespace models {
       return false;
     }
 
-    constexpr std::size_t bindParamNums = 2;
+    constexpr std::size_t bindParamNums = 3;
     MYSQL_BIND bindParams[bindParamNums];
     std::memset(bindParams, 0, sizeof(bindParams));
 
@@ -264,10 +265,16 @@ namespace database { namespace models {
     bindParams[0].error = nullptr;
 
     bindParams[1].buffer_type = MYSQL_TYPE_LONG;
-    bindParams[1].buffer = &m_id;
-    bindParams[1].buffer_length = sizeof(m_id);
+    bindParams[1].buffer = &m_point;
+    bindParams[1].buffer_length = sizeof(m_point);
     bindParams[1].is_null = 0;
     bindParams[1].error = nullptr;
+
+    bindParams[2].buffer_type = MYSQL_TYPE_LONG;
+    bindParams[2].buffer = &m_id;
+    bindParams[2].buffer_length = sizeof(m_id);
+    bindParams[2].is_null = 0;
+    bindParams[2].error = nullptr;
 
     if (mysql_stmt_bind_param(stmt, bindParams))
     {

@@ -164,9 +164,7 @@ namespace net { namespace packet
 
     // MacAddress start
     std::size_t macAddressOffset = packetHexStr.size() - 140;
-    auto maxAddressHex = packetHexStr.substr(
-      macAddressOffset, 68
-      );
+    auto maxAddressHex = packetHexStr.substr(macAddressOffset, 68);
     auto macAddressBytes = Utils::hexToBytes(maxAddressHex);
     LOG->warning(
       "MAC Address offset: {} - Hex: {}",
@@ -182,9 +180,7 @@ namespace net { namespace packet
 
     // AccountName start
     auto accountNameSizeHex = packetHexStr.substr(0, 2);
-    std::size_t accountNameSize = Utils::hexToNumber<std::size_t>(
-      accountNameSizeHex
-      );
+    auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
     LOG->warning(
       "Account name size: {} - Hex: {}",
       accountNameSize,
@@ -203,7 +199,7 @@ namespace net { namespace packet
 
     // Password start
     std::size_t passwordOffset = accountNameSizeHex.size() + accountNameSize * 2;
-    std::size_t passwordSize = Utils::hexToNumber<std::size_t>(
+    auto passwordSize = Utils::hexToNumber<std::size_t>(
       packetHexStr.substr(passwordOffset, 2)
       );
     auto passwordHexStr = packetHexStr.substr(
@@ -215,10 +211,7 @@ namespace net { namespace packet
       passwordHexStr
       );
     auto passwordBytes = Utils::hexToBytes(passwordHexStr);
-    auto password = std::string(
-      passwordBytes.cbegin(),
-      passwordBytes.cend()
-      );
+    auto password = std::string(passwordBytes.cbegin(),passwordBytes.cend());
     LOG->warning("Password: {}", password);
     // Password end
 
@@ -365,9 +358,7 @@ namespace net { namespace packet
     auto &packetHexStr = hexData->getBody();
 
     auto accountNameSizeHex = packetHexStr.substr(0, 2);
-    auto accountNameSize = Utils::hexToNumber<std::size_t>(
-      accountNameSizeHex
-      );
+    auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
     auto accountNameHex = packetHexStr.substr(
       accountNameSizeHex.size(),
       accountNameSize * 2
@@ -438,9 +429,7 @@ namespace net { namespace packet
     auto &packetHexStr = hexData->getBody();
 
     auto accountNameSizeHex = packetHexStr.substr(0, 2);
-    auto accountNameSize = Utils::hexToNumber<std::size_t>(
-      accountNameSizeHex
-      );
+    auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
     auto accountNameHex = packetHexStr.substr(
       accountNameSizeHex.size(),
       accountNameSize * 2
@@ -452,7 +441,7 @@ namespace net { namespace packet
       );
     LOG->warning("Account name: {}", accountName);
 
-    unsigned long long accountPoint = 0;
+    int accountPoint = 0;
 
     try
     {
@@ -487,9 +476,7 @@ namespace net { namespace packet
 
     auto &packetHexStr = hexData->getBody();
     auto accountNameSizeHex = packetHexStr.substr(0, 2);
-    auto accountNameSize = Utils::hexToNumber<std::size_t>(
-      accountNameSizeHex
-      );
+    auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
     auto accountNameHex = packetHexStr.substr(
       accountNameSizeHex.size(),
       accountNameSize * 2
