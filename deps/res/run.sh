@@ -5,5 +5,5 @@
 # using daemonize of linux
 # I consider to use flag: --daemonize -d
 
-./Billing > /dev/null 2>&1
+./Billing > /dev/null 2>&1 &
 
