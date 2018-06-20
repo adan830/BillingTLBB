@@ -3,19 +3,21 @@
 #include <spdlog/spdlog.h>
 #include <iostream>
 
-#if defined(__gnu_linux__)
+#if defined(__linux__)
 #  include <sys/stat.h>
+#elif defined(__WIN32)
+#  include <Windows.h>
 #endif
 
 Log::Log() :
   m_folderName("logs"),
   m_fileName("log")
 {
-#if defined(__gnu_linux__)
-    if (-1 == mkdir(m_folderName.data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH))
-    {
-      std::cout << "Error when create log folder" << std::endl;
-    }
+  std::cout << "Log system is constructing..." << std::endl;
+#if defined(__linux__)
+    mkdir(m_folderName.data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+#elif defined(__WIN32)
+    ::CreateDirectory(m_folderName.data(), nullptr)
 #endif
 
   auto dailySink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(
@@ -36,16 +38,16 @@ Log::Log() :
     std::make_shared<spdlog::logger>("console", stdoutSink)
     );
 
-  std::cout << "Created LOG" << std::endl;
+  std::cout << "Log system is constructed!" << std::endl;
 }
 
 Log::~Log()
 {
-  std::cout << "Log is destructing..." << std::endl;
+  std::cout << "Log system is destructing..." << std::endl;
 
   spdlog::drop_all();
 
-  std::cout << "Log is destructed" << std::endl;
+  std::cout << "Log system is destructed!" << std::endl;
 }
 
 std::shared_ptr<Log> Log::getInstance()

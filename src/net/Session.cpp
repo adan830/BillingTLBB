@@ -7,8 +7,6 @@
 #include "billing/Log.hpp"
 
 #include <asio.hpp>
-#include <chrono>
-#include <thread>
 
 namespace net
 {
@@ -24,6 +22,7 @@ namespace net
 
   Session::~Session()
   {
+    LOG->warning("A session is being close");
     if (m_socket.available())
     {
       m_socket.close();
@@ -33,6 +32,7 @@ namespace net
   void Session::start()
   {
     LOG->warning("Session read starting");
+
     // Keep session alive
     auto self = this->shared_from_this();
 
@@ -53,12 +53,10 @@ namespace net
             "Raw: {}",
             std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
             );
+
           LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
-          if (
-            (len < 7)
-            ||
-            !self->packetHandle(std::make_shared<Packet>(m_buffer, len))
-            )
+
+          if (!this->packetHandle(std::make_shared<Packet>(m_buffer, len)))
           {
             this->start();
           }
@@ -106,11 +104,6 @@ namespace net
       );
 
     return true;
-  }
-
-  const asio::ip::tcp::socket& Session::getSocket() const
-  {
-    return m_socket;
   }
 }
 

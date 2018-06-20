@@ -8,8 +8,7 @@
 #include <functional>
 #include <string>
 
-namespace net { namespace packet
-{
+namespace net { namespace packet {
   class Routes
   {
     public:

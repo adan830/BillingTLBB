@@ -22,9 +22,6 @@ namespace net
 
     protected:
       bool packetHandle(std::shared_ptr<Packet> packet);
-
-    public:
-      const asio::ip::tcp::socket& getSocket() const;
   };
 }
 

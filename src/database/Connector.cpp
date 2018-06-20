@@ -38,13 +38,14 @@ namespace database
       configData->webDatabasePassword.data(),
       configData->webDatabaseName.data(),
       configData->webDatabasePort,
-      NULL,
+      nullptr,
       0
       );
 
     if (!c)
     {
-      LOG->error("Connector Error: {}", mysql_error(m_connDriver));
+      // Log to console for notice
+      LOG->info("Connector Error: {}", mysql_error(m_connDriver));
       throw nullptr;
     }
 

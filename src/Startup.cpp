@@ -43,16 +43,17 @@ void Startup::start()
 
   LOG->info("Executed command: {}", m_cmd);
 
-  throw nullptr;
+  throw std::runtime_error("Completed StartUp");
 }
 
 void Startup::stop()
 {
-  std::fstream stopFile("stop_billing.cmd", std::fstream::out);
+  std::string stopFileName = "stop_billing.cmd";
+  std::fstream stopFile(stopFileName, std::fstream::out);
 
   if (!stopFile.good())
   {
-    LOG->info("Error while creating stop_billing.cmd");
+    LOG->info("Error while creating {}", stopFileName);
     return;
   }
   stopFile.close();
