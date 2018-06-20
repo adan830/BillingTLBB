@@ -195,6 +195,10 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
   endif()
   if (NOT LIB_MYSQL_CLIENT)
     if (WIN32)
+      find_library(LIB_MYSQL_CLIENT NAMES mysql
+        PATHS
+        ${MYSQL_LIB_PATHS}
+        )
     elseif (MINGW OR MSYS)
       find_library(LIB_MYSQL_CLIENT NAMES mysql
         PATHS
