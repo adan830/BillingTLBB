@@ -267,15 +267,10 @@ namespace net { namespace packet
       LOG->error("Exception: Error code not found");
     }
 
-    int loginValue = 1; // Successed
-    if (loginStatus != 1)
-    {
-      loginValue = 1;
-    }
-
     // LastData start
     packet::HexData responseData;
-    std::size_t responseDataSize = 50 - 40 * loginValue + accountNameHex.size();
+    std::size_t responseDataSize = 50 - (40 * (loginStatus != 1));
+    responseDataSize += accountNameHex.size();
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex);
