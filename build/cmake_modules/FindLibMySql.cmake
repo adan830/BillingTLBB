@@ -116,6 +116,10 @@ if (NOT LIB_MYSQL_CLIENT)
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/lib
     )
   if (WIN32)
+    find_library(LIB_MYSQL_CLIENT NAMES mysql
+      PATHS
+      ${MYSQL_LIB_PATHS}
+      )
   elseif (MINGW OR MSYS)
     find_library(LIB_MYSQL_CLIENT NAMES mysql
       PATHS
@@ -133,6 +137,12 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
   set(LIBMYSQL_DOWNLOAD_LINK)
   set(LIBMYSQL_DOWNLOAD_SAVE_FILE)
   if (WIN32)
+    set(MYSQL_DOWNLOAD_LINK
+      https://downloads.mysql.com/archives/get/file/mysql-connector-c-6.1.11-win32.zip
+      )
+    set(LIBMYSQL_DOWNLOAD_SAVE_FILE
+      $ENV{TEMP}/libmysqlclient.zip
+      )
   elseif (MINGW OR MSYS)
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
       set(MYSQL_DOWNLOAD_LINK
