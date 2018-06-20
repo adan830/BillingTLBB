@@ -14,7 +14,7 @@ namespace net
     m_socket(std::move(socket))
   {
     LOG->info(
-      "New session {}:{}",
+      "New session from {}:{}",
       m_socket.remote_endpoint().address().to_string(),
       m_socket.remote_endpoint().port()
       );
@@ -22,11 +22,9 @@ namespace net
 
   Session::~Session()
   {
-    LOG->warning("A session is being close");
-    if (m_socket.available())
-    {
-      m_socket.close();
-    }
+    LOG->info("A session is being close");
+
+    m_socket.close();
   }
 
   void Session::start()

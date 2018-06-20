@@ -1,3 +1,6 @@
+# Copyright (c) Dark.Hades
+# https://github.com/HadesD/TLBB.Billing
+
 cmake_minimum_required(VERSION 2.8)
 
 project("Billing")

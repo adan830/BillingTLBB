@@ -102,7 +102,7 @@ namespace net
   {
     LOG->info("BillingSocket is stopping...");
 
-    m_acceptor->cancel();
+    m_acceptor->close();
     m_asioIoService.stop();
 
     LOG->info("BillingSocket is stopped!");
