@@ -116,7 +116,7 @@ if (NOT LIB_MYSQL_CLIENT)
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/*/lib
     )
   if (WIN32)
-    find_library(LIB_MYSQL_CLIENT NAMES mysql
+    find_library(LIB_MYSQL_CLIENT NAMES libmysql
       PATHS
       ${MYSQL_LIB_PATHS}
       )
@@ -195,7 +195,7 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
   endif()
   if (NOT LIB_MYSQL_CLIENT)
     if (WIN32)
-      find_library(LIB_MYSQL_CLIENT NAMES mysql
+      find_library(LIB_MYSQL_CLIENT NAMES libmysql
         PATHS
         ${MYSQL_LIB_PATHS}
         )
