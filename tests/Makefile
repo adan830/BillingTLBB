@@ -6,6 +6,15 @@ server:
 		server.cpp \
 		-lpthread -ldl
 
+server_bug:
+	g++ -o server.exe \
+		-std=c++11 \
+		-I../deps/asio/asio/include \
+		-DASIO_STANDALONE -DASIO_HAS_STD_CHRONO \
+		server_bug.cpp \
+		-O2 \
+		-lpthread -ldl
+
 client:
 	python client.py
 
