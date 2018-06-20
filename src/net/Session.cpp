@@ -24,12 +24,6 @@ namespace net
 
   Session::~Session()
   {
-    LOG->info(
-      "Session with {}:{} is closed",
-      m_socket.remote_endpoint().address().to_string(),
-      m_socket.remote_endpoint().port()
-      );
-
     if (m_socket.available())
     {
       m_socket.close();
@@ -48,11 +42,7 @@ namespace net
       asio::buffer(*m_buffer),
       [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
       {
-        LOG->warning(
-          "Received {} byte(s) from {}:{}", len,
-          m_socket.remote_endpoint().address().to_string(),
-          m_socket.remote_endpoint().port()
-          );
+        LOG->warning("Received {} byte(s)", len);
         if (ec)
         {
           LOG->error("Socket received error: {}", ec.message());
@@ -70,7 +60,7 @@ namespace net
             !self->packetHandle(std::make_shared<Packet>(m_buffer, len))
             )
           {
-            self->start();
+            this->start();
           }
         }
       }
@@ -81,12 +71,6 @@ namespace net
   {
     if (packet->getSize() == 0)
     {
-      LOG->error(
-        "Message empty from {}:{}",
-        m_socket.remote_endpoint().address().to_string(),
-        m_socket.remote_endpoint().port()
-        );
-
       return false;
     }
 
@@ -97,21 +81,11 @@ namespace net
 
     if (responseData.empty())
     {
-      LOG->error(
-        "Notthing to send back to {}:{}",
-        m_socket.remote_endpoint().address().to_string(),
-        m_socket.remote_endpoint().port()
-        );
       return false;
     }
 
     LOG->warning(
-      "Sending to {}:{}",
-      m_socket.remote_endpoint().address().to_string(),
-      m_socket.remote_endpoint().port()
-      );
-    LOG->warning(
-      "RawData: {} - Hex: {}",
+      "RawData to send: {} - Hex: {}",
       std::string(
         responseData.cbegin(),
         responseData.cbegin() + responseData.size()
@@ -123,26 +97,13 @@ namespace net
       m_socket, asio::buffer(responseData),
       [this, self](const std::error_code& ec, const std::size_t len)
       {
-        LOG->warning(
-          "Sent {} byte(s) to {}:{}", len,
-          m_socket.remote_endpoint().address().to_string(),
-          m_socket.remote_endpoint().port()
-          );
-        if (ec)
+        LOG->warning("Sent {} byte(s)", len);
+        if (!ec)
         {
-          LOG->error(
-            "Session with {}:{} has error: {}",
-            m_socket.remote_endpoint().address().to_string(),
-            m_socket.remote_endpoint().port(),
-            ec.message()
-            );
-        }
-        else
-        {
-          self->start();
+          this->start();
         }
       }
-    );
+      );
 
     return true;
   }
