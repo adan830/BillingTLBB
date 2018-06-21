@@ -1,5 +1,7 @@
 # TLBB.Billing
 
+Community Edition for Billing Server of Tian Long Ba Bu Game.
+
 ## Installation
 
 ### Normal users
