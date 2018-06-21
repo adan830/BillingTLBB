@@ -103,9 +103,21 @@ void Config::readData()
       {
         m_data->webDatabasePassword = configValue;
       }
+      else if (configKey == "MAX_ACCOUNT_PER_IP")
+      {
+        m_data->maxAccountPerIp = std::stoi(configValue);
+      }
       else if (configKey == "MAX_ACCOUNT_PER_MAC")
       {
         m_data->maxAccountPerMac = std::stoi(configValue);
+      }
+      else if (configKey == "MAX_ACCOUNT_PER_HARDWARE")
+      {
+        m_data->maxAccountPerHardware = std::stoi(configValue);
+      }
+      else if (configKey == "POINT_COST_RATE")
+      {
+        m_data->pointCostRate = std::stoi(configValue);
       }
       else
       {

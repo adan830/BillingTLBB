@@ -16,7 +16,7 @@ Log::Log() :
   std::cout << "Log system is constructing..." << std::endl;
 #if defined(__linux__)
     mkdir(m_folderName.data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-#elif defined(__WIN32)
+#elif defined(__WIN32) || defined(WIN32)
     ::CreateDirectory(m_folderName.data(), nullptr)
 #endif
 
