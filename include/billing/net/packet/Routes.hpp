@@ -57,6 +57,12 @@ namespace net { namespace packet {
       ByteArray onStartUpKickHandle(
         const std::shared_ptr<packet::HexData> hexData
         );
+#if defined(__BILLING_ENTERPRISE_EDITION__)
+    private:
+      bool isMaxAccountPerMac(const std::string& packetHexStr);
+      bool isMaxAccountPerHardware(const std::string& packetHexStr);
+#endif
+
   };
 } }
 

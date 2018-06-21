@@ -162,22 +162,6 @@ namespace net { namespace packet
 
     auto &packetHexStr = hexData->getBody();
 
-    // MacAddress start
-    std::size_t macAddressOffset = packetHexStr.size() - 140;
-    auto maxAddressHex = packetHexStr.substr(macAddressOffset, 68);
-    auto macAddressBytes = Utils::hexToBytes(maxAddressHex);
-    LOG->warning(
-      "MAC Address offset: {} - Hex: {}",
-      macAddressOffset,
-      maxAddressHex
-      );
-    auto macAddress = std::string(
-      macAddressBytes.cbegin(),
-      macAddressBytes.cend()
-      );
-    LOG->warning("MAC Address: {}", macAddress);
-    // MacAddress end
-
     // AccountName start
     auto accountNameSizeHex = packetHexStr.substr(0, 2);
     auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
@@ -230,6 +214,9 @@ namespace net { namespace packet
     int loginStatus = 6;
     try
     {
+#if defined(__BILLING_ENTERPRISE_EDITION__)
+
+#endif
       database::models::Account a(accountName);
 
       if (a.getIsOnline())
