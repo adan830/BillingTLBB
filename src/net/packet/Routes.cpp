@@ -8,8 +8,7 @@
 #include <utility>
 #include <thread>
 
-namespace net { namespace packet
-{
+namespace net { namespace packet {
   Routes::Routes()
   {
     m_routers["A0"] = [this](const std::shared_ptr<packet::HexData> hexData)
@@ -111,7 +110,7 @@ namespace net { namespace packet
   // A0
   ByteArray Routes::onConnectHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
@@ -127,7 +126,7 @@ namespace net { namespace packet
   // A1
   ByteArray Routes::onKeepLiveHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
@@ -141,7 +140,7 @@ namespace net { namespace packet
 
   ByteArray Routes::onStartUpKickHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
@@ -156,7 +155,7 @@ namespace net { namespace packet
   // A2
   ByteArray Routes::onLoginRequestHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
@@ -171,7 +170,7 @@ namespace net { namespace packet
       accountNameSizeHex
       );
     auto accountNameHex = packetHexStr.substr(
-       accountNameSizeHex.size(), accountNameSize * 2
+      accountNameSizeHex.size(), accountNameSize * 2
       );
     auto accountNameBytes = Utils::hexToBytes(accountNameHex);
     auto accountName = std::string(
@@ -214,10 +213,11 @@ namespace net { namespace packet
     int loginStatus = 6;
     try
     {
+      database::models::Account a(accountName);
+
 #if defined(__BILLING_ENTERPRISE_EDITION__)
 
 #endif
-      database::models::Account a(accountName);
 
       if (a.getIsOnline())
       {
@@ -274,7 +274,7 @@ namespace net { namespace packet
   // A3
   ByteArray Routes::onSelectCharHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
@@ -333,7 +333,7 @@ namespace net { namespace packet
   // A4
   ByteArray Routes::onCharLogOutHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
@@ -389,7 +389,7 @@ namespace net { namespace packet
   // E1
   ByteArray Routes::onAskPrizeAskBuyHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
@@ -404,7 +404,7 @@ namespace net { namespace packet
   // E2
   ByteArray Routes::onAskPrizeAskPointHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
@@ -452,7 +452,7 @@ namespace net { namespace packet
   // A6
   ByteArray Routes::onWLBillingKeepHandle(
     const std::shared_ptr<packet::HexData> hexData
-    )
+    ) const
   {
     LOG->warning(__FUNCTION__);
 
