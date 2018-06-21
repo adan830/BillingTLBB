@@ -115,10 +115,6 @@ void Config::readData()
       {
         m_data->maxAccountPerHardware = std::stoi(configValue);
       }
-      else if (configKey == "POINT_COST_RATE")
-      {
-        m_data->pointCostRate = std::stoi(configValue);
-      }
       else
       {
         LOG->warning("configKey: {} is not a valid key", configKey);

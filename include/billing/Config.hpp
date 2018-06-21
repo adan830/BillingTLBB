@@ -25,8 +25,6 @@ class Config final
       std::size_t maxAccountPerIp;
       std::size_t maxAccountPerMac;
       std::size_t maxAccountPerHardware;
-
-      std::size_t pointCostRate;
     };
 
   private:
