@@ -19,6 +19,9 @@ set(SRC_FILES ${SRC_FILES}
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/ee/src)
   add_definitions(-D__BILLING_ENTERPRISE_EDITION__)
   set(SRC_FILES ${SRC_FILES}
+    deps/ee/src/database/models/HardwareAccounts.cpp
+    deps/ee/src/database/models/MacAccounts.cpp
+    deps/ee/src/database/models/IpAccounts.cpp
     deps/ee/src/net/packet/Routes.cpp
     )
 endif()
