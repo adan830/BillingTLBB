@@ -152,124 +152,9 @@ namespace net { namespace packet {
     return responseData.toByteArray();
   }
 
-  // A2
-  ByteArray Routes::onLoginRequestHandle(
-    const std::shared_ptr<packet::HexData> hexData
-    ) const
-  {
-    LOG->warning(__FUNCTION__);
-
-    auto &packetHexStr = hexData->getBody();
-
-    // AccountName start
-    auto accountNameSizeHex = packetHexStr.substr(0, 2);
-    auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
-    LOG->warning(
-      "Account name size: {} - Hex: {}",
-      accountNameSize,
-      accountNameSizeHex
-      );
-    auto accountNameHex = packetHexStr.substr(
-      accountNameSizeHex.size(), accountNameSize * 2
-      );
-    auto accountNameBytes = Utils::hexToBytes(accountNameHex);
-    auto accountName = std::string(
-      accountNameBytes.cbegin(),
-      accountNameBytes.cend()
-      );
-    LOG->warning("Account name: {}", accountName);
-    // AccountName end
-
-    // Password start
-    std::size_t passwordOffset = accountNameSizeHex.size() + accountNameSize * 2;
-    auto passwordSize = Utils::hexToNumber<std::size_t>(
-      packetHexStr.substr(passwordOffset, 2)
-      );
-    auto passwordHexStr = packetHexStr.substr(
-      passwordOffset + 2, passwordSize * 2
-      );
-    LOG->warning(
-      "Password size: {} - Hex: {}",
-      passwordSize,
-      passwordHexStr
-      );
-    auto passwordBytes = Utils::hexToBytes(passwordHexStr);
-    auto password = std::string(passwordBytes.cbegin(),passwordBytes.cend());
-    LOG->warning("Password: {}", password);
-    // Password end
-
-    /**
-     * List Status
-     *
-     * 1: OK
-     * 2: Wrong info
-     * 3: Wrong info
-     * 4: Is online
-     * 5: Account is exists (for reg form)
-     * 6: Fail from server
-     * 7: Is being locked
-     * 8: Fields empty found
-     */
-    int loginStatus = 6;
-    try
-    {
-      database::models::Account a(accountName);
-
 #if defined(__BILLING_ENTERPRISE_EDITION__)
-
+  // A2
 #endif
-
-      if (a.getIsOnline())
-      {
-        a.setIsOnline(false);
-        loginStatus = 4;
-        LOG->error("Account [{}] is currently logged in", a.getName());
-      }
-      else if (a.getIsLock())
-      {
-        loginStatus = 7;
-        LOG->error("Account [{}] is being locked", a.getName());
-      }
-      else if (a.getPassword() != password)
-      {
-        loginStatus = 2;
-        LOG->error("Account [{}] tried login with invalid info", a.getName());
-      }
-      else
-      {
-        loginStatus = 1;
-        LOG->info("Account [{}] sent login request", accountName);
-      }
-      if (!a.save())
-      {
-        loginStatus = 6;
-      }
-    }
-    catch (const std::exception& e)
-    {
-      LOG->error("Sql database error: ", e.what());
-    }
-    catch (...)
-    {
-      LOG->error("Exception: Error code not found");
-    }
-
-    // LastData start
-    packet::HexData responseData;
-    std::size_t responseDataSize = 50 - (40 * (loginStatus != 1));
-    responseDataSize += accountNameHex.size();
-    responseData.setType(hexData->getType());
-    responseData.setId(hexData->getId());
-    responseData.append(accountNameSizeHex);
-    responseData.append(accountNameHex);
-    responseData.append(Utils::numberToHex(loginStatus, 2));
-    responseData.append(std::string(
-        responseDataSize - (responseData.getSize() * 2), '0'
-        ));
-    // LastData end
-
-    return responseData.toByteArray();
-  }
 
   // A3
   ByteArray Routes::onSelectCharHandle(
@@ -330,61 +215,9 @@ namespace net { namespace packet {
     return responseData.toByteArray();
   }
 
-  // A4
-  ByteArray Routes::onCharLogOutHandle(
-    const std::shared_ptr<packet::HexData> hexData
-    ) const
-  {
-    LOG->warning(__FUNCTION__);
-
-    auto &packetHexStr = hexData->getBody();
-
-    auto accountNameSizeHex = packetHexStr.substr(0, 2);
-    auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
-    auto accountNameHex = packetHexStr.substr(
-      accountNameSizeHex.size(),
-      accountNameSize * 2
-      );
-    auto accountNameBytes = Utils::hexToBytes(accountNameHex);
-    auto accountName = std::string(
-      accountNameBytes.cbegin(),
-      accountNameBytes.cend()
-      );
-
-    try
-    {
-      database::models::Account a(accountName);
-
-      if (a.getIsOnline())
-      {
-        a.setIsOnline(false);
-      }
-      else
-      {
-        LOG->warning("Account [{}] is currently not logged in", accountName);
-      }
-
-      a.save();
-    }
-    catch (const std::exception& e)
-    {
-      LOG->error("Sql database error: ", e.what());
-    }
-    catch (...)
-    {
-      LOG->error("Exception: Error code not found");
-    }
-
-    packet::HexData responseData;
-    responseData.setType(hexData->getType());
-    responseData.setId(hexData->getId());
-    responseData.append(accountNameSizeHex);
-    responseData.append(accountNameHex);
-    responseData.append("00");
-    return responseData.toByteArray();
-  }
-
 #ifndef __BILLING_ENTERPRISE_EDITION__
+
+  // A4
 
   // E1
   ByteArray Routes::onAskPrizeAskBuyHandle(
