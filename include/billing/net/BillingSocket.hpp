@@ -16,6 +16,10 @@ namespace net
       asio::ip::tcp::acceptor* m_acceptor;
       asio::ip::tcp::socket m_socket;
 
+#if defined(__BILLING_MAX_SESSION__) && (__BILLING_MAX_SESSION__ > 0)
+      std::size_t m_sessionCount;
+#endif
+
     public:
       BillingSocket();
       ~BillingSocket();

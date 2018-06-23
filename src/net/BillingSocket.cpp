@@ -23,6 +23,10 @@ namespace net
         )
       );
 
+#if defined(__BILLING_MAX_SESSION__) && (__BILLING_MAX_SESSION__ > 0)
+    m_sessionCount = 0;
+#endif
+
     LOG->warning("BillingSocket is initialized");
   }
 
@@ -72,6 +76,7 @@ namespace net
   void BillingSocket::accept()
   {
     LOG->warning("Accepting new connection");
+
     if (std::ifstream("stop_billing.cmd").good())
     {
       std::remove("stop_billing.cmd");
@@ -90,12 +95,27 @@ namespace net
         }
         else
         {
-          std::make_shared<Session>(std::move(m_socket))->start();
+#if defined(__BILLING_MAX_SESSION__) && (__BILLING_MAX_SESSION__ > 0)
+          LOG->warning("Current connection count: {}", m_sessionCount);
+          if (m_sessionCount < __BILLING_MAX_SESSION__)
+          {
+            m_sessionCount++;
+#endif
+            std::make_shared<Session>(std::move(m_socket))->start();
+#if defined(__BILLING_MAX_SESSION__) && (__BILLING_MAX_SESSION__ > 0)
+          }
+          else
+          {
+            LOG->info(
+              "You can use max {} session(s). Contact: fb.me/dark.hades.1102",
+              __BILLING_MAX_SESSION__
+              )
+          }
+#endif
         }
-
         this->accept();
       }
-      );
+    );
   }
 
   void BillingSocket::stop()

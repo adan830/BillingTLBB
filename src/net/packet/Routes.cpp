@@ -256,7 +256,7 @@ namespace net { namespace packet {
       );
     LOG->warning("Account name: {}", accountName);
 
-    int accountPoint = 0;
+    long long accountPoint = 0;
 
     try
     {
