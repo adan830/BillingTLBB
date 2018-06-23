@@ -10,9 +10,10 @@
 #endif
 
 Log::Log() :
-  m_folderName("logs"),
-  m_fileName("log")
+  m_folderName("logs")
 {
+  std::srand(std::time(nullptr));
+  m_fileName = std::to_string(std::rand());
   std::cout << "Log system is constructing..." << std::endl;
 #if defined(__linux__)
   mkdir(m_folderName.data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
