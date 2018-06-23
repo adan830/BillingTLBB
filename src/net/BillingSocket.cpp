@@ -15,6 +15,7 @@ namespace net
     LOG->warning("BillingSocket is initializing...");
 
     auto configData = Config::getInstance().getData();
+
     m_acceptor = new asio::ip::tcp::acceptor(
       m_asioIoService,
       asio::ip::tcp::endpoint(

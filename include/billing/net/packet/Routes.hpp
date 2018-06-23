@@ -61,13 +61,16 @@ namespace net { namespace packet {
 #if defined(__BILLING_ENTERPRISE_EDITION__)
     private:
       bool isMaxAccountPerMac(
-        const std::string& packetHexStr
+        const std::string& packetHexStr,
+        const std::string& currentAccountName
         ) const;
       bool isMaxAccountPerIp(
-        const std::string& packetHexStr
+        const std::string& packetHexStr,
+        const std::string& currentAccountName
         ) const;
       bool isMaxAccountPerHardware(
-        const std::string& packetHexStr
+        const std::string& packetHexStr,
+        const std::string& currentAccountName
         ) const;
 #endif
   };
