@@ -156,65 +156,6 @@ namespace net { namespace packet {
   // A2
 #endif
 
-  // A3
-  ByteArray Routes::onSelectCharHandle(
-    const std::shared_ptr<packet::HexData> hexData
-    ) const
-  {
-    LOG->warning(__FUNCTION__);
-
-    auto &packetHexStr = hexData->getBody();
-
-    auto accountNameSizeHex = packetHexStr.substr(0, 2);
-    auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
-
-    auto accountNameHex = packetHexStr.substr(
-      accountNameSizeHex.size(), accountNameSize * 2
-      );
-    auto accountNameBytes = Utils::hexToBytes(accountNameHex);
-    auto accountName = std::string(
-      accountNameBytes.cbegin(),
-      accountNameBytes.cend()
-      );
-    LOG->warning("Account name: {}", accountName);
-
-    int status = 0;
-    try
-    {
-      database::models::Account a(accountName);
-
-      if (!a.getIsOnline())
-      {
-        a.setIsOnline(true);
-      }
-
-      if (a.save())
-      {
-        status = 1;
-      }
-    }
-    catch (const std::exception& e)
-    {
-      LOG->error("Sql database error: ", e.what());
-    }
-    catch (...)
-    {
-      LOG->error("Exception: Error code not found");
-    }
-
-    // LastData start
-    packet::HexData responseData;
-    responseData.setType(hexData->getType());
-    responseData.setId(hexData->getId());
-    responseData.append(accountNameSizeHex);
-    responseData.append(accountNameHex);
-    responseData.append(Utils::numberToHex(status, 2));
-    responseData.append("00000027100000270F000022B800");
-    // LastData end
-
-    return responseData.toByteArray();
-  }
-
 #ifndef __BILLING_ENTERPRISE_EDITION__
 
   // A4
