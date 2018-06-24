@@ -46,7 +46,7 @@ namespace database { namespace models {
     std::memset(bindParams, 0, sizeof(bindParams));
 
     unsigned long l = name.size();
-    char c[50];
+    char c[30];
     std::strcpy(c, name.data());
 
     bindParams[0].buffer_type = MYSQL_TYPE_STRING;
