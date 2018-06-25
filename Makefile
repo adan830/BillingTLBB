@@ -1,4 +1,4 @@
-main: deps.update debug
+main: debug
 	cd bin && \
 		./Billing
 
