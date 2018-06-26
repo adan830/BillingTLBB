@@ -198,7 +198,7 @@ namespace database { namespace models {
   void Account::setPoint(const int point)
   {
     m_point = point;
-    m_isPointChanged = true;
+    // m_isPointChanged = true;
   }
 
   bool Account::getIsOnline() const
@@ -209,7 +209,7 @@ namespace database { namespace models {
   void Account::setIsOnline(const bool isOnline)
   {
     m_is_online = static_cast<unsigned short>(isOnline);
-    m_isPointChanged = true;
+    // m_isPointChanged = true;
   }
 
   bool Account::getIsLock() const
@@ -220,7 +220,7 @@ namespace database { namespace models {
   void Account::setIsLock(const bool isLock)
   {
     m_is_lock = static_cast<unsigned short>(isLock);
-    m_isIsLockChanged = true;
+    // m_isIsLockChanged = true;
   }
 
   bool Account::save()
