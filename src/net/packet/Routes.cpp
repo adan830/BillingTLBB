@@ -58,10 +58,11 @@ namespace net { namespace packet {
     // {
     // };
 
-    // m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    // ->ByteArray
-    // {
-    // };
+    m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ByteArray
+    {
+      return this->onGWLWGCostLogHandle(hexData);
+    };
 
     // m_routers["C6"] = [this](const std::shared_ptr<packet::HexData> hexData)
     // ->ByteArray
@@ -252,6 +253,21 @@ namespace net { namespace packet {
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
     responseData.append("010000");
+    return responseData.toByteArray();
+  }
+
+  // C5
+  ByteArray Routes::onGWLWGCostLogHandle(
+    const std::shared_ptr<packet::HexData> hexData
+    ) const
+  {
+    LOG->warning(__FUNCTION__);
+
+    // TODO: Fix this
+
+    packet::HexData responseData;
+    responseData.setType(hexData->getType());
+    responseData.setId(hexData->getId());
     return responseData.toByteArray();
   }
 } }

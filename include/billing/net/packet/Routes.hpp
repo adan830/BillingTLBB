@@ -48,13 +48,16 @@ namespace net { namespace packet {
       ByteArray onWLBillingKeepHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onAskPrizeAskPointHandle(
+      ByteArray onStartUpKickHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+      ByteArray onGWLWGCostLogHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
       ByteArray onAskPrizeAskBuyHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onStartUpKickHandle(
+      ByteArray onAskPrizeAskPointHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
