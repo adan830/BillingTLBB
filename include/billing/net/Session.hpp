@@ -22,6 +22,9 @@ namespace net
 
     protected:
       bool packetHandle(std::shared_ptr<Packet> packet);
+
+    private:
+      bool isConnected() const;
   };
 }
 

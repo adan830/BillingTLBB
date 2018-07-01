@@ -7,6 +7,7 @@
 #include "billing/Log.hpp"
 
 #include <asio.hpp>
+#include <future>
 
 namespace net
 {
@@ -29,6 +30,11 @@ namespace net
 
   void Session::start()
   {
+    if (!this->isConnected())
+    {
+      return;
+    }
+
     LOG->warning("Session read starting");
 
     // Keep session alive
@@ -54,10 +60,11 @@ namespace net
 
           LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
 
-          if (!this->packetHandle(std::make_shared<Packet>(m_buffer, len)))
-          {
-            this->start();
-          }
+          std::async([this, self, m_buffer, len](){
+            this->packetHandle(std::make_shared<Packet>(m_buffer, len));
+          });
+
+          this->start();
         }
       }
     );
@@ -65,6 +72,11 @@ namespace net
 
   bool Session::packetHandle(const std::shared_ptr<Packet> packet)
   {
+    if (!this->isConnected())
+    {
+      return false;
+    }
+
     if (packet->getSize() == 0)
     {
       return false;
@@ -94,12 +106,25 @@ namespace net
       [this, self](const std::error_code& ec, const std::size_t len)
       {
         LOG->warning("Sent {} byte(s)", len);
-        if (!ec)
+        if (ec)
         {
-          this->start();
+          m_socket.close();
         }
       }
       );
+
+    return true;
+  }
+
+  bool Session::isConnected() const
+  {
+    std::error_code ec;
+    m_socket.remote_endpoint(ec);
+
+    if (ec)
+    {
+      return false;
+    }
 
     return true;
   }
