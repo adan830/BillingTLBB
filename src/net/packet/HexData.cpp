@@ -37,11 +37,11 @@ namespace net { namespace packet
       auto sizeHex = hexData.substr(m_header.size(), 4);
       m_size = Utils::hexToNumber<HexData::SizeType>(sizeHex);
 
-      m_type = hexData.substr(m_header.size() + sizeHex.size(), 2);
+      const std::size_t typeOffset = m_header.size() + sizeHex.size();
+      m_type = hexData.substr(typeOffset, 2);
 
-      m_id = hexData.substr(
-        m_header.size() + sizeHex.size() + m_type.size(), 4
-        );
+      const std::size_t idOffset = typeOffset + m_type.size();
+      m_id = hexData.substr(idOffset, 4);
 
       std::size_t bodyLastPos = (m_size * 2) - m_id.size() - m_type.size();
       if (bodyLastPos > (hexData.size() - 12))
@@ -54,17 +54,15 @@ namespace net { namespace packet
         throw std::runtime_error("Not found packet ID");
       }
 
-      m_body = hexData.substr(
-        m_header.size() + sizeHex.size() + m_type.size() + m_id.size(),
-        bodyLastPos
-        );
+      const std::size_t bodyOffset = idOffset + m_id.size();
+      m_body = hexData.substr(bodyOffset, bodyLastPos);
 
       if (m_body.empty())
       {
         throw std::runtime_error("Buffer body is empty");
       }
 
-      m_footer = hexData.substr(hexData.size() - 4);
+      m_footer = hexData.substr(bodyOffset + m_body.size(), 4);
 
       if (m_footer != "55AA")
       {
