@@ -18,9 +18,10 @@ release:
 		make -j$(shell nproc)
 
 clean:
-	git clean -xdf bin build
+	git clean -xdf bin/Billing build
 
-deps.update:
+update:
+	git pull
 	git submodule update --init --recursive
 
 test.client:
