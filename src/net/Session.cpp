@@ -48,24 +48,24 @@ namespace net
       {
         LOG->warning("Received {} byte(s)", len);
         if (ec)
-        {
-          LOG->error("Socket received error: {}", ec.message());
-        }
+    {
+      LOG->error("Socket received error: {}", ec.message());
+    }
         else
-        {
-          LOG->warning(
-            "Raw: {}",
-            std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
-            );
+    {
+      LOG->warning(
+        "Raw: {}",
+        std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
+        );
 
-          LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
+      LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
 
-          std::async([this, self, m_buffer, len](){
-            this->packetHandle(std::make_shared<Packet>(m_buffer, len));
-          });
+      if (!this->packetHandle(std::make_shared<Packet>(m_buffer, len)))
+    {
+      this->start();
+    }
 
-          this->start();
-        }
+    }
       }
     );
   }
@@ -107,9 +107,14 @@ namespace net
       {
         LOG->warning("Sent {} byte(s)", len);
         if (ec)
-        {
-          m_socket.close();
-        }
+    {
+      m_socket.close();
+    }
+        else
+    {
+
+      this->start();
+    }
       }
       );
 
@@ -123,6 +128,7 @@ namespace net
 
     if (ec)
     {
+      LOG->error("Error remote_endpoint: {}", ec.message());
       return false;
     }
 
