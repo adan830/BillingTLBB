@@ -58,11 +58,11 @@ namespace net { namespace packet {
     // {
     // };
 
-    m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ByteArray
-    {
-      return this->onGWLWGCostLogHandle(hexData);
-    };
+    //m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    //->ByteArray
+    //{
+    //  return this->onGWLWGCostLogHandle(hexData);
+    //};
 
     // m_routers["C6"] = [this](const std::shared_ptr<packet::HexData> hexData)
     // ->ByteArray
