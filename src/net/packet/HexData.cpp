@@ -3,8 +3,7 @@
 #include "billing/Utils.hpp"
 #include "billing/Log.hpp"
 
-namespace net { namespace packet
-{
+namespace net { namespace packet {
   HexData::HexData()
   {
     m_header = "AA55";

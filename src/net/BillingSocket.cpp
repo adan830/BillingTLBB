@@ -88,8 +88,7 @@ namespace net
 
     m_acceptor->async_accept(
       m_socket,
-      [this](const std::error_code& ec)
-      {
+      [this](const std::error_code& ec){
         if (ec)
         {
           LOG->error("New connection error code: {}", ec.message());

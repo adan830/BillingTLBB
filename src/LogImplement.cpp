@@ -1,7 +1,7 @@
 #include "billing/Log.hpp"
 #include <spdlog/spdlog.h>
 
-  template<typename T>
+template<typename T>
 inline void Log::info(const T& log)
 {
   spdlog::get("everythings")->info(log);
@@ -9,7 +9,7 @@ inline void Log::info(const T& log)
   spdlog::get("console")->info(log);
 }
 
-  template<typename Arg1, typename... Args>
+template<typename Arg1, typename... Args>
 inline void Log::info(const char* fmt, const Arg1& arg1, const Args& ...args)
 {
   spdlog::get("everythings")->info(fmt, arg1, args...);
@@ -17,7 +17,7 @@ inline void Log::info(const char* fmt, const Arg1& arg1, const Args& ...args)
   spdlog::get("console")->info(fmt, arg1, args...);
 }
 
-  template<typename T>
+template<typename T>
 inline void Log::warning(const T& log)
 {
   spdlog::get("everythings")->warn(log);
@@ -27,7 +27,7 @@ inline void Log::warning(const T& log)
 #endif
 }
 
-  template<typename Arg1, typename... Args>
+template<typename Arg1, typename... Args>
 inline void Log::warning(const char* fmt, const Arg1& arg1, const Args& ...args)
 {
   spdlog::get("everythings")->warn(fmt, arg1, args...);
@@ -37,7 +37,7 @@ inline void Log::warning(const char* fmt, const Arg1& arg1, const Args& ...args)
 #endif
 }
 
-  template<typename T>
+template<typename T>
 inline void Log::error(const T& log)
 {
   spdlog::get("everythings")->error(log);
@@ -47,7 +47,7 @@ inline void Log::error(const T& log)
 #endif
 }
 
-  template<typename Arg1, typename... Args>
+template<typename Arg1, typename... Args>
 inline void Log::error(const char* fmt, const Arg1& arg1, const Args& ...args)
 {
   spdlog::get("everythings")->error(fmt, arg1, args...);

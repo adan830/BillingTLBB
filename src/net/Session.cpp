@@ -44,28 +44,26 @@ namespace net
 
     m_socket.async_receive(
       asio::buffer(*m_buffer),
-      [this, self, m_buffer](const std::error_code& ec, const std::size_t len)
-      {
+      [this, self, m_buffer](const std::error_code& ec, const std::size_t len){
         LOG->warning("Received {} byte(s)", len);
         if (ec)
-    {
-      LOG->error("Socket received error: {}", ec.message());
-    }
+        {
+          LOG->error("Socket received error: {}", ec.message());
+        }
         else
-    {
-      LOG->warning(
-        "Raw: {}",
-        std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
-        );
+        {
+          LOG->warning(
+            "Raw: {}",
+            std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
+            );
 
-      LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
+          LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
 
-      if (!this->packetHandle(std::make_shared<Packet>(m_buffer, len)))
-    {
-      this->start();
-    }
-
-    }
+          if (!this->packetHandle(std::make_shared<Packet>(m_buffer, len)))
+          {
+            this->start();
+          }
+        }
       }
     );
   }
@@ -102,19 +100,16 @@ namespace net
       );
 
     asio::async_write(
-      m_socket, asio::buffer(responseData),
-      [this, self](const std::error_code& ec, const std::size_t len)
-      {
+      m_socket,
+      asio::buffer(responseData),
+      [this, self](const std::error_code& ec, const std::size_t len){
         LOG->warning("Sent {} byte(s)", len);
         if (ec)
-    {
-      m_socket.close();
-    }
-        else
-    {
-
-      this->start();
-    }
+        {
+          m_socket.close();
+          return;
+        }
+        this->start();
       }
       );
 
