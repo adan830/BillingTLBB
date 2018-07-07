@@ -30,34 +30,67 @@ namespace net { namespace packet {
       ByteArray operator[](const std::shared_ptr<Packet> packet);
 
     protected:
-      ByteArray onConnectHandle(
+      // A0
+      ByteArray onBLRetConnectHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onKeepLiveHandle(
+
+      // A1
+      ByteArray onBLRetKeepLiveHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onLoginRequestHandle(
+
+      // A2
+      ByteArray onBLRetAccCheckHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onSelectCharHandle(
+
+      // A3
+      ByteArray onBLRetBillingStartHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onCharLogOutHandle(
+
+      // A4
+      ByteArray onBLRetBillingEndHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onWLBillingKeepHandle(
+
+      // A6
+      ByteArray onBLRetBillingKeepHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onStartUpKickHandle(
+
+      // A9
+      ByteArray onBLRetKickALLHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onGWLWGCostLogHandle(
+
+      ByteArray onLBLCostLogHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onAskPrizeAskBuyHandle(
+
+      // C4
+      ByteArray onBLRetPrizeHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-      ByteArray onAskPrizeAskPointHandle(
+
+      // E1
+      ByteArray onBLRetAskBuyHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // E2
+      ByteArray onBLRetAskPointHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // F1
+      ByteArray onBLRetRegPassPortFactoryHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // 61
+      ByteArray onBLRetAuthHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 

@@ -14,43 +14,43 @@ namespace net { namespace packet {
     m_routers["A0"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onConnectHandle(hexData);
+      return this->onBLRetConnectHandle(hexData);
     };
 
     m_routers["A1"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onKeepLiveHandle(hexData);
+      return this->onBLRetKeepLiveHandle(hexData);
     };
 
     m_routers["A2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onLoginRequestHandle(hexData);
+      return this->onBLRetAccCheckHandle(hexData);
     };
 
     m_routers["A3"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onSelectCharHandle(hexData);
+      return this->onBLRetBillingStartHandle(hexData);
     };
 
     m_routers["A4"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onCharLogOutHandle(hexData);
+      return this->onBLRetBillingEndHandle(hexData);
     };
 
     m_routers["A6"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onWLBillingKeepHandle(hexData);
+      return this->onBLRetBillingKeepHandle(hexData);
     };
 
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onStartUpKickHandle(hexData);
+      return this->onBLRetKickALLHandle(hexData);
     };
 
     // m_routers["C1"] = [this](const std::shared_ptr<packet::HexData> hexData)
@@ -72,13 +72,13 @@ namespace net { namespace packet {
     m_routers["E1"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onAskPrizeAskBuyHandle(hexData);
+      return this->onBLRetAskBuyHandle(hexData);
     };
 
     m_routers["E2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onAskPrizeAskPointHandle(hexData);
+      return this->onBLRetAskPointHandle(hexData);
     };
   }
 
@@ -109,7 +109,7 @@ namespace net { namespace packet {
   }
 
   // A0
-  ByteArray Routes::onConnectHandle(
+  ByteArray Routes::onBLRetConnectHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
@@ -125,7 +125,7 @@ namespace net { namespace packet {
   }
 
   // A1
-  ByteArray Routes::onKeepLiveHandle(
+  ByteArray Routes::onBLRetKeepLiveHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
@@ -225,12 +225,13 @@ namespace net { namespace packet {
   }
 
   // A6
-  ByteArray Routes::onWLBillingKeepHandle(
+  ByteArray Routes::onBLRetBillingKeepHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
     LOG->warning(__FUNCTION__);
 
+    /*
     auto &packetHexStr = hexData->getBody();
     auto accountNameSizeHex = packetHexStr.substr(0, 2);
     auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
@@ -243,7 +244,18 @@ namespace net { namespace packet {
       accountNameBytes.cbegin(),
       accountNameBytes.cend()
       );
-    LOG->warning("Account name: {}", accountName);
+    std::size_t charLevelHexOffset = (accountNameSizeHex.size() +
+                                      accountNameHex.size());
+    auto charLevelHex = packetHexStr.substr(charLevelHexOffset, 2);
+    auto timeHex = packetHexStr.substr(
+      charLevelHexOffset + charLevelHex.size()
+      );
+    LOG->warning(
+      "Account name: {}, Char Level: {}, TimeHex: {}",
+      accountName,
+      Utils::hexToNumber<unsigned short>(charLevelHex),
+      timeHex
+      );
 
     // TODO: Select Database
 
@@ -252,12 +264,19 @@ namespace net { namespace packet {
     responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
-    responseData.append("010000");
+    responseData.append(charLevelHex);
+    // TODO: Time
+    responseData.append(timeHex);
+    */
+    packet::HexData responseData;
+    responseData.setType(hexData->getType());
+    responseData.setId(hexData->getId());
+    responseData.append(hexData->getBody());
     return responseData.toByteArray();
   }
 
   // C5
-  ByteArray Routes::onGWLWGCostLogHandle(
+  ByteArray Routes::onLBLCostLogHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
