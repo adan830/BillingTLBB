@@ -109,7 +109,7 @@ namespace net { namespace packet {
 
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
-    responseData.append("0100");
+    responseData.append("0000");
 
     return responseData.toByteArray();
   }
@@ -121,10 +121,14 @@ namespace net { namespace packet {
   {
     LOG->warning(__FUNCTION__);
 
+    // ZoneId: 2u
+    // WorldId: 2u
+    // PlayerCount: 2u
+
     packet::HexData responseData;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
-    responseData.append("0600");
+    responseData.append("0000");
 
     return Utils::hexToBytes(responseData.toString());
   }
@@ -135,10 +139,17 @@ namespace net { namespace packet {
   {
     LOG->warning(__FUNCTION__);
 
+    // ZoneId: 2u
+    // WorldId: 2u
+    // ReasonLength: 1u
+    // ExtInfo1Length 1u
+    // ExtInfo2Length: 1u
+    // ExtInfo3Length: 1u
+
     packet::HexData responseData;
-    responseData.setType("A1");
+    responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
-    responseData.append("0600");
+    responseData.append("00");
 
     return responseData.toByteArray();
   }
@@ -148,8 +159,6 @@ namespace net { namespace packet {
 #endif
 
 #ifndef __BILLING_ENTERPRISE_EDITION__
-
-  // A4
 
   // E1
   ByteArray Routes::onAskPrizeAskBuyHandle(
@@ -221,7 +230,6 @@ namespace net { namespace packet {
   {
     LOG->warning(__FUNCTION__);
 
-    /*
     auto &packetHexStr = hexData->getBody();
     auto accountNameSizeHex = packetHexStr.substr(0, 2);
     auto accountNameSize = Utils::hexToNumber<std::size_t>(accountNameSizeHex);
@@ -236,7 +244,7 @@ namespace net { namespace packet {
       );
     std::size_t charLevelHexOffset = (accountNameSizeHex.size() +
                                       accountNameHex.size());
-    auto charLevelHex = packetHexStr.substr(charLevelHexOffset, 2);
+    auto charLevelHex = packetHexStr.substr(charLevelHexOffset, 4);
     auto timeHex = packetHexStr.substr(
       charLevelHexOffset + charLevelHex.size()
       );
@@ -247,21 +255,13 @@ namespace net { namespace packet {
       timeHex
       );
 
-    // TODO: Select Database
-
     packet::HexData responseData;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
-    responseData.append(charLevelHex);
-    // TODO: Time
-    responseData.append(timeHex);
-    */
-    packet::HexData responseData;
-    responseData.setType(hexData->getType());
-    responseData.setId(hexData->getId());
-    responseData.append(hexData->getBody());
+    responseData.append("01"); // Result
+    responseData.append("000000000000");
     return responseData.toByteArray();
   }
 
