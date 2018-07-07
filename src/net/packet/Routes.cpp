@@ -41,11 +41,11 @@ namespace net { namespace packet {
       return this->onLBBillingEndHandle(hexData);
     };
 
-    // m_routers["A6"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    // ->ByteArray
-    // {
-    //   return this->onLBBillingKeepHandle(hexData);
-    // };
+    m_routers["A6"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ByteArray
+    {
+      return this->onLBBillingKeepHandle(hexData);
+    };
 
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
@@ -53,11 +53,11 @@ namespace net { namespace packet {
       return this->onLBKickALLHandle(hexData);
     };
 
-    //m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    //->ByteArray
-    //{
-    //  return this->onGWLWGCostLogHandle(hexData);
-    //};
+    /* m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData) */
+    /* ->ByteArray */
+    /* { */
+    /*   return this->onLBLCostLogHandle(hexData); */
+    /* }; */
 
     m_routers["E1"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
@@ -261,7 +261,7 @@ namespace net { namespace packet {
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
     responseData.append("01"); // Result
-    responseData.append("000000000000");
+    responseData.append("000000000000000000000000");
     return responseData.toByteArray();
   }
 
