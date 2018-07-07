@@ -109,7 +109,7 @@ namespace net
             LOG->info(
               "You can use max {} session(s). Contact: fb.me/dark.hades.1102",
               __BILLING_MAX_SESSION__
-              )
+              );
           }
 #endif
         }

@@ -41,11 +41,11 @@ namespace net { namespace packet {
       return this->onLBBillingEndHandle(hexData);
     };
 
-    m_routers["A6"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    ->ByteArray
-    {
-      return this->onLBBillingKeepHandle(hexData);
-    };
+    // m_routers["A6"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    // ->ByteArray
+    // {
+    //   return this->onLBBillingKeepHandle(hexData);
+    // };
 
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
