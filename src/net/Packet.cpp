@@ -8,22 +8,16 @@ namespace net
   Packet::Packet(const std::shared_ptr<Buffer> buffer, const std::size_t size) :
     m_buffer(buffer)
   {
-    m_hexData = std::shared_ptr<packet::HexData>(
-      new packet::HexData(m_buffer, size)
-      );
+    m_hexData = std::make_shared<packet::HexData>(m_buffer, size);
 
-    if (m_hexData->getBody().empty())
+    if (m_hexData->getBody().size())
     {
-      m_size = 0;
+      m_hexString = m_hexData->toString();
+      m_string.assign(
+        m_buffer->cbegin(),
+        m_buffer->cbegin() + m_hexString.size() / 2
+        );
     }
-    else
-    {
-      m_size = size;
-    }
-
-    m_string.assign(m_buffer->cbegin(), m_buffer->cbegin() + size);
-
-    m_hexString = m_hexData->toString();
   }
 
   Packet::~Packet()
@@ -32,7 +26,7 @@ namespace net
 
   std::size_t Packet::getSize() const
   {
-    return m_size;
+    return m_string.size();
   }
 
   const std::string& Packet::toString() const

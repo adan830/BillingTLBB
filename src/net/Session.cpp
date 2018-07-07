@@ -59,10 +59,15 @@ namespace net
 
           LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
 
-          if (!this->packetHandle(std::make_shared<Packet>(m_buffer, len)))
+          auto packet = std::make_shared<Packet>(m_buffer, len);
+          unsigned short from = 0;
+          while (packet->getSize() || (from >= len))
           {
-            this->start();
+            this->packetHandle(packet);
+
+            if (packet->())
           }
+          this->start();
         }
       }
     );
@@ -75,10 +80,10 @@ namespace net
       return false;
     }
 
-    if (packet->getSize() == 0)
-    {
-      return false;
-    }
+    /* if (packet->getSize() == 0) */
+    /* { */
+    /*   return false; */
+    /* } */
 
     // Keep session alive
     auto self = this->shared_from_this();
@@ -99,19 +104,17 @@ namespace net
       Utils::bytesToHex(responseData.data(), responseData.size())
       );
 
-    asio::async_write(
-      m_socket,
+    m_socket.async_write(
       asio::buffer(responseData),
       [this, self](const std::error_code& ec, const std::size_t len){
         LOG->warning("Sent {} byte(s)", len);
         if (ec)
         {
           m_socket.close();
-          return;
+          /* return; */
         }
-        this->start();
-      }
-      );
+        // this->start();
+      });
 
     return true;
   }
