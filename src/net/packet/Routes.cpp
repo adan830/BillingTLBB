@@ -109,7 +109,7 @@ namespace net { namespace packet {
 
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
-    responseData.append("0000");
+    responseData.append("0055");
 
     return responseData.toByteArray();
   }
@@ -128,7 +128,7 @@ namespace net { namespace packet {
     packet::HexData responseData;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
-    responseData.append("0000");
+    responseData.append("0055");
 
     return Utils::hexToBytes(responseData.toString());
   }
