@@ -14,49 +14,44 @@ namespace net { namespace packet {
     m_routers["A0"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetConnectHandle(hexData);
+      return this->onLBConnectHandle(hexData);
     };
 
     m_routers["A1"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetKeepLiveHandle(hexData);
+      return this->onLBKeepLiveHandle(hexData);
     };
 
     m_routers["A2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetAccCheckHandle(hexData);
+      return this->onLBAccCheckHandle(hexData);
     };
 
     m_routers["A3"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetBillingStartHandle(hexData);
+      return this->onLBBillingStartHandle(hexData);
     };
 
     m_routers["A4"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetBillingEndHandle(hexData);
+      return this->onLBBillingEndHandle(hexData);
     };
 
     m_routers["A6"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetBillingKeepHandle(hexData);
+      return this->onLBBillingKeepHandle(hexData);
     };
 
     m_routers["A9"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetKickALLHandle(hexData);
+      return this->onLBKickALLHandle(hexData);
     };
-
-    // m_routers["C1"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    // ->ByteArray
-    // {
-    // };
 
     //m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
     //->ByteArray
@@ -64,21 +59,16 @@ namespace net { namespace packet {
     //  return this->onGWLWGCostLogHandle(hexData);
     //};
 
-    // m_routers["C6"] = [this](const std::shared_ptr<packet::HexData> hexData)
-    // ->ByteArray
-    // {
-    // };
-
     m_routers["E1"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetAskBuyHandle(hexData);
+      return this->onLBAskBuyHandle(hexData);
     };
 
     m_routers["E2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
-      return this->onBLRetAskPointHandle(hexData);
+      return this->onLBAskPointHandle(hexData);
     };
   }
 
@@ -109,7 +99,7 @@ namespace net { namespace packet {
   }
 
   // A0
-  ByteArray Routes::onBLRetConnectHandle(
+  ByteArray Routes::onLBConnectHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
@@ -125,7 +115,7 @@ namespace net { namespace packet {
   }
 
   // A1
-  ByteArray Routes::onBLRetKeepLiveHandle(
+  ByteArray Routes::onLBKeepLiveHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
@@ -139,7 +129,7 @@ namespace net { namespace packet {
     return Utils::hexToBytes(responseData.toString());
   }
 
-  ByteArray Routes::onStartUpKickHandle(
+  ByteArray Routes::onLBKickALLHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
@@ -177,7 +167,7 @@ namespace net { namespace packet {
 #endif
 
   // E2
-  ByteArray Routes::onAskPrizeAskPointHandle(
+  ByteArray Routes::onLBAskPointHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
@@ -225,7 +215,7 @@ namespace net { namespace packet {
   }
 
   // A6
-  ByteArray Routes::onBLRetBillingKeepHandle(
+  ByteArray Routes::onLBBillingKeepHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {

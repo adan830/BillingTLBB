@@ -9,6 +9,12 @@
 #include <string>
 
 namespace net { namespace packet {
+  /**
+   * Note: Decompile Login (IDA Hex-Ray)
+   * Function=meant: LB=Login->Billing, BL=Billing->Login
+   * Login sent to Billing: LB
+   * Billing send to Login: BLRet
+   */
   class Routes
   {
     public:
@@ -31,66 +37,117 @@ namespace net { namespace packet {
 
     protected:
       // A0
-      ByteArray onBLRetConnectHandle(
+      ByteArray onLBConnectHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // A1
-      ByteArray onBLRetKeepLiveHandle(
+      ByteArray onLBKeepLiveHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // A2
-      ByteArray onBLRetAccCheckHandle(
+      ByteArray onLBAccCheckHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // A3
-      ByteArray onBLRetBillingStartHandle(
+      ByteArray onLBBillingStartHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // A4
-      ByteArray onBLRetBillingEndHandle(
+      ByteArray onLBBillingEndHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // A6
-      ByteArray onBLRetBillingKeepHandle(
+      ByteArray onLBBillingKeepHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // A7
+      ByteArray onLBLRegNewLicenseHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // A9
-      ByteArray onBLRetKickALLHandle(
+      ByteArray onLBKickALLHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
-      ByteArray onLBLCostLogHandle(
+      // B1
+      ByteArray onLBLOperateAccHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // C1
+      ByteArray onLBLAskNewUserCardHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // C2
+      ByteArray onLBAskRegAuthHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // C3
+      ByteArray onLBLNewPrizeHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // C4
-      ByteArray onBLRetPrizeHandle(
+      ByteArray onLBPrizeHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // C5
+      ByteArray onLBLCostLogHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // C6
+      ByteArray onLBLCardCheckPrizeHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // E1
-      ByteArray onBLRetAskBuyHandle(
+      ByteArray onLBAskBuyHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // E2
-      ByteArray onBLRetAskPointHandle(
+      ByteArray onLBAskPointHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // E4
+      ByteArray onLBLNewCheckPrizeHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // E5
+      ByteArray onLBLAskMigHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // F1
-      ByteArray onBLRetRegPassPortFactoryHandle(
+      ByteArray onLBRegPassPortHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // 11
+      ByteArray onLBAskRegLicenseHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // 17
+      ByteArray onLBAskAuthHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
       // 61
-      ByteArray onBLRetAuthHandle(
+      ByteArray onLBAuthHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
