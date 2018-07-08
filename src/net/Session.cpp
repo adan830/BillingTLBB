@@ -8,6 +8,7 @@
 
 #include <asio.hpp>
 #include <future>
+#include <mutex>
 
 namespace net
 {
@@ -53,19 +54,40 @@ namespace net
         else
         {
           LOG->warning(
-            "Raw: {}",
-            std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
+            "Raw m_buffer: {}",
+            std::string(m_buffer->cbegin(), m_buffer->cend())
             );
 
-          LOG->warning("RawHex: {}", Utils::bytesToHex(m_buffer->data(), len));
+          LOG->warning(
+            "RawHex m_buffer: {}",
+            Utils::bytesToHex(m_buffer->data(), len)
+            );
 
-          auto packet = std::make_shared<Packet>(m_buffer, len);
           unsigned short from = 0;
-          while (packet->getSize() || (from >= len))
+          while (from < len)
           {
+            if (!this->isConnected())
+            {
+              break;
+            }
+            auto buffer = std::make_shared<Packet::Buffer>();
+            std::copy(
+              m_buffer->cbegin() + from,
+              m_buffer->cend(),
+              buffer->begin()
+              );
+            LOG->warning(
+              "Raw buffer: {} - len: {}",
+              std::string(buffer->cbegin(), buffer->cend()),
+              len-from
+              );
+            auto packet = std::make_shared<Packet>(buffer, len-from);
+            if (!packet->getSize())
+            {
+              break;
+            }
             this->packetHandle(packet);
-
-            if (packet->())
+            from += packet->toString().size();
           }
           this->start();
         }
@@ -75,10 +97,10 @@ namespace net
 
   bool Session::packetHandle(const std::shared_ptr<Packet> packet)
   {
-    if (!this->isConnected())
-    {
-      return false;
-    }
+    /* if (!this->isConnected()) */
+    /* { */
+    /*   return false; */
+    /* } */
 
     /* if (packet->getSize() == 0) */
     /* { */
@@ -104,7 +126,7 @@ namespace net
       Utils::bytesToHex(responseData.data(), responseData.size())
       );
 
-    m_socket.async_write(
+    m_socket.async_write_some(
       asio::buffer(responseData),
       [this, self](const std::error_code& ec, const std::size_t len){
         LOG->warning("Sent {} byte(s)", len);
