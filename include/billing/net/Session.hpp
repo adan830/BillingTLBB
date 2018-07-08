@@ -22,6 +22,7 @@ namespace net
       void start();
 
     protected:
+      void queueBufferHandle();
       bool packetHandle(std::shared_ptr<Packet> packet);
 
     private:

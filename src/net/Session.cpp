@@ -62,66 +62,71 @@ namespace net
             Utils::bytesToHex(rawString.data(), rawString.size())
             );
           m_queueBuff.append(rawString);
-          LOG->warning("Current Raw: {}", m_queueBuff);
-
-          while (!m_queueBuff.empty())
-          {
-            if (!this->isConnected())
-            {
-              break;
-            }
-
-            auto buffer = std::make_shared<Packet::Buffer>();
-            auto bufferMax = (m_queueBuff.size() > buffer->size())
-            ? buffer->size() : m_queueBuff.size();
-            std::copy(
-              m_queueBuff.cbegin(),
-              m_queueBuff.cbegin() + bufferMax,
-              buffer->begin()
-              );
-            LOG->warning(
-              "Raw buffer: {} - len: {} - size: {}",
-              std::string(buffer->cbegin(), buffer->cend()),
-              m_queueBuff.size(), buffer->size()
-              );
-            auto packet = std::make_shared<Packet>(buffer, bufferMax);
-            if (!packet->getSize())
-            {
-              auto tailData = Utils::hexToBytes("55AA");
-
-              std::string tailBuff = std::string(
-                tailData.cbegin(), tailData.cend()
-                );
-              auto tailPos = m_queueBuff.find(tailBuff);
-              if (tailPos != std::string::npos)
-              {
-                m_queueBuff = m_queueBuff.substr(tailPos + 2);
-                LOG->warning(
-                  "m_queueBuff is subbed {} at {}",
-                  Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size()),
-                  tailPos
-                  );
-              }
-              else
-              {
-                LOG->error(
-                  "Packet error, currentBuff: {}",
-                  Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
-                  );
-                break;
-              }
-            }
-
-            if (this->packetHandle(packet))
-            {
-              LOG->error("Notthing to send back");
-            }
-            m_queueBuff = m_queueBuff.substr(packet->getSize());
-          }
+          this->queueBufferHandle();
           this->start();
         }
       }
     );
+  }
+
+  void Session::queueBufferHandle()
+  {
+    LOG->warning("Current Raw: {}", m_queueBuff);
+
+    while (!m_queueBuff.empty())
+    {
+      if (!this->isConnected())
+      {
+        break;
+      }
+
+      auto buffer = std::make_shared<Packet::Buffer>();
+      auto bufferMax = (m_queueBuff.size() > buffer->size())
+      ? buffer->size() : m_queueBuff.size();
+      std::copy(
+        m_queueBuff.cbegin(),
+        m_queueBuff.cbegin() + bufferMax,
+        buffer->begin()
+        );
+      LOG->warning(
+        "Raw buffer: {} - len: {} - size: {}",
+        std::string(buffer->cbegin(), buffer->cend()),
+        m_queueBuff.size(), buffer->size()
+        );
+      auto packet = std::make_shared<Packet>(buffer, bufferMax);
+      if (!packet->getSize())
+      {
+        auto tailData = Utils::hexToBytes("55AA");
+
+        std::string tailBuff = std::string(
+          tailData.cbegin(), tailData.cend()
+          );
+        auto tailPos = m_queueBuff.find(tailBuff);
+        if (tailPos != std::string::npos)
+        {
+          m_queueBuff = m_queueBuff.substr(tailPos + 2);
+          LOG->warning(
+            "m_queueBuff is subbed {} at {}",
+            Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size()),
+            tailPos
+            );
+        }
+        else
+        {
+          LOG->error(
+            "Packet error, currentBuff: {}",
+            Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
+            );
+          break;
+        }
+      }
+
+      if (this->packetHandle(packet))
+      {
+        LOG->error("Notthing to send back");
+      }
+      m_queueBuff = m_queueBuff.substr(packet->getSize());
+    }
   }
 
   bool Session::packetHandle(const std::shared_ptr<Packet> packet)
