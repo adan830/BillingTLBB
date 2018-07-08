@@ -100,7 +100,7 @@ namespace net
                   "m_queueBuff is subbed {} at {}",
                   Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size()),
                   tailPos
-                );
+                  );
               }
               else
               {
@@ -114,12 +114,9 @@ namespace net
 
             if (this->packetHandle(packet))
             {
-              m_queueBuff = m_queueBuff.substr(packet->getSize());
-            }
-            else
-            {
               LOG->error("Notthing to send back");
             }
+            m_queueBuff = m_queueBuff.substr(packet->getSize());
           }
           this->start();
         }
