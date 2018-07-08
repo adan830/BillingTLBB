@@ -55,10 +55,7 @@ namespace net
         {
           LOG->warning(
             "Raw m_buffer: {}",
-            std::string(
-              m_buffer->cbegin(),
-              m_buffer->cbegin() + len
-              )
+            std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
             );
           LOG->warning(
             "RawHex m_buffer: {}",
@@ -82,6 +79,17 @@ namespace net
       "Current Raw: {}",
       std::string(m_queueBuff.cbegin(), m_queueBuff.cend())
       );
+
+    auto headData = Utils::hexToBytes("AA55");
+    auto headPos = std::search(
+      m_queueBuff.cbegin(), m_queueBuff.cend(),
+      headData.cbegin(), headData.cend()
+      );
+    if (headPos == m_queueBuff.cend())
+    {
+      m_queueBuff.clear();
+      return;
+    }
 
     auto tailData = Utils::hexToBytes("55AA");
     while (!m_queueBuff.empty())
