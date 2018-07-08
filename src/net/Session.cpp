@@ -62,6 +62,7 @@ namespace net
             Utils::bytesToHex(rawString.data(), rawString.size())
             );
           m_queueBuff.append(rawString);
+          LOG->warning("Current Raw: {}", m_queueBuff);
 
           while (true)
           {
@@ -86,13 +87,35 @@ namespace net
               m_queueBuff.size()
               );
             auto packet = std::make_shared<Packet>(buffer, m_queueBuff.size());
-            m_queueBuff = m_queueBuff.substr(packet->getSize());
             if (!packet->getSize())
             {
+              auto tailData = Utils::hexToBytes("55AA");
+
+              std::string tailBuff = std::string(
+                tailData.cbegin(), tailData.cend()
+                );
+              auto tailPos = m_queueBuff.find(tailBuff);
+              if (tailPos != std::string::npos)
+              {
+                m_queueBuff = m_queueBuff.substr(tailPos + 2);
+                LOG->warning(
+                  "m_queueBuff is subbed {} at {}",
+                  Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size()),
+                  tailPos
+                );
+              }
+              LOG->error(
+                "Packet error, currentBuff: {}",
+                Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
+                );
               break;
             }
 
-            if (!this->packetHandle(packet))
+            if (this->packetHandle(packet))
+            {
+              m_queueBuff = m_queueBuff.substr(packet->getSize());
+            }
+            else
             {
               LOG->error("Notthing to send back");
             }
