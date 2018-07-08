@@ -4,6 +4,8 @@
 #include <asio.hpp>
 #include <memory>
 
+#include "billing/BaseType.hpp"
+
 namespace net
 {
   class Packet;
@@ -12,7 +14,7 @@ namespace net
   {
     private:
       asio::ip::tcp::socket m_socket;
-      std::string m_queueBuff;
+      ByteArray m_queueBuff;
 
     public:
       Session(asio::ip::tcp::socket socket);

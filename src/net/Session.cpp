@@ -6,6 +6,7 @@
 #include "billing/Utils.hpp"
 #include "billing/Log.hpp"
 
+#include <algorithm>
 #include <asio.hpp>
 #include <future>
 
@@ -52,17 +53,23 @@ namespace net
         }
         else
         {
-          std::string rawString(m_buffer->cbegin(), m_buffer->cbegin()+len);
           LOG->warning(
             "Raw m_buffer: {}",
-            rawString
+            std::string(
+              m_buffer->cbegin(),
+              m_buffer->cbegin() + len
+              )
             );
           LOG->warning(
             "RawHex m_buffer: {}",
-            Utils::bytesToHex(rawString.data(), rawString.size())
+            Utils::bytesToHex(m_buffer->data(), len)
             );
-          m_queueBuff.append(rawString);
+
+          m_queueBuff.insert(
+            m_queueBuff.cend(), m_buffer->cbegin(), m_buffer->cbegin() + len
+            );
           this->queueBufferHandle();
+
           this->start();
         }
       }
@@ -71,8 +78,12 @@ namespace net
 
   void Session::queueBufferHandle()
   {
-    LOG->warning("Current Raw: {}", m_queueBuff);
+    LOG->warning(
+      "Current Raw: {}",
+      std::string(m_queueBuff.cbegin(), m_queueBuff.cend())
+      );
 
+    auto tailData = Utils::hexToBytes("55AA");
     while (!m_queueBuff.empty())
     {
       if (!this->isConnected())
@@ -89,29 +100,20 @@ namespace net
         buffer->begin()
         );
       LOG->warning(
-        "Raw buffer: {} - len: {} - size: {}",
+        "Raw buffer: {} - len: {}",
         std::string(buffer->cbegin(), buffer->cend()),
-        m_queueBuff.size(), buffer->size()
+        m_queueBuff.size()
         );
       auto packet = std::make_shared<Packet>(buffer, bufferMax);
-      if (!packet->getSize())
+      auto packetSize = packet->getSize();
+      auto queueEraseTo = m_queueBuff.cbegin() + packetSize;
+      if (!packetSize)
       {
-        auto tailData = Utils::hexToBytes("55AA");
-
-        std::string tailBuff = std::string(
+        auto tailPos = std::search(
+          m_queueBuff.cbegin(), m_queueBuff.cend(),
           tailData.cbegin(), tailData.cend()
           );
-        auto tailPos = m_queueBuff.find(tailBuff);
-        if (tailPos != std::string::npos)
-        {
-          m_queueBuff = m_queueBuff.substr(tailPos + 2);
-          LOG->warning(
-            "m_queueBuff is subbed {} at {}",
-            Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size()),
-            tailPos
-            );
-        }
-        else
+        if (tailPos == m_queueBuff.cend())
         {
           LOG->error(
             "Packet error, currentBuff: {}",
@@ -119,13 +121,24 @@ namespace net
             );
           break;
         }
+        queueEraseTo = tailPos + 2;
+      }
+      else
+      {
+        if (!this->packetHandle(packet))
+        {
+          LOG->error("Notthing to send back");
+        }
       }
 
-      if (this->packetHandle(packet))
-      {
-        LOG->error("Notthing to send back");
-      }
-      m_queueBuff = m_queueBuff.substr(packet->getSize());
+      m_queueBuff.erase(
+        m_queueBuff.cbegin(), queueEraseTo
+        );
+
+      LOG->warning(
+        "m_queueBuff is subbed {}",
+        Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
+        );
     }
   }
 
