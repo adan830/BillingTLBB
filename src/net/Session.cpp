@@ -52,19 +52,23 @@ namespace net
         }
         else
         {
+          std::string rawString(m_buffer->cbegin(), m_buffer->cbegin()+len);
           LOG->warning(
             "Raw m_buffer: {}",
-            std::string(m_buffer->cbegin(), m_buffer->cend())
+            rawString
             );
-
           LOG->warning(
             "RawHex m_buffer: {}",
-            Utils::bytesToHex(m_buffer->data(), len)
+            Utils::bytesToHex(rawString.data(), rawString.size())
             );
+          m_queueBuff.append(rawString);
 
-          unsigned short from = 0;
-          while (from < len)
+          while (true)
           {
+            if (m_queueBuff.empty())
+            {
+              break;
+            }
             if (!this->isConnected())
             {
               break;
@@ -72,16 +76,17 @@ namespace net
 
             auto buffer = std::make_shared<Packet::Buffer>();
             std::copy(
-              m_buffer->cbegin() + from,
-              m_buffer->cend(),
+              m_queueBuff.cbegin(),
+              m_queueBuff.cend(),
               buffer->begin()
               );
             LOG->warning(
               "Raw buffer: {} - len: {}",
               std::string(buffer->cbegin(), buffer->cend()),
-              len-from
+              m_queueBuff.size()
               );
-            auto packet = std::make_shared<Packet>(buffer, len-from);
+            auto packet = std::make_shared<Packet>(buffer, m_queueBuff.size());
+            m_queueBuff = m_queueBuff.substr(packet->getSize());
             if (!packet->getSize())
             {
               break;
@@ -91,8 +96,6 @@ namespace net
             {
               LOG->error("Notthing to send back");
             }
-
-            from += packet->toString().size();
           }
           this->start();
         }

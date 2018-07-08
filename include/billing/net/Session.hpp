@@ -12,6 +12,7 @@ namespace net
   {
     private:
       asio::ip::tcp::socket m_socket;
+      std::string m_queueBuff;
 
     public:
       Session(asio::ip::tcp::socket socket);
