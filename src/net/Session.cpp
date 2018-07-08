@@ -64,29 +64,27 @@ namespace net
           m_queueBuff.append(rawString);
           LOG->warning("Current Raw: {}", m_queueBuff);
 
-          while (true)
+          while (!m_queueBuff.empty())
           {
-            if (m_queueBuff.empty())
-            {
-              break;
-            }
             if (!this->isConnected())
             {
               break;
             }
 
             auto buffer = std::make_shared<Packet::Buffer>();
+            auto bufferMax = (m_queueBuff.size() > buffer->size())
+            ? buffer->size() : m_queueBuff.size();
             std::copy(
               m_queueBuff.cbegin(),
-              m_queueBuff.cend(),
+              m_queueBuff.cbegin() + bufferMax,
               buffer->begin()
               );
             LOG->warning(
-              "Raw buffer: {} - len: {}",
+              "Raw buffer: {} - len: {} - size: {}",
               std::string(buffer->cbegin(), buffer->cend()),
-              m_queueBuff.size()
+              m_queueBuff.size(), buffer->size()
               );
-            auto packet = std::make_shared<Packet>(buffer, m_queueBuff.size());
+            auto packet = std::make_shared<Packet>(buffer, bufferMax);
             if (!packet->getSize())
             {
               auto tailData = Utils::hexToBytes("55AA");
@@ -104,11 +102,14 @@ namespace net
                   tailPos
                 );
               }
-              LOG->error(
-                "Packet error, currentBuff: {}",
-                Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
-                );
-              break;
+              else
+              {
+                LOG->error(
+                  "Packet error, currentBuff: {}",
+                  Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
+                  );
+                break;
+              }
             }
 
             if (this->packetHandle(packet))
