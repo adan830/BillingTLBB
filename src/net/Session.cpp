@@ -8,7 +8,6 @@
 
 #include <asio.hpp>
 #include <future>
-#include <mutex>
 
 namespace net
 {
@@ -70,6 +69,7 @@ namespace net
             {
               break;
             }
+
             auto buffer = std::make_shared<Packet::Buffer>();
             std::copy(
               m_buffer->cbegin() + from,
@@ -86,7 +86,12 @@ namespace net
             {
               break;
             }
-            this->packetHandle(packet);
+
+            if (!this->packetHandle(packet))
+            {
+              LOG->error("Notthing to send back");
+            }
+
             from += packet->toString().size();
           }
           this->start();
@@ -97,19 +102,6 @@ namespace net
 
   bool Session::packetHandle(const std::shared_ptr<Packet> packet)
   {
-    /* if (!this->isConnected()) */
-    /* { */
-    /*   return false; */
-    /* } */
-
-    /* if (packet->getSize() == 0) */
-    /* { */
-    /*   return false; */
-    /* } */
-
-    // Keep session alive
-    auto self = this->shared_from_this();
-
     auto responseData = packet::Routes::getInstance()[packet];
 
     if (responseData.empty())
@@ -126,6 +118,9 @@ namespace net
       Utils::bytesToHex(responseData.data(), responseData.size())
       );
 
+    // Keep session alive
+    auto self = this->shared_from_this();
+
     m_socket.async_write_some(
       asio::buffer(responseData),
       [this, self](const std::error_code& ec, const std::size_t len){
@@ -133,9 +128,7 @@ namespace net
         if (ec)
         {
           m_socket.close();
-          /* return; */
         }
-        // this->start();
       });
 
     return true;
