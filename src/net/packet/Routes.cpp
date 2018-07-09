@@ -146,8 +146,8 @@ namespace net { namespace packet {
     auto playerCountHex = packetHexStr.substr(
       zoneIdHex.size() + worldIdHex.size(), 4
       );
-    LOG->warning(
-      "ZoneId: {}, WorldId: {}, PlayerCount: {}",
+    LOG->info(
+      "ZoneId={}, WorldId={}, PlayerCount={}",
       Utils::hexToNumber<short>(zoneIdHex),
       Utils::hexToNumber<short>(worldIdHex),
       Utils::hexToNumber<short>(playerCountHex)

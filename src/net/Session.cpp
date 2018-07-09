@@ -31,7 +31,8 @@ namespace net
 
   void Session::start()
   {
-    if (!this->getEndpoint().port())
+    auto ep = this->getEndpoint();
+    if (!ep.port())
     {
 #if defined(BILLING_DEBUG)
       LOG->error("Socket endpoint is disconnected");
@@ -39,7 +40,10 @@ namespace net
       return;
     }
 
-    LOG->warning("Session read starting");
+    LOG->warning(
+      "Session with {}:{} is starting to read",
+      ep.address().to_string(), ep.port()
+      );
 
     // Keep session alive
     auto self = this->shared_from_this();
@@ -49,7 +53,11 @@ namespace net
     m_socket.async_receive(
       asio::buffer(*m_buffer),
       [this, self, m_buffer](const std::error_code& ec, const std::size_t len){
-        LOG->warning("Received {} byte(s)", len);
+        auto ep = this->getEndpoint();
+        LOG->warning(
+          "Received {} byte(s) from {}:{}",
+          len, ep.address().to_string(), ep.port()
+          );
         if (ec)
         {
           LOG->error("Socket received error: {}", ec.message());
@@ -183,7 +191,11 @@ namespace net
     m_socket.async_write_some(
       asio::buffer(responseData),
       [this, self](const std::error_code& ec, const std::size_t len){
-        LOG->warning("Sent {} byte(s)", len);
+        auto ep = this->getEndpoint();
+        LOG->warning(
+          "Sent {} byte(s) to {}:{}",
+          len, ep.address().to_string(), ep.port()
+          );
         if (ec)
         {
           m_socket.close();
@@ -195,13 +207,14 @@ namespace net
 
   asio::ip::tcp::endpoint Session::getEndpoint() const
   {
-    std::error_code ec;
-    asio::ip::tcp::endpoint ep = m_socket.remote_endpoint(ec);
+    static std::error_code ec;
+    static asio::ip::tcp::endpoint ep;
+    ep = m_socket.remote_endpoint(ec);
 
 #if defined(BILLING_DEBUG)
     LOG->warning(
-      "Socket endpoint: Size={}, IP={}, Port={}",
-      ep.size(), ep.address().to_string(), ep.port()
+      "Socket endpoint: IP={}, Port={}, Size={}",
+      ep.address().to_string(), ep.port(), ep.size()
       );
 #endif
 
