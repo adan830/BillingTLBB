@@ -63,7 +63,7 @@ namespace net
             );
 
           m_queueBuff.insert(
-            m_queueBuff.cend(), m_buffer->cbegin(), m_buffer->cbegin() + len
+            m_queueBuff.end(), m_buffer->cbegin(), m_buffer->cbegin() + len
             );
           this->queueBufferHandle();
 
@@ -117,11 +117,11 @@ namespace net
 #endif
       auto packet = std::make_shared<Packet>(buffer, bufferMax);
       auto packetSize = packet->getSize();
-      auto queueEraseTo = m_queueBuff.cbegin() + packetSize;
+      auto queueEraseTo = m_queueBuff.begin() + packetSize;
       if (!packetSize)
       {
         auto tailPos = std::search(
-          m_queueBuff.cbegin(), m_queueBuff.cend(),
+          m_queueBuff.begin(), m_queueBuff.end(),
           tailData.cbegin(), tailData.cend()
           );
         if (tailPos == m_queueBuff.cend())
@@ -145,7 +145,7 @@ namespace net
       }
 
       m_queueBuff.erase(
-        m_queueBuff.cbegin(), queueEraseTo
+        m_queueBuff.begin(), queueEraseTo
         );
 
 #if defined(BILLING_DEBUG)
