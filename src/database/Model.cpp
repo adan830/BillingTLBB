@@ -7,13 +7,17 @@ namespace database
 {
   Model::Model()
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Model is constructing...");
+#endif
     m_connector = new Connector();
   }
 
   Model::~Model()
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Model is destructing...");
+#endif
     delete m_connector;
   }
 

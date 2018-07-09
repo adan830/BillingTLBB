@@ -17,7 +17,9 @@ namespace database
   template<typename ...TParams>
   bool Connector::exec(const char* q, const TParams&... params)
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Executing {}: {}", __PRETTY_FUNCTION__, q);
+#endif
 
     if (std::strlen(q) == 0)
     {

@@ -7,7 +7,9 @@ namespace database { namespace models {
   Account::Account(const std::string& name) :
     database::Model()
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Account is constructing with name: {}", name);
+#endif
 
     this->init();
 
@@ -76,7 +78,9 @@ namespace database { namespace models {
       throw nullptr;
     }
 
+#if defined(BILLING_DEBUG)
     LOG->warning("Params binded");
+#endif
 
     MYSQL_BIND bindResult[numFields];
     unsigned long length[numFields];
@@ -129,7 +133,9 @@ namespace database { namespace models {
       throw nullptr;
     }
 
+#if defined(BILLING_DEBUG)
     LOG->warning("Results binded");
+#endif
 
     if (mysql_stmt_execute(stmt))
     {
@@ -137,7 +143,9 @@ namespace database { namespace models {
       throw nullptr;
     }
 
+#if defined(BILLING_DEBUG)
     LOG->warning("Executed");
+#endif
 
     if (mysql_stmt_store_result(stmt))
     {
@@ -145,7 +153,9 @@ namespace database { namespace models {
       throw nullptr;
     }
 
+#if defined(BILLING_DEBUG)
     LOG->warning("Has result");
+#endif
 
     while(!mysql_stmt_fetch(stmt))
     {
@@ -225,7 +235,9 @@ namespace database { namespace models {
 
   bool Account::save()
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Saving account: {}", m_name);
+#endif
 
     constexpr auto q = R"(
       UPDATE
@@ -288,7 +300,9 @@ namespace database { namespace models {
       return false;
     }
 
+#if defined(BILLING_DEBUG)
     LOG->warning("Saved account: {}", m_name);
+#endif
 
     return true;
   }

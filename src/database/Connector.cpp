@@ -7,7 +7,9 @@ namespace database
 {
   Connector::Connector()
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Connector is constructing...");
+#endif
 
     m_connDriver = mysql_init(nullptr);
 
@@ -16,19 +18,25 @@ namespace database
 
   Connector::~Connector()
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Database Connector is destructing...");
+#endif
 
     if (m_connDriver)
     {
       mysql_close(m_connDriver);
     }
 
+#if defined(BILLING_DEBUG)
     LOG->warning("Database Connector is destructed");
+#endif
   }
 
   void Connector::init()
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Connector is initializing...");
+#endif
     auto configData = Config::getInstance().getData();
 
     auto c = mysql_real_connect(
@@ -49,12 +57,16 @@ namespace database
       throw nullptr;
     }
 
+#if defined(BILLING_DEBUG)
     LOG->warning("Opened connector database");
+#endif
   }
 
   bool Connector::exec(const char* q)
   {
+#if defined(BILLING_DEBUG)
     LOG->warning("Executing bool {}: {}", __FUNCTION__, q);
+#endif
 
     if (mysql_query(m_connDriver, q))
     {
