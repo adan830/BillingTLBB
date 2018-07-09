@@ -18,7 +18,7 @@ release:
 		make -j$(shell nproc)
 
 clean:
-	git clean -xdf bin/Billing build
+	git clean -xdf --exclude=build/cmake_modules bin/Billing build
 
 update:
 	git pull

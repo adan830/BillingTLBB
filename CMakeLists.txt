@@ -13,18 +13,17 @@ set(LIBS_REQUIRED)
 # }
 
 # Load Modules {
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules")
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/GenCompileCommands.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/CompilerConfig.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/BuildConfig.cmake)
 
-include(CompilerConfig)
-include(BuildConfig)
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/FindLibMySql.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/LinkLibraries.cmake)
 
-include(FindLibMySql)
-include(LinkLibraries)
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/Definitions.cmake)
 
-include(Definitions)
-
-include(IncludeDirectories)
-include(SourceFiles)
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/IncludeDirectories.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/SourceFiles.cmake)
 # }
 
 include_directories(${PROJECT_NAME} PRIVATE ${INC_DIRS})
@@ -35,6 +34,6 @@ add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} ${LIBS_REQUIRED})
 
 # PostBuild {
-include(PostBuild)
+include(${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules/PostBuild.cmake)
 # }
 
