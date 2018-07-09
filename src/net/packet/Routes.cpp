@@ -67,11 +67,13 @@ namespace net { namespace packet {
       return this->onLBAskBuyHandle(hexData);
     };
 
+#if !defined(__BILLING_WITHOUT_E1__)
     m_routers["E2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
       return this->onLBAskPointHandle(hexData);
     };
+#endif
 
 #if defined(__BILLING_ENTERPRISE_EDITION__)
     m_routers["FF"] = [this](const std::shared_ptr<packet::HexData> hexData)

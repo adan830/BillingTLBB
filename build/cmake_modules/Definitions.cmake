@@ -10,3 +10,15 @@ if (BILLING_MAX_SESSION)
   add_definitions(-D__BILLING_MAX_SESSION__=${BILLING_MAX_SESSION})
 endif()
 
+if (BILLING_WITHOUT_E1)
+  add_definitions(-D__BILLING_WITHOUT_E1__)
+endif()
+
+if (BILLING_WITHOUT_ANTI_CLONE_IP)
+  add_definitions(-D__BILLING_WITHOUT_ANTI_CLONE_IP__)
+endif()
+
+if (BILLING_WITHOUT_ANTI_CLONE_HW)
+  add_definitions(-D__BILLING_WITHOUT_ANTI_CLONE_HW__)
+endif()
+
