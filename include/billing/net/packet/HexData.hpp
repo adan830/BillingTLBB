@@ -46,7 +46,7 @@ namespace net { namespace packet
       void init();
 
     public:
-      const HexData& append(const std::string& hexBodyStr);
+      HexData& append(const std::string& hexBodyStr);
 
       SizeType getSize() const;
 

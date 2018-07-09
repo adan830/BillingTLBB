@@ -88,7 +88,7 @@ namespace net { namespace packet {
   {
   }
 
-  const HexData& HexData::append(const std::string& hexBody)
+  HexData& HexData::append(const std::string& hexBody)
   {
     m_body.append(hexBody);
 
@@ -134,7 +134,7 @@ namespace net { namespace packet {
   std::string HexData::toString() const
   {
     LOG->warning(
-      "Header: {} | Size: {} | Type: {} | Id: {} | Body: {} | Footer: {}",
+      "HexData: Header={}, Size={}, Type={}, Id={}, Body={}, Footer={}",
       m_header, m_size, m_type, m_id, m_body, m_footer
       );
 

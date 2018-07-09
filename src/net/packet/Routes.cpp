@@ -53,11 +53,13 @@ namespace net { namespace packet {
       return this->onLBKickALLHandle(hexData);
     };
 
-    /* m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData) */
-    /* ->ByteArray */
-    /* { */
-    /*   return this->onLBLCostLogHandle(hexData); */
-    /* }; */
+#if defined(BILLING_DEBUG)
+    m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ByteArray
+    {
+      return this->onLBLCostLogHandle(hexData);
+    };
+#endif
 
     m_routers["E1"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
@@ -82,15 +84,24 @@ namespace net { namespace packet {
     return s_instance;
   }
 
-  ByteArray Routes::operator[](const std::shared_ptr<Packet> hexData)
+  ByteArray Routes::operator[](const std::shared_ptr<Packet> packet)
   {
     ByteArray m_responseData;
 
+    // auto routerIt = std::find_if(
+    //   m_routers.cbegin(), m_routers.cend(),
+    //   [&packet](Routers::iterator it)
+    //   ->bool
+    //   {
+    //     return packet->getType() == it->first;
+    //   }
+    //   );
+    auto hexData = packet->getHexData();
     for (const auto& router : m_routers)
     {
-      if (hexData->getHexData()->getType() == router.first)
+      if (hexData->getType() == router.first)
       {
-        m_responseData = router.second(hexData->getHexData());
+        m_responseData = router.second(hexData);
         break;
       }
     }
@@ -125,16 +136,28 @@ namespace net { namespace packet {
     LOG->warning(__FUNCTION__);
 #endif
 
+    auto &packetHexStr = hexData->getBody();
     // ZoneId: 2u
     // WorldId: 2u
     // PlayerCount: 2u
+
+    auto zoneIdHex = packetHexStr.substr(0, 4);
+    auto worldIdHex = packetHexStr.substr(zoneIdHex.size(), 4);
+    auto playerCountHex = packetHexStr.substr(
+      zoneIdHex.size() + worldIdHex.size(), 4
+      );
+    LOG->warning(
+      "ZoneId: {}, WorldId: {}, PlayerCount: {}",
+      Utils::hexToNumber<short>(zoneIdHex),
+      Utils::hexToNumber<short>(worldIdHex),
+      Utils::hexToNumber<short>(playerCountHex)
+      );
 
     packet::HexData responseData;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
     responseData.append("0055");
-
-    return Utils::hexToBytes(responseData.toString());
+    return responseData.toByteArray();
   }
 
   ByteArray Routes::onLBKickALLHandle(
@@ -230,9 +253,9 @@ namespace net { namespace packet {
     packet::HexData responseData;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
-    responseData.append(accountNameSizeHex);
-    responseData.append(accountNameHex);
-    responseData.append(Utils::numberToHex(accountPoint, 8));
+    responseData.append(accountNameSizeHex)
+    .append(accountNameHex)
+    .append(Utils::numberToHex(accountPoint, 8));
     return responseData.toByteArray();
   }
 
@@ -241,7 +264,9 @@ namespace net { namespace packet {
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
+#if defined(BILLING_DEBUG)
     LOG->warning(__FUNCTION__);
+#endif
 
     auto &packetHexStr = hexData->getBody();
     auto accountNameSizeHex = packetHexStr.substr(0, 2);
@@ -273,9 +298,9 @@ namespace net { namespace packet {
     packet::HexData responseData;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
-    responseData.append(accountNameSizeHex);
-    responseData.append(accountNameHex);
-    responseData.append("01000000000000000000000000");
+    responseData.append(accountNameSizeHex)
+    .append(accountNameHex)
+    .append("01000000000000000000000000");
     return responseData.toByteArray();
   }
 
