@@ -72,6 +72,14 @@ namespace net { namespace packet {
     {
       return this->onLBAskPointHandle(hexData);
     };
+
+#if defined(__BILLING_ENTERPRISE_EDITION__)
+    m_routers["FF"] = [this](const std::shared_ptr<packet::HexData> hexData)
+    ->ByteArray
+    {
+      return this->onSystemHandle(hexData);
+    };
+#endif
   }
 
   Routes::~Routes()
@@ -88,22 +96,16 @@ namespace net { namespace packet {
   {
     ByteArray m_responseData;
 
-    // auto routerIt = std::find_if(
-    //   m_routers.cbegin(), m_routers.cend(),
-    //   [&packet](Routers::iterator it)
-    //   ->bool
-    //   {
-    //     return packet->getType() == it->first;
-    //   }
-    //   );
     auto hexData = packet->getHexData();
-    for (const auto& router : m_routers)
-    {
-      if (hexData->getType() == router.first)
-      {
-        m_responseData = router.second(hexData);
-        break;
+    auto routerIt = std::find_if(
+      m_routers.cbegin(), m_routers.cend(),
+      [&hexData](const Routers::value_type& it){
+        return hexData->getType() == it.first;
       }
+      );
+    if (routerIt != m_routers.cend())
+    {
+      m_responseData = routerIt->second(hexData);
     }
 
     return m_responseData;

@@ -27,3 +27,6 @@ update:
 test.client:
 	cd tests && make client
 
+sys:
+	cd deps/ee/tests && python system.py
+

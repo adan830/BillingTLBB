@@ -151,6 +151,11 @@ namespace net { namespace packet {
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
+      // System
+      ByteArray onSystemHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
 #if defined(__BILLING_ENTERPRISE_EDITION__)
     private:
       bool isMaxAccountPerMac(
