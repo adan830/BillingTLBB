@@ -87,6 +87,7 @@ namespace net
       );
     if (headPos == m_queueBuff.cend())
     {
+      LOG->error("m_queueBuff not found head");
       m_queueBuff.clear();
       return;
     }
@@ -125,12 +126,10 @@ namespace net
           );
         if (tailPos == m_queueBuff.cend())
         {
-#if defined(BILLING_DEBUG)
-          LOG->error(
-            "Packet error, currentBuff: {}",
+          LOG->warning(
+            "Skipping m_queueBuff: {}",
             Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
             );
-#endif
           break;
         }
         queueEraseTo = tailPos + 2;
