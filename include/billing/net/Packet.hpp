@@ -1,6 +1,7 @@
 #ifndef __BILLING_NET_PACKET_HPP__
 #define __BILLING_NET_PACKET_HPP__
 
+#include <string>
 #include <memory>
 #include <array>
 

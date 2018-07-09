@@ -103,7 +103,9 @@ namespace net { namespace packet {
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
+#if defined(BILLING_DEBUG)
     LOG->warning(__FUNCTION__);
+#endif
 
     packet::HexData responseData;
 
@@ -119,7 +121,9 @@ namespace net { namespace packet {
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
+#if defined(BILLING_DEBUG)
     LOG->warning(__FUNCTION__);
+#endif
 
     // ZoneId: 2u
     // WorldId: 2u
@@ -137,7 +141,9 @@ namespace net { namespace packet {
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
+#if defined(BILLING_DEBUG)
     LOG->warning(__FUNCTION__);
+#endif
 
     // ZoneId: 2u
     // WorldId: 2u
@@ -180,7 +186,9 @@ namespace net { namespace packet {
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
+#if defined(BILLING_DEBUG)
     LOG->warning(__FUNCTION__);
+#endif
 
     auto &packetHexStr = hexData->getBody();
 
@@ -195,7 +203,9 @@ namespace net { namespace packet {
       accountNameBytes.cbegin(),
       accountNameBytes.cend()
       );
+#if defined(BILLING_DEBUG)
     LOG->warning("Account name: {}", accountName);
+#endif
 
     long long accountPoint = 0;
 
@@ -211,7 +221,10 @@ namespace net { namespace packet {
     }
     catch (...)
     {
-      LOG->error("Exception: Error code not found");
+      LOG->error(
+        "{}: Exception: Error code not found",
+        __FUNCTION__
+        );
     }
 
     packet::HexData responseData;
@@ -248,20 +261,21 @@ namespace net { namespace packet {
     auto timeHex = packetHexStr.substr(
       charLevelHexOffset + charLevelHex.size()
       );
+#if defined(BILLING_DEBUG)
     LOG->warning(
       "Account name: {}, Char Level: {}, TimeHex: {}",
       accountName,
       Utils::hexToNumber<unsigned short>(charLevelHex),
       timeHex
       );
+#endif
 
     packet::HexData responseData;
     responseData.setType(hexData->getType());
     responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex);
     responseData.append(accountNameHex);
-    responseData.append("01"); // Result
-    responseData.append("000000000000000000000000");
+    responseData.append("01000000000000000000000000");
     return responseData.toByteArray();
   }
 

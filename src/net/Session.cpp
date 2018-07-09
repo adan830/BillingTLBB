@@ -76,8 +76,8 @@ namespace net
   void Session::queueBufferHandle()
   {
     LOG->warning(
-      "Current Raw: {}",
-      std::string(m_queueBuff.cbegin(), m_queueBuff.cend())
+      "Current m_queueBuff Hex: {}",
+      Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
       );
 
     auto headData = Utils::hexToBytes("AA55");
@@ -107,11 +107,13 @@ namespace net
         m_queueBuff.cbegin() + bufferMax,
         buffer->begin()
         );
+#if defined(BILLING_DEBUG)
       LOG->warning(
         "Raw buffer: {} - len: {}",
         std::string(buffer->cbegin(), buffer->cend()),
         m_queueBuff.size()
         );
+#endif
       auto packet = std::make_shared<Packet>(buffer, bufferMax);
       auto packetSize = packet->getSize();
       auto queueEraseTo = m_queueBuff.cbegin() + packetSize;
@@ -123,10 +125,12 @@ namespace net
           );
         if (tailPos == m_queueBuff.cend())
         {
+#if defined(BILLING_DEBUG)
           LOG->error(
             "Packet error, currentBuff: {}",
             Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
             );
+#endif
           break;
         }
         queueEraseTo = tailPos + 2;
@@ -135,7 +139,9 @@ namespace net
       {
         if (!this->packetHandle(packet))
         {
-          LOG->error("Notthing to send back");
+#if defined(BILLING_DEBUG)
+          LOG->warning("Notthing to send back");
+#endif
         }
       }
 
@@ -143,10 +149,12 @@ namespace net
         m_queueBuff.cbegin(), queueEraseTo
         );
 
+#if defined(BILLING_DEBUG)
       LOG->warning(
         "m_queueBuff is subbed {}",
         Utils::bytesToHex(m_queueBuff.data(), m_queueBuff.size())
         );
+#endif
     }
   }
 
@@ -160,11 +168,7 @@ namespace net
     }
 
     LOG->warning(
-      "RawData to send: {} - Hex: {}",
-      std::string(
-        responseData.cbegin(),
-        responseData.cbegin() + responseData.size()
-        ),
+      "Hex to send: {}",
       Utils::bytesToHex(responseData.data(), responseData.size())
       );
 

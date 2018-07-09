@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 #include <iostream>
 
-#if defined(__linux__)
+#if defined(__unix__)
 #  include <sys/stat.h>
 #elif defined(__WIN32)
 #  include <Windows.h>
@@ -15,7 +15,7 @@ Log::Log() :
   std::srand(std::time(nullptr));
   m_fileName = std::to_string(std::rand());
   std::cout << "Log system is constructing..." << std::endl;
-#if defined(__linux__)
+#if defined(__unix__)
   mkdir(m_folderName.data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #elif defined(__WIN32) || defined(WIN32)
   ::CreateDirectory(m_folderName.data(), nullptr);
