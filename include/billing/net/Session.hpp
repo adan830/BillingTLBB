@@ -28,7 +28,7 @@ namespace net
       bool packetHandle(std::shared_ptr<Packet> packet);
 
     private:
-      bool isConnected() const;
+      asio::ip::tcp::endpoint getEndpoint() const;
   };
 }
 

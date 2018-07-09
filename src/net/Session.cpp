@@ -31,8 +31,11 @@ namespace net
 
   void Session::start()
   {
-    if (!this->isConnected())
+    if (!this->getEndpoint().port())
     {
+#if defined(BILLING_DEBUG)
+      LOG->error("Socket endpoint is disconnected");
+#endif
       return;
     }
 
@@ -95,8 +98,11 @@ namespace net
     auto tailData = Utils::hexToBytes("55AA");
     while (!m_queueBuff.empty())
     {
-      if (!this->isConnected())
+      if (!this->getEndpoint().port())
       {
+#if defined(BILLING_DEBUG)
+        LOG->error("Socket endpoint is disconnected");
+#endif
         break;
       }
 
@@ -187,18 +193,24 @@ namespace net
     return true;
   }
 
-  bool Session::isConnected() const
+  asio::ip::tcp::endpoint Session::getEndpoint() const
   {
     std::error_code ec;
-    m_socket.remote_endpoint(ec);
+    asio::ip::tcp::endpoint ep = m_socket.remote_endpoint(ec);
+
+#if defined(BILLING_DEBUG)
+    LOG->warning(
+      "Socket endpoint: Size={}, IP={}, Port={}",
+      ep.size(), ep.address().to_string(), ep.port()
+      );
+#endif
 
     if (ec)
     {
       LOG->error("Error remote_endpoint: {}", ec.message());
-      return false;
     }
 
-    return true;
+    return ep;
   }
 }
 
