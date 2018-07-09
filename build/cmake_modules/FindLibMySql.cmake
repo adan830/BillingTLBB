@@ -80,7 +80,7 @@ elseif(MINGW OR MSYS)
     PATHS
     ${MYSQL_LIB_PATHS}
     )
-else(WIN32)
+else()
   # find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
   set(MYSQL_LIB_PATHS
     $ENV{MYSQL_DIR}/libmysql_r/.libs
@@ -96,7 +96,7 @@ else(WIN32)
     PATH_SUFFIXES
     mysql
     )
-  find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
+  find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a mysqlclient
     PATHS
     ${MYSQL_LIB_PATHS}
     )
@@ -126,7 +126,7 @@ if (NOT LIB_MYSQL_CLIENT)
       ${MYSQL_LIB_PATHS}
       )
   else()
-    find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
+    find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a mysqlclient
       PATHS
       ${MYSQL_LIB_PATHS}
       )
@@ -205,7 +205,7 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
         ${MYSQL_LIB_PATHS}
         )
     else()
-      find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
+      find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a mysqlclient
         PATHS
         ${MYSQL_LIB_PATHS}
         )
@@ -218,9 +218,11 @@ endif()
 if (MYSQL_INCLUDE_DIR AND LIB_MYSQL_CLIENT)
   set(INC_DIRS ${INC_DIRS}
     ${MYSQL_INCLUDE_DIR}
+    z
     )
   set(LIBS_REQUIRED ${LIBS_REQUIRED}
     ${LIB_MYSQL_CLIENT}
+    z
     )
 endif()
 # End customize
