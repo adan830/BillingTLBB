@@ -51,9 +51,13 @@ Log::~Log()
   std::cout << "Log system is destructed!" << std::endl;
 }
 
-std::shared_ptr<Log> Log::getInstance()
+const std::shared_ptr<Log>& Log::getInstance()
 {
   static std::shared_ptr<Log> m_instance(new Log());
+
+#if defined(BILLING_DEBUG)
+  std::cout << "Log use_count: " << m_instance.use_count() << std::endl;
+#endif
 
   return m_instance;
 }

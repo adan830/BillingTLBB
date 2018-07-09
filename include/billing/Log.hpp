@@ -17,7 +17,7 @@ class Log
     ~Log();
 
   public:
-    static std::shared_ptr<Log> getInstance();
+    const static std::shared_ptr<Log>& getInstance();
 
     template<typename T>
     void info(const T& log);
