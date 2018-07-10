@@ -218,12 +218,15 @@ endif()
 if (MYSQL_INCLUDE_DIR AND LIB_MYSQL_CLIENT)
   set(INC_DIRS ${INC_DIRS}
     ${MYSQL_INCLUDE_DIR}
-    z
     )
   set(LIBS_REQUIRED ${LIBS_REQUIRED}
     ${LIB_MYSQL_CLIENT}
-    z
     )
+  if (NOT WIN32)
+    set(LIBS_REQUIRED ${LIBS_REQUIRED}
+      z
+      )
+  endif()
 endif()
 # End customize
 

@@ -103,17 +103,19 @@ void Config::readData()
       {
         m_data->webDatabasePassword = configValue;
       }
-#if !defined(__BILLING_WITHOUT_ANTI_CLONE_IP__)
+#if defined(__BILLING_WITH_ANTI_CLONE_IP__)
       else if (configKey == "MAX_ACCOUNT_PER_IP")
       {
         m_data->maxAccountPerIp = std::stoi(configValue);
       }
 #endif
+#if defined(__BILLING_WITH_ANTI_CLONE_MAC__)
       else if (configKey == "MAX_ACCOUNT_PER_MAC")
       {
         m_data->maxAccountPerMac = std::stoi(configValue);
       }
-#if !defined(__BILLING_WITHOUT_ANTI_CLONE_HW__)
+#endif
+#if defined(__BILLING_WITH_ANTI_CLONE_HARDWARE__)
       else if (configKey == "MAX_ACCOUNT_PER_HARDWARE")
       {
         m_data->maxAccountPerHardware = std::stoi(configValue);

@@ -111,10 +111,12 @@ namespace net { namespace packet {
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
+#if defined(__BILLING_ENTERPRISE_EDITION__) && defined(__BILLING_WITH_E1__)
       // E1
       ByteArray onLBAskBuyHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
+#endif
 
       // E2
       ByteArray onLBAskPointHandle(
@@ -151,25 +153,32 @@ namespace net { namespace packet {
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
+#if defined(__BILLING_ENTERPRISE_EDITION__)
+    protected:
       // System
       ByteArray onSystemHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
-#if defined(__BILLING_ENTERPRISE_EDITION__)
     private:
+#  if defined(__BILLING_WITH_ANTI_CLONE_MAC__)
       bool isMaxAccountPerMac(
         const std::string& packetHexStr,
         const std::string& currentAccountName
         ) const;
+#  endif
+#  if defined(__BILLING_WITH_ANTI_CLONE_IP__)
       bool isMaxAccountPerIp(
         const std::string& packetHexStr,
         const std::string& currentAccountName
         ) const;
+#  endif
+#  if defined(__BILLING_WITH_ANTI_CLONE_HARDWARE__)
       bool isMaxAccountPerHardware(
         const std::string& packetHexStr,
         const std::string& currentAccountName
         ) const;
+#  endif
 #endif
   };
 } }

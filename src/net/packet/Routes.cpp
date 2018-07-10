@@ -61,19 +61,19 @@ namespace net { namespace packet {
     };
 #endif
 
+#if defined(__BILLING_ENTERPRISE_EDITION__) && defined(__BILLING_WITH_E1__)
     m_routers["E1"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
       return this->onLBAskBuyHandle(hexData);
     };
+#endif
 
-#if !defined(__BILLING_WITHOUT_E1__)
     m_routers["E2"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
     {
       return this->onLBAskPointHandle(hexData);
     };
-#endif
 
 #if defined(__BILLING_ENTERPRISE_EDITION__)
     m_routers["FF"] = [this](const std::shared_ptr<packet::HexData> hexData)
@@ -191,7 +191,7 @@ namespace net { namespace packet {
   // A2
 #endif
 
-#ifndef __BILLING_ENTERPRISE_EDITION__
+#if !defined(__BILLING_ENTERPRISE_EDITION__)
 
   // E1
   ByteArray Routes::onAskPrizeAskBuyHandle(
@@ -234,13 +234,13 @@ namespace net { namespace packet {
     LOG->warning("Account name: {}", accountName);
 #endif
 
-    long long accountPoint = 0;
+    long long leftPoint = 0;
 
     try
     {
       database::models::Account a(accountName);
 
-      accountPoint = a.getPoint() * 1000;
+      leftPoint = a.getPoint() * 1000;
     }
     catch (const std::exception& e)
     {
@@ -259,7 +259,7 @@ namespace net { namespace packet {
     responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex)
     .append(accountNameHex)
-    .append(Utils::numberToHex(accountPoint, 8));
+    .append(Utils::numberToHex(leftPoint, 8));
     return responseData.toByteArray();
   }
 
