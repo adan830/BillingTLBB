@@ -322,6 +322,7 @@ namespace net { namespace packet {
   }
 
   // C5
+#if defined(BILLING_DEBUG)
   ByteArray Routes::onLBLCostLogHandle(
     const std::shared_ptr<packet::HexData> hexData
     ) const
@@ -334,5 +335,6 @@ namespace net { namespace packet {
 
     return packet::HexData().toByteArray();
   }
+#endif
 } }
 

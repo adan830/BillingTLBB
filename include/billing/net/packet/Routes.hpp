@@ -155,7 +155,7 @@ namespace net { namespace packet {
 
 #if defined(__BILLING_ENTERPRISE_EDITION__)
     protected:
-      // System
+      // FF
       ByteArray onSystemHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
