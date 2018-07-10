@@ -53,6 +53,7 @@ namespace net { namespace packet {
       return this->onLBKickALLHandle(hexData);
     };
 
+    // TODO: Open this
 #if defined(BILLING_DEBUG)
     m_routers["C5"] = [this](const std::shared_ptr<packet::HexData> hexData)
     ->ByteArray
@@ -325,14 +326,13 @@ namespace net { namespace packet {
     const std::shared_ptr<packet::HexData> hexData
     ) const
   {
+#if defined(BILLING_DEBUG)
     LOG->warning(__FUNCTION__);
+#endif
 
-    // TODO: Fix this
+    // TODO: Handle this
 
-    packet::HexData responseData;
-    responseData.setType(hexData->getType());
-    responseData.setId(hexData->getId());
-    return responseData.toByteArray();
+    return packet::HexData().toByteArray();
   }
 } }
 
