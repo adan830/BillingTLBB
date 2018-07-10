@@ -107,7 +107,18 @@ namespace net { namespace packet {
       );
     if (routerIt != m_routers.cend())
     {
-      m_responseData = routerIt->second(hexData);
+      try
+      {
+        m_responseData = routerIt->second(hexData);
+      }
+      catch(const std::exception& e)
+      {
+        LOG->error("Solving {}: {}", hexData->getType(), e.what());
+      }
+      catch(...)
+      {
+        LOG->error("{}: exeption throwed", __FUNCTION__);
+      }
     }
 
     return m_responseData;
@@ -152,9 +163,9 @@ namespace net { namespace packet {
       );
     LOG->info(
       "ZoneId={}, WorldId={}, PlayerCount={}",
-      Utils::hexToNumber<short>(zoneIdHex),
-      Utils::hexToNumber<short>(worldIdHex),
-      Utils::hexToNumber<short>(playerCountHex)
+      Utils::hexToNumber<unsigned short>(zoneIdHex),
+      Utils::hexToNumber<unsigned short>(worldIdHex),
+      Utils::hexToNumber<unsigned short>(playerCountHex)
       );
 
     packet::HexData responseData;
@@ -234,13 +245,17 @@ namespace net { namespace packet {
     LOG->warning("Account name: {}", accountName);
 #endif
 
-    long long leftPoint = 0;
+    int leftPoint = 0;
 
     try
     {
       database::models::Account a(accountName);
 
       leftPoint = a.getPoint() * 1000;
+
+      constexpr int maxLeftPoint = 2000000;
+
+      leftPoint = (leftPoint > maxLeftPoint) ? maxLeftPoint : leftPoint;
     }
     catch (const std::exception& e)
     {
@@ -248,10 +263,7 @@ namespace net { namespace packet {
     }
     catch (...)
     {
-      LOG->error(
-        "{}: Exception: Error code not found",
-        __FUNCTION__
-        );
+      LOG->error("{}: throwed exeption", __FUNCTION__);
     }
 
     packet::HexData responseData;
