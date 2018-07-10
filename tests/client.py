@@ -32,7 +32,7 @@ else:
   while messageHex != 'q':
     s.sendall(binascii.unhexlify(messageHex))
 
-    # data = s.recv(1024)
+    data = s.recv(1024)
 
     print('Received', repr(data))
     print('In Hex: {}', byteToHex(data))
