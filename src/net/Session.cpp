@@ -205,6 +205,7 @@ namespace net
           );
         if (ec)
         {
+          LOG->error("Socket write error: {}", ec.message());
           m_socket.close();
         }
       });
