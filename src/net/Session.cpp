@@ -180,10 +180,17 @@ namespace net
       return false;
     }
 
-    LOG->warning(
-      "Hex to send: {}",
-      Utils::bytesToHex(responseData.data(), responseData.size())
-      );
+#if defined(__BILLING_ENTERPRISE_EDITION__)
+    if (packet->getHexData()->getType() != "FF")
+    {
+#endif
+      LOG->warning(
+        "Hex to send: {}",
+        Utils::bytesToHex(responseData.data(), responseData.size())
+        );
+#if defined(__BILLING_ENTERPRISE_EDITION__)
+    }
+#endif
 
     // Keep session alive
     auto self = this->shared_from_this();
