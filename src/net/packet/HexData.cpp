@@ -63,9 +63,9 @@ namespace net { namespace packet {
 
       m_footer = hexData.substr(bodyOffset + m_body.size(), 4);
 
-      if (m_footer != "55AA")
+      if (m_footer.empty() || (m_footer != "55AA"))
       {
-        throw std::runtime_error("Buffer footer is empty");
+        throw std::runtime_error("Buffer footer is invalid");
       }
     }
     catch(const std::exception& e)
