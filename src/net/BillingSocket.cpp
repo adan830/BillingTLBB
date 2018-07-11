@@ -126,6 +126,17 @@ namespace net
   {
     LOG->info("BillingSocket is stopping...");
 
+#if defined(__BILLING_WITH_AFTER_START__)
+    /* if (afterStartThread.joinable()) */
+    {
+      afterStartThread.detach();
+#  if defined(BILLING_DEBUG)
+      LOG->warning("AfterStartThread is joined");
+#  endif
+    }
+#endif
+
+
     m_acceptor->close();
     m_asioIoService.stop();
 

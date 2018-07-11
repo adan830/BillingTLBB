@@ -24,10 +24,6 @@ void Billing::start()
 {
   LOG->info("Billing is starting...");
 
-#if defined(__BILLING_WITH_AFTER_START__)
-  this->afterStart();
-#endif
-
   m_socket->start();
 }
 

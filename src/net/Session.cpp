@@ -15,11 +15,7 @@ namespace net
   Session::Session(asio::ip::tcp::socket socket) :
     m_socket(std::move(socket))
   {
-    LOG->info(
-      "New session from {}:{}",
-      m_socket.remote_endpoint().address().to_string(),
-      m_socket.remote_endpoint().port()
-      );
+    LOG->info("New session is opened");
   }
 
   Session::~Session()
@@ -31,19 +27,13 @@ namespace net
 
   void Session::start()
   {
-    auto ep = this->getEndpoint();
-    if (!ep.port())
+    if (!this->getEndpoint().port())
     {
 #if defined(BILLING_DEBUG)
       LOG->error("Socket endpoint is disconnected");
 #endif
       return;
     }
-
-    LOG->warning(
-      "Session with {}:{} is starting to read",
-      ep.address().to_string(), ep.port()
-      );
 
     // Keep session alive
     auto self = this->shared_from_this();
@@ -53,11 +43,6 @@ namespace net
     m_socket.async_receive(
       asio::buffer(*m_buffer),
       [this, self, m_buffer](const std::error_code& ec, const std::size_t len){
-        auto ep = this->getEndpoint();
-        LOG->warning(
-          "Received {} byte(s) from {}:{}",
-          len, ep.address().to_string(), ep.port()
-          );
         if (ec)
         {
           LOG->error("Socket received error: {}", ec.message());
@@ -65,7 +50,8 @@ namespace net
         else
         {
           LOG->warning(
-            "Raw m_buffer: {}",
+            "{} bytes - m_buffer: {}",
+            len,
             std::string(m_buffer->cbegin(), m_buffer->cbegin() + len)
             );
           LOG->warning(
@@ -180,29 +166,13 @@ namespace net
       return false;
     }
 
-#if defined(__BILLING_ENTERPRISE_EDITION__)
-    if (packet->getHexData()->getType() != "FF")
-    {
-#endif
-      LOG->warning(
-        "Hex to send: {}",
-        Utils::bytesToHex(responseData.data(), responseData.size())
-        );
-#if defined(__BILLING_ENTERPRISE_EDITION__)
-    }
-#endif
-
     // Keep session alive
     auto self = this->shared_from_this();
 
     m_socket.async_write_some(
       asio::buffer(responseData),
       [this, self](const std::error_code& ec, const std::size_t len){
-        auto ep = this->getEndpoint();
-        LOG->warning(
-          "Sent {} byte(s) to {}:{}",
-          len, ep.address().to_string(), ep.port()
-          );
+        LOG->warning("Sent {} byte(s)", len);
         if (ec)
         {
           LOG->error("Socket write error: {}", ec.message());
