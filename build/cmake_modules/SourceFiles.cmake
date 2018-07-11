@@ -17,25 +17,31 @@ set(SRC_FILES ${SRC_FILES}
   )
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/ee/src)
-  add_definitions(-D__BILLING_ENTERPRISE_EDITION__)
-  set(SRC_FILES ${SRC_FILES}
-    deps/ee/src/net/packet/Routes.cpp
-    )
+  if (BILLING_EE)
+    add_definitions(-D__BILLING_ENTERPRISE_EDITION__)
+    set(SRC_FILES ${SRC_FILES}
+      deps/ee/src/net/packet/Routes.cpp
+      )
 
-  if (NOT BILLING_WITHOUT_ANTI_CLONE_IP)
-    set(SRC_FILES ${SRC_FILES}
-      deps/ee/src/database/models/IpAccounts.cpp
-      )
+    if (NOT BILLING_WITHOUT_ANTI_CLONE_IP)
+      set(SRC_FILES ${SRC_FILES}
+        deps/ee/src/database/models/IpAccounts.cpp
+        )
+    endif()
+    if (NOT BILLING_WITHOUT_ANTI_CLONE_MAC)
+      set(SRC_FILES ${SRC_FILES}
+        deps/ee/src/database/models/MacAccounts.cpp
+        )
+    endif()
+    if (NOT BILLING_WITHOUT_ANTI_CLONE_HARDWARE)
+      set(SRC_FILES ${SRC_FILES}
+        deps/ee/src/database/models/HardwareAccounts.cpp
+        )
+    endif()
   endif()
-  if (NOT BILLING_WITHOUT_ANTI_CLONE_MAC)
-    set(SRC_FILES ${SRC_FILES}
-      deps/ee/src/database/models/MacAccounts.cpp
-      )
-  endif()
-  if (NOT BILLING_WITHOUT_ANTI_CLONE_HARDWARE)
-    set(SRC_FILES ${SRC_FILES}
-      deps/ee/src/database/models/HardwareAccounts.cpp
-      )
-  endif()
+  add_definitions(-D__BILLING_WITH_AFTER_START__)
+  set(SRC_FILES ${SRC_FILES}
+    deps/ee/src/Billing.cpp
+    )
 endif()
 

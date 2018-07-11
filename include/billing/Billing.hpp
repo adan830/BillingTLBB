@@ -19,6 +19,11 @@ class Billing final
     void start();
     void restart();
     void stop();
+
+#if defined(__BILLING_WITH_AFTER_START__)
+  private:
+    void afterStart();
+#endif
 };
 
 #endif
