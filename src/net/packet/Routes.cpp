@@ -242,21 +242,25 @@ namespace net { namespace packet {
       accountNameBytes.cbegin(),
       accountNameBytes.cend()
       );
-#if defined(BILLING_DEBUG)
-    LOG->warning("Account name: {}", accountName);
-#endif
 
-    int leftPoint = 0;
+    long long leftPoint = 0;
 
     try
     {
       database::models::Account a(accountName);
 
-      leftPoint = a.getPoint() * 1000;
+      constexpr int maxPoint = 2000000;
 
-      constexpr int maxLeftPoint = 2000000;
+      leftPoint = (a.getPoint() > maxPoint) ? maxPoint : a.getPoint();
+      leftPoint *= 1000;
 
-      leftPoint = (leftPoint > maxLeftPoint) ? maxLeftPoint : leftPoint;
+#if defined(BILLING_DEBUG)
+    LOG->warning(
+      "AccountName={}, AccountPoint={}, LeftPoint={}",
+      accountName, a.getPoint(), leftPoint
+      );
+#endif
+
     }
     catch (const std::exception& e)
     {

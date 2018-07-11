@@ -160,7 +160,7 @@ namespace database { namespace models {
     while(!mysql_stmt_fetch(stmt))
     {
       LOG->warning(
-        "Id: {}, Name: {}, Password: {}, Point: {}, Online: {}, Lock: {}",
+        "Id={}, Name={}, Password={}, Point={}, Online={}, Lock={}",
         m_id, m_name, m_password, m_point, m_is_online, m_is_lock
         );
     }
