@@ -111,12 +111,10 @@ namespace net { namespace packet {
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
-#if defined(__BILLING_ENTERPRISE_EDITION__) && defined(__BILLING_WITH_E1__)
       // E1
       ByteArray onLBAskBuyHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-#endif
 
       // E2
       ByteArray onLBAskPointHandle(
