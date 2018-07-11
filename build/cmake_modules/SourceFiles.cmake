@@ -42,6 +42,8 @@ if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/ee/src)
   add_definitions(-D__BILLING_WITH_AFTER_START__)
   set(SRC_FILES ${SRC_FILES}
     deps/ee/src/Billing.cpp
+    deps/ee/src/net/BillingSocket.cpp
+    deps/ee/src/UtilsEE.cpp
     )
 endif()
 

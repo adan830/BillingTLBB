@@ -37,6 +37,11 @@ namespace net
 
       unsigned short getPort() const;
       void setPort(const unsigned short port);
+
+#if defined(__BILLING_WITH_AFTER_START__)
+  private:
+    void afterStart();
+#endif
   };
 }
 

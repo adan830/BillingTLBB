@@ -58,6 +58,10 @@ namespace net
       configData->port
       );
 
+#if defined(__BILLING_WITH_AFTER_START__)
+    this->afterStart();
+#endif
+
     this->accept();
 
     try
