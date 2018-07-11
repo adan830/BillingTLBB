@@ -16,13 +16,20 @@ namespace net
 
     auto configData = Config::getInstance().getData();
 
-    m_acceptor = new asio::ip::tcp::acceptor(
-      m_asioIoService,
-      asio::ip::tcp::endpoint(
-        asio::ip::address::from_string(configData->ip),
-        configData->port
-        )
+    asio::ip::tcp::endpoint ep(
+      asio::ip::address::from_string(configData->ip),
+      configData->port
       );
+
+    if (configData->ip == "0.0.0.0")
+    {
+      ep = asio::ip::tcp::endpoint(
+        asio::ip::tcp::v4(),
+        configData->port
+        );
+    }
+
+    m_acceptor = new asio::ip::tcp::acceptor(m_asioIoService, ep);
 
 #if defined(__BILLING_MAX_SESSION__) && (__BILLING_MAX_SESSION__ > 0)
     m_sessionCount = 0;
