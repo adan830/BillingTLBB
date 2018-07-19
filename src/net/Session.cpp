@@ -163,7 +163,7 @@ namespace net
     {
       auto ep = this->getEndpoint();
       LOG->info(
-        "Received LBConnect from {}:{}",
+        "Received connection request from {}:{}",
         ep.address().to_string(), ep.port()
         );
     }
