@@ -36,6 +36,21 @@ namespace net { namespace packet {
       ByteArray operator[](const std::shared_ptr<Packet> packet);
 
     protected:
+      // 11
+      ByteArray onLBAskRegLicenseHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // 17
+      ByteArray onLBAskAuthHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
+      // 61
+      ByteArray onLBAuthHandle(
+        const std::shared_ptr<packet::HexData> hexData
+        ) const;
+
       // A0
       ByteArray onLBConnectHandle(
         const std::shared_ptr<packet::HexData> hexData
@@ -133,21 +148,6 @@ namespace net { namespace packet {
 
       // F1
       ByteArray onLBRegPassPortHandle(
-        const std::shared_ptr<packet::HexData> hexData
-        ) const;
-
-      // 11
-      ByteArray onLBAskRegLicenseHandle(
-        const std::shared_ptr<packet::HexData> hexData
-        ) const;
-
-      // 17
-      ByteArray onLBAskAuthHandle(
-        const std::shared_ptr<packet::HexData> hexData
-        ) const;
-
-      // 61
-      ByteArray onLBAuthHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
 
