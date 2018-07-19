@@ -102,7 +102,7 @@ namespace net { namespace packet {
     auto hexData = packet->getHexData();
     auto routerIt = std::find_if(
       m_routers.cbegin(), m_routers.cend(),
-      [&hexData](const Routers::value_type& it){
+      [&hexData](const Routers::value_type& it) {
         return hexData->getType() == it.first;
       }
       );
@@ -328,7 +328,7 @@ namespace net { namespace packet {
   // C5
 #if defined(BILLING_DEBUG)
   ByteArray Routes::onLBLCostLogHandle(
-    const std::shared_ptr<packet::HexData> hexData
+    const std::shared_ptr<packet::HexData> // hexData
     ) const
   {
 #if defined(BILLING_DEBUG)

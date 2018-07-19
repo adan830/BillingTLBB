@@ -34,7 +34,7 @@ namespace net
       const std::shared_ptr<Buffer> getBuffer() const;
       std::size_t getSize() const;
       const std::string& toString() const;
-      std::shared_ptr<packet::HexData> getHexData() const;
+      const std::shared_ptr<packet::HexData> getHexData() const;
   };
 }
 

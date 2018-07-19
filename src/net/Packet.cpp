@@ -34,7 +34,7 @@ namespace net
     return m_string;
   }
 
-  std::shared_ptr<packet::HexData> Packet::getHexData() const
+  const std::shared_ptr<packet::HexData> Packet::getHexData() const
   {
     return m_hexData;
   }

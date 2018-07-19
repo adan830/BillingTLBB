@@ -15,7 +15,7 @@ namespace net
   Session::Session(asio::ip::tcp::socket socket) :
     m_socket(std::move(socket))
   {
-    LOG->info("New session is opened");
+    LOG->info("Opening new session");
   }
 
   Session::~Session()
@@ -159,6 +159,14 @@ namespace net
 
   bool Session::packetHandle(const std::shared_ptr<Packet> packet)
   {
+    if (packet->getHexData()->getType() == "A0")
+    {
+      auto ep = this->getEndpoint();
+      LOG->info(
+        "Received LBConnect from {}:{}",
+        ep.address().to_string(), ep.port()
+        );
+    }
     auto responseData = packet::Routes::getInstance()[packet];
 
     if (responseData.empty())
@@ -185,9 +193,8 @@ namespace net
 
   asio::ip::tcp::endpoint Session::getEndpoint() const
   {
-    static std::error_code ec;
-    static asio::ip::tcp::endpoint ep;
-    ep = m_socket.remote_endpoint(ec);
+    std::error_code ec;
+    asio::ip::tcp::endpoint ep = m_socket.remote_endpoint(ec);
 
 #if defined(BILLING_DEBUG)
     LOG->warning(
