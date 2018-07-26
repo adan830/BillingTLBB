@@ -21,6 +21,8 @@ class Config final
       std::string webDatabaseUsername;
       std::string webDatabasePassword;
 
+      std::string webDatabasePointColumnName;
+
       // Other
       std::size_t maxAccountPerIp;
       std::size_t maxAccountPerMac;

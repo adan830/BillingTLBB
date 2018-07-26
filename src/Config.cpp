@@ -121,6 +121,10 @@ void Config::readData()
         m_data->maxAccountPerHardware = std::stoi(configValue);
       }
 #endif
+      else if (configKey == "WEB_DATABASE_POINT_COLUMN_NAME")
+      {
+        m_data->webDatabasePointColumnName = configValue;
+      }
       else
       {
         LOG->warning("configKey: {} is not a valid key", configKey);

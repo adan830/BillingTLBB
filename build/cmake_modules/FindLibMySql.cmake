@@ -96,10 +96,17 @@ else()
     PATH_SUFFIXES
     mysql
     )
-  find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a mysqlclient
-    PATHS
-    ${MYSQL_LIB_PATHS}
-    )
+  if (BILLING_STAND_ALONE)
+    find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a
+      PATHS
+      ${MYSQL_LIB_PATHS}
+      )
+  else()
+    find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
+      PATHS
+      ${MYSQL_LIB_PATHS}
+      )
+  endif()
 endif(WIN32)
 
 # Copyright (c) Dark.Hades
@@ -126,10 +133,17 @@ if (NOT LIB_MYSQL_CLIENT)
       ${MYSQL_LIB_PATHS}
       )
   else()
-    find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a mysqlclient
-      PATHS
-      ${MYSQL_LIB_PATHS}
-      )
+    if (BILLING_STAND_ALONE)
+      find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a
+        PATHS
+        ${MYSQL_LIB_PATHS}
+        )
+    else()
+      find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
+        PATHS
+        ${MYSQL_LIB_PATHS}
+        )
+    endif()
   endif()
 endif()
 # Download lib
@@ -205,10 +219,17 @@ if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
         ${MYSQL_LIB_PATHS}
         )
     else()
-      find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a mysqlclient
-        PATHS
-        ${MYSQL_LIB_PATHS}
-        )
+      if (BILLING_STAND_ALONE)
+        find_library(LIB_MYSQL_CLIENT NAMES libmysqlclient.a
+          PATHS
+          ${MYSQL_LIB_PATHS}
+          )
+      else()
+        find_library(LIB_MYSQL_CLIENT NAMES mysqlclient
+          PATHS
+          ${MYSQL_LIB_PATHS}
+          )
+      endif()
     endif()
   endif()
   if (NOT MYSQL_INCLUDE_DIR OR NOT LIB_MYSQL_CLIENT)
@@ -224,7 +245,7 @@ if (MYSQL_INCLUDE_DIR AND LIB_MYSQL_CLIENT)
     )
   if (NOT WIN32)
     set(LIBS_REQUIRED ${LIBS_REQUIRED}
-      z
+      # z
       )
   endif()
 endif()

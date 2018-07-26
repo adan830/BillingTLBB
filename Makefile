@@ -23,6 +23,18 @@ release:
 		make -j$(shell nproc) compile_commands ; \
 		make -j$(shell nproc)
 
+release.standalone:
+	mkdir -p bin
+	git clean -xdf bin build
+	cd build && \
+		cmake \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DBILLING_STAND_ALONE=ON \
+		-DBILLING_EE=ON \
+		.. && \
+		make -j$(shell nproc) compile_commands ; \
+		make -j$(shell nproc)
+
 release.no-e1:
 	mkdir -p bin
 	git clean -xdf bin build
