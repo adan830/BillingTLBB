@@ -157,26 +157,6 @@ namespace net { namespace packet {
       ByteArray onSystemHandle(
         const std::shared_ptr<packet::HexData> hexData
         ) const;
-
-    private:
-#  if defined(__BILLING_WITH_ANTI_CLONE_MAC__)
-      bool isMaxAccountPerMac(
-        const std::string& packetHexStr,
-        const std::string& currentAccountName
-        ) const;
-#  endif
-#  if defined(__BILLING_WITH_ANTI_CLONE_IP__)
-      bool isMaxAccountPerIp(
-        const std::string& packetHexStr,
-        const std::string& currentAccountName
-        ) const;
-#  endif
-#  if defined(__BILLING_WITH_ANTI_CLONE_HARDWARE__)
-      bool isMaxAccountPerHardware(
-        const std::string& packetHexStr,
-        const std::string& currentAccountName
-        ) const;
-#  endif
 #endif
   };
 } }
