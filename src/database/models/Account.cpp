@@ -248,6 +248,10 @@ namespace database { namespace models {
       WHERE
         id=?
     )";
+#if defined(BILLING_DEBUG)
+    LOG->warning("SQL: {}", q);
+    LOG->warning("Params: {}, {}, {}", m_is_online, m_point, m_id);
+#endif
 
     auto conn = this->getConnector();
 

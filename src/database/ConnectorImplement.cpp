@@ -1,3 +1,5 @@
+#if 0
+
 #include "billing/database/Connector.hpp"
 
 #include "billing/Log.hpp"
@@ -184,4 +186,6 @@ namespace database
     return returnData;
   }
 }
+
+#endif
 
