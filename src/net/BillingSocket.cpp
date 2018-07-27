@@ -55,7 +55,7 @@ namespace net
       return;
     }
 
-    LOG->info("BillingSocket is starting...");
+    LOG->warning("BillingSocket is starting...");
 
     auto configData = Config::getInstance().getData();
 
@@ -131,17 +131,7 @@ namespace net
 
   void BillingSocket::stop()
   {
-    LOG->info("BillingSocket is stopping...");
-
-#if defined(__BILLING_WITH_AFTER_START__)
-    /* if (afterStartThread.joinable()) */
-    {
-      /* afterStartThread.detach(); */
-#  if defined(BILLING_DEBUG)
-      LOG->warning("AfterStartThread is joined");
-#  endif
-    }
-#endif
+    LOG->warning("BillingSocket is stopping...");
 
     m_acceptor->close();
     m_asioIoService.stop();

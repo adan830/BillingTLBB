@@ -22,14 +22,14 @@ Billing::~Billing()
 
 void Billing::start()
 {
-  LOG->info("Billing is starting...");
+  LOG->warning("Billing is starting...");
 
   m_socket->start();
 }
 
 void Billing::stop()
 {
-  LOG->info("Billing is stopping...");
+  LOG->warning("Billing is stopping...");
 
   m_socket->stop();
 

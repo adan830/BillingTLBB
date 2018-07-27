@@ -134,7 +134,7 @@ void Config::readData()
       configValue.clear();
     }
 
-    LOG->info("Parsed file {}", m_configFile);
+    LOG->warning("Parsed file {}", m_configFile);
 
     ifConfig.close();
   }
