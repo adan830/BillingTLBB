@@ -243,9 +243,11 @@ if (MYSQL_INCLUDE_DIR AND LIB_MYSQL_CLIENT)
   set(LIBS_REQUIRED ${LIBS_REQUIRED}
     ${LIB_MYSQL_CLIENT}
     )
-  if (NOT WIN32)
-    set(LIBS_REQUIRED ${LIBS_REQUIRED}
-      # z
+  if (WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E
+      copy ${LIB_MYSQL_CLIENT} $<TARGET_FILE_DIR:${PROJECT_NAME}>
       )
   endif()
 endif()
