@@ -276,7 +276,7 @@ namespace net { namespace packet {
     responseData.setId(hexData->getId());
     responseData.append(accountNameSizeHex)
     .append(accountNameHex)
-    .append(Utils::numberToHex(leftPoint, 8));
+    .append(Utils::numberToHex<8>(leftPoint));
     return responseData.toByteArray();
   }
 

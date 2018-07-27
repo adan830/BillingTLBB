@@ -138,8 +138,10 @@ namespace net { namespace packet {
       m_header, m_size, m_type, m_id, m_body, m_footer
       );
 
-    return m_header + Utils::numberToHex(m_size, 4) + m_type + m_id + m_body
-    + m_footer;
+    return (
+      m_header + Utils::numberToHex<4>(m_size)
+      + m_type + m_id + m_body + m_footer
+      );
   }
 
   ByteArray HexData::toByteArray() const

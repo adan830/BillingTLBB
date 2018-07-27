@@ -17,11 +17,11 @@ namespace Utils
 
   std::string bytesToHex(const char* data, const std::size_t len);
 
-  template<typename T>
-  inline std::string numberToHex(T i, const std::size_t width)
+  template<std::size_t N, typename T>
+  inline std::string numberToHex(T i)
   {
     std::stringstream sstream;
-    sstream << std::setfill('0') << std::setw(width)
+    sstream << std::setfill('0') << std::setw(N)
     << std::uppercase
     << std::hex << i;
 

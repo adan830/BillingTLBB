@@ -15,7 +15,7 @@ namespace net
   Session::Session(asio::ip::tcp::socket socket) :
     m_socket(std::move(socket))
   {
-    LOG->info("Opening new session");
+    LOG->warning("Opening new session");
   }
 
   Session::~Session()

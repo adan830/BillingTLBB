@@ -4,6 +4,7 @@
 #include <vector>
 
 using ByteArray = std::vector<char>;
+using ResultByte = unsigned char;
 
 #endif
 
