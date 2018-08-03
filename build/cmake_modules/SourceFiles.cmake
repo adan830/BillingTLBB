@@ -24,20 +24,20 @@ if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/ee/src)
       deps/ee/src/net/packet/RoutesAntiClone.cpp
       )
 
-    if (NOT BILLING_WITHOUT_ANTI_CLONE_IP)
+    if ((NOT BILLING_WITHOUT_ANTI_CLONE_HARDWARE) OR (NOT BILLING_WITHOUT_ANTI_CLONE_MAC))
       set(SRC_FILES ${SRC_FILES}
         deps/ee/src/database/models/IpAccounts.cpp
         )
-    endif()
-    if (NOT BILLING_WITHOUT_ANTI_CLONE_MAC)
-      set(SRC_FILES ${SRC_FILES}
-        deps/ee/src/database/models/MacAccounts.cpp
-        )
-    endif()
-    if (NOT BILLING_WITHOUT_ANTI_CLONE_HARDWARE)
-      set(SRC_FILES ${SRC_FILES}
-        deps/ee/src/database/models/HardwareAccounts.cpp
-        )
+      if (NOT BILLING_WITHOUT_ANTI_CLONE_MAC)
+        set(SRC_FILES ${SRC_FILES}
+          deps/ee/src/database/models/MacAccounts.cpp
+          )
+      endif()
+      if (NOT BILLING_WITHOUT_ANTI_CLONE_HARDWARE)
+        set(SRC_FILES ${SRC_FILES}
+          deps/ee/src/database/models/HardwareAccounts.cpp
+          )
+      endif()
     endif()
   endif()
   add_definitions(-D__BILLING_WITH_AFTER_START__)
