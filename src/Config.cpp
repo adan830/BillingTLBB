@@ -103,12 +103,6 @@ void Config::readData()
       {
         m_data->webDatabasePassword = configValue;
       }
-#if defined(__BILLING_WITH_ANTI_CLONE_IP__)
-      else if (configKey == "MAX_ACCOUNT_PER_IP")
-      {
-        m_data->maxAccountPerIp = std::stoi(configValue);
-      }
-#endif
 #if defined(__BILLING_WITH_ANTI_CLONE_MAC__)
       else if (configKey == "MAX_ACCOUNT_PER_MAC")
       {
