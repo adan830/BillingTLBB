@@ -67,6 +67,7 @@ namespace net
 
 #if defined(__BILLING_WITH_AFTER_START__)
     this->afterStart();
+    this->acceptNewConnection();
 #endif
 
     this->accept();

@@ -42,7 +42,7 @@ namespace net
 #if defined(__BILLING_WITH_AFTER_START__)
   private:
     void afterStart();
-    // std::thread afterStartThread;
+    void acceptNewConnection();
 #endif
   };
 }
