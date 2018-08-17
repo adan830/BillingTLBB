@@ -103,18 +103,10 @@ void Config::readData()
       {
         m_data->webDatabasePassword = configValue;
       }
-#if defined(__BILLING_WITH_ANTI_CLONE_MAC__)
-      else if (configKey == "MAX_ACCOUNT_PER_MAC")
+      else if (configKey == "MAX_ACCOUNT_PER_PC")
       {
-        m_data->maxAccountPerMac = std::stoi(configValue);
+        m_data->maxAccountPerPC = std::stoi(configValue);
       }
-#endif
-#if defined(__BILLING_WITH_ANTI_CLONE_HARDWARE__)
-      else if (configKey == "MAX_ACCOUNT_PER_HARDWARE")
-      {
-        m_data->maxAccountPerHardware = std::stoi(configValue);
-      }
-#endif
       else if (configKey == "WEB_DATABASE_POINT_COLUMN_NAME")
       {
         m_data->webDatabasePointColumnName = configValue;

@@ -24,8 +24,7 @@ class Config final
       std::string webDatabasePointColumnName;
 
       // Other
-      std::size_t maxAccountPerMac;
-      std::size_t maxAccountPerHardware;
+      std::size_t maxAccountPerPC;
     };
 
   private:
