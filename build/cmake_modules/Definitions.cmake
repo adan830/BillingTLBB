@@ -15,18 +15,8 @@ if (NOT BILLING_WITHOUT_E1)
   message(STATUS "Billing with E1")
 endif()
 
-if (NOT BILLING_WITHOUT_ANTI_CLONE_IP)
-  add_definitions(-D__BILLING_WITH_ANTI_CLONE_IP__)
-  message(STATUS "Billing with ANTI CLONE IP")
-endif()
-
-if (NOT BILLING_WITHOUT_ANTI_CLONE_HARDWARE)
-  add_definitions(-D__BILLING_WITH_ANTI_CLONE_HARDWARE__)
-  message(STATUS "Billing with ANTI CLONE HARDWARE")
-endif()
-
-if (NOT BILLING_WITHOUT_ANTI_CLONE_MAC)
-  add_definitions(-D__BILLING_WITH_ANTI_CLONE_MAC__)
-  message(STATUS "Billing with ANTI CLONE MAC")
+if (NOT BILLING_WITHOUT_ANTI_CLONE)
+  add_definitions(-D__BILLING_WITH_ANTI_CLONE__)
+  message(STATUS "Billing with ANTI CLONE")
 endif()
 
