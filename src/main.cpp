@@ -5,8 +5,21 @@
 #include <iostream>
 #include <memory>
 
+#if !defined(__WIN32) && !defined(WIN32)
+#  include <sys/unistd.h>
+#  include <sys/types.h>
+#endif
+
+
 int main(int argc, char* argv[])
 {
+#if !defined(__WIN32) && !defined(WIN32)
+  if (::getuid() != 0)
+  {
+    std::cerr << "Must be run as root" << std::endl;
+    return 1;
+  }
+#endif
   try
   {
     {
